@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "success-state-card",
+  "kind": "component",
+  "title": "SuccessStateCard",
+  "description": "Estado de confirmação (página \"obrigado\") com próximos passos numerados e ações.",
+  "meta": {
+    "category": "feedback",
+    "role": "section.feedback",
+    "placement": "inside-main",
+    "stage": "contato",
+    "topics": [
+      "contact"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/feedback/SuccessStateCard",
+    "tags": [
+      "obrigado",
+      "sucesso",
+      "confirmação",
+      "estado",
+      "template-next"
+    ],
+    "variants": [
+      "glow",
+      "industrial",
+      "com passos"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "description": "Ícone.",
+        "required": false,
+        "default": "<CheckCircle2 />"
+      },
+      {
+        "name": "steps",
+        "type": "readonly { title; description? }[]",
+        "description": "Próximos passos.",
+        "required": false
+      },
+      {
+        "name": "stepsTitle",
+        "type": "string",
+        "description": "Título dos passos.",
+        "required": false,
+        "default": "'Próximos passos'"
+      },
+      {
+        "name": "helper",
+        "type": "ReactNode",
+        "description": "Texto auxiliar.",
+        "required": false
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "description": "Botões.",
+        "required": false
+      },
+      {
+        "name": "tone",
+        "type": "'glow' | 'industrial' | 'industrial-dark'",
+        "description": "Tema visual: glow (escuro rosa/roxo), industrial (claro âmbar) ou industrial-dark.",
+        "required": false,
+        "default": "'glow'"
+      }
+    ],
+    "example": "<SuccessStateCard title=\"Mensagem enviada!\" steps={[{ title: 'Analisamos sua solicitação' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/feedback/SuccessStateCard.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/SuccessStateCard.tsx",
+      "content": "import type { ReactNode } from 'react'\r\nimport { CheckCircle2 } from 'lucide-react'\r\n\r\nimport {\r\n  getAccentTone,\r\n  padIndex,\r\n  type AccentTone,\r\n} from '@/components/library/primitives/accentTones'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type SuccessStateStep = {\r\n  title: string\r\n  description?: string\r\n}\r\n\r\nexport type SuccessStateCardProps = {\r\n  title: string\r\n  description?: string\r\n  icon?: ReactNode\r\n  steps?: readonly SuccessStateStep[]\r\n  stepsTitle?: string\r\n  helper?: ReactNode\r\n  actions?: ReactNode\r\n  tone?: AccentTone\r\n  className?: string\r\n}\r\n\r\n/** Página/estado de confirmação (ex.: \"obrigado\") com próximos passos e ações. */\r\nexport function SuccessStateCard({\r\n  title,\r\n  description,\r\n  icon,\r\n  steps,\r\n  stepsTitle = 'Próximos passos',\r\n  helper,\r\n  actions,\r\n  tone = 'glow',\r\n  className,\r\n}: SuccessStateCardProps) {\r\n  const t = getAccentTone(tone)\r\n  const isGlow = tone === 'glow'\r\n\r\n  return (\r\n    <section className={cn('w-full py-16 lg:py-24', t.section, className)}>\r\n      <div className=\"container\">\r\n        <div\r\n          className={cn(\r\n            'mx-auto flex max-w-3xl flex-col items-center gap-6 border px-6 py-12 text-center sm:px-12',\r\n            t.panel,\r\n            t.border,\r\n            isGlow ? 'rounded-2xl' : 'border-t-4 border-t-amber-500',\r\n          )}\r\n        >\r\n          <span\r\n            className={cn(\r\n              'flex h-16 w-16 items-center justify-center',\r\n              t.fill,\r\n              t.onFill,\r\n              isGlow ? 'rounded-full' : '',\r\n            )}\r\n            aria-hidden\r\n          >\r\n            {icon ?? <CheckCircle2 className=\"h-8 w-8\" />}\r\n          </span>\r\n          <h1 className={cn('text-3xl md:text-4xl', t.heading, isGlow && 'mx-auto')}>{title}</h1>\r\n          {description ? (\r\n            <p className={cn('max-w-xl text-base leading-relaxed md:text-lg', t.body)}>\r\n              {description}\r\n            </p>\r\n          ) : null}\r\n\r\n          {steps?.length ? (\r\n            <div className=\"w-full text-left\">\r\n              <h2\r\n                className={cn('mb-4 text-sm font-semibold uppercase tracking-[0.18em]', t.accent)}\r\n              >\r\n                {stepsTitle}\r\n              </h2>\r\n              <ol className={cn('divide-y border', t.divide, t.border, isGlow && 'rounded-xl')}>\r\n                {steps.map((step, index) => (\r\n                  <li key={step.title} className=\"flex gap-4 p-4 sm:p-5\">\r\n                    <span className={cn('text-sm font-semibold tabular-nums', t.accent)}>\r\n                      {padIndex(index)}\r\n                    </span>\r\n                    <div>\r\n                      <p className={cn('font-semibold', t.strong)}>{step.title}</p>\r\n                      {step.description ? (\r\n                        <p className={cn('mt-1 text-sm', t.muted)}>{step.description}</p>\r\n                      ) : null}\r\n                    </div>\r\n                  </li>\r\n                ))}\r\n              </ol>\r\n            </div>\r\n          ) : null}\r\n\r\n          {helper ? <div className={cn('text-sm', t.muted)}>{helper}</div> : null}\r\n          {actions ? (\r\n            <div className=\"flex flex-wrap items-center justify-center gap-3\">{actions}</div>\r\n          ) : null}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/accentTones.ts",
+      "type": "component",
+      "target": "src/components/library/primitives/accentTones.ts",
+      "content": "/**\r\n * Temas visuais compartilhados pelos componentes de origem dos templates Next.\r\n * - glow: fundo escuro com gradiente rosa/roxo.\r\n * - industrial: fundo claro com destaque âmbar.\r\n * - industrial-dark: fundo slate escuro com destaque âmbar.\r\n */\r\nexport type AccentTone = 'glow' | 'industrial' | 'industrial-dark'\r\n\r\nexport type AccentToneTokens = {\r\n  section: string\r\n  alt: string\r\n  panel: string\r\n  panelHover: string\r\n  border: string\r\n  divide: string\r\n  heading: string\r\n  strong: string\r\n  body: string\r\n  muted: string\r\n  accent: string\r\n  line: string\r\n  fill: string\r\n  onFill: string\r\n  iconButton: string\r\n  radius: string\r\n  overlayFrom: string\r\n  chip: string\r\n  focus: string\r\n  hoverLift: string\r\n  input: string\r\n  error: string\r\n}\r\n\r\nexport const accentTones: Record<AccentTone, AccentToneTokens> = {\r\n  glow: {\r\n    section: 'bg-[#121212] text-[#c1c1c1]',\r\n    alt: 'bg-[#0e0e0e] text-[#c1c1c1]',\r\n    panel: 'bg-[#221d2f]',\r\n    panelHover: 'hover:bg-[#2a2339]',\r\n    border: 'border-[#493849]',\r\n    divide: 'divide-[#493849]',\r\n    heading:\r\n      'w-fit bg-gradient-to-r from-[#c642a5] to-[#7c39cf] bg-clip-text font-normal text-transparent',\r\n    strong: 'text-white',\r\n    body: 'text-[#c1c1c1]',\r\n    muted: 'text-[#c1c1c1]/75',\r\n    accent: 'text-[#ffb0eb]',\r\n    line: 'bg-gradient-to-r from-[#c642a5] to-[#7c39cf]',\r\n    fill: 'bg-gradient-to-br from-[#c642a5] to-[#7c39cf]',\r\n    onFill: 'text-white',\r\n    iconButton:\r\n      'rounded-full border border-[#493849] text-white hover:border-[#c642a5] hover:bg-[#c642a5]',\r\n    radius: 'rounded-2xl',\r\n    overlayFrom: 'from-[#121212]',\r\n    chip: 'border-[#493849] bg-[#121212]/70',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c642a5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121212]',\r\n    hoverLift:\r\n      'hover:-translate-y-1 hover:border-[#c642a5]/50 hover:shadow-[0_12px_40px_rgba(198,66,165,0.18)]',\r\n    input:\r\n      'rounded-md border-[#493849] bg-[#221d2f] text-white placeholder:text-[#c1c1c1]/70 focus-visible:ring-[#c642a5]',\r\n    error: 'text-red-400',\r\n  },\r\n  industrial: {\r\n    section: 'bg-slate-50 text-slate-600',\r\n    alt: 'bg-white text-slate-600',\r\n    panel: 'bg-white',\r\n    panelHover: 'hover:bg-slate-50',\r\n    border: 'border-slate-200',\r\n    divide: 'divide-slate-200',\r\n    heading: 'font-semibold uppercase tracking-wide text-slate-900',\r\n    strong: 'text-slate-900',\r\n    body: 'text-slate-600',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-600',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-slate-300 text-slate-700 hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/15 bg-slate-950/50',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-amber-500',\r\n    error: 'text-red-600',\r\n  },\r\n  'industrial-dark': {\r\n    section: 'bg-slate-950 text-slate-400',\r\n    alt: 'bg-slate-900 text-slate-400',\r\n    panel: 'bg-slate-900',\r\n    panelHover: 'hover:bg-white/5',\r\n    border: 'border-white/10',\r\n    divide: 'divide-white/10',\r\n    heading: 'font-semibold uppercase tracking-wide text-white',\r\n    strong: 'text-white',\r\n    body: 'text-slate-400',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-500',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-white/20 text-white hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/10 bg-slate-950/40',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-white/10 bg-slate-900 text-white placeholder:text-slate-500 focus-visible:ring-amber-500',\r\n    error: 'text-red-400',\r\n  },\r\n}\r\n\r\nexport function getAccentTone(tone: AccentTone = 'glow'): AccentToneTokens {\r\n  return accentTones[tone]\r\n}\r\n\r\nexport function padIndex(index: number): string {\r\n  return String(index + 1).padStart(2, '0')\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

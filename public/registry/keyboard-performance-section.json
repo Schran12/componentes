@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "keyboard-performance-section",
+  "kind": "component",
+  "title": "KeyboardPerformanceSection",
+  "description": "Composição visual keyboard-first com teclado e princípios de produto.",
+  "meta": {
+    "category": "content",
+    "role": "section.content",
+    "placement": "inside-main",
+    "stage": null,
+    "topics": [],
+    "clientComponent": false,
+    "importPath": "@/components/library/content/KeyboardPerformanceSection",
+    "tags": [
+      "produtividade",
+      "teclado",
+      "atalhos",
+      "keyboard-first"
+    ],
+    "variants": [
+      "teclado padrão",
+      "teclas customizadas",
+      "quatro princípios"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "principles",
+        "type": "readonly KeyboardPrinciple[]",
+        "description": "Princípios apresentados.",
+        "required": true
+      },
+      {
+        "name": "keys",
+        "type": "readonly string[]",
+        "description": "Teclas do visual.",
+        "required": false
+      }
+    ],
+    "example": "<KeyboardPerformanceSection title=\"Keyboard-first\" principles={[{ title: 'Rápido', description: 'Lorem ipsum.', key: '⌘ K' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/KeyboardPerformanceSection.tsx",
+      "type": "component",
+      "target": "src/components/library/content/KeyboardPerformanceSection.tsx",
+      "content": "import type { ReactNode } from 'react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type KeyboardPrinciple = {\r\n  title: string\r\n  description: string\r\n  key?: string\r\n  icon?: ReactNode\r\n}\r\n\r\nexport type KeyboardPerformanceSectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description?: string\r\n  principles: readonly KeyboardPrinciple[]\r\n  keys?: readonly string[]\r\n  className?: string\r\n}\r\n\r\nexport function KeyboardPerformanceSection({\r\n  eyebrow,\r\n  title,\r\n  description,\r\n  principles,\r\n  keys = ['esc', '⌘', 'K', '↵', '⌥', '⇧', 'A', 'I', '⌫', '→', '↓', '⌃'],\r\n  className,\r\n}: KeyboardPerformanceSectionProps) {\r\n  return (\r\n    <section\r\n      className={cn('overflow-hidden bg-[#efeff2] py-20 text-[#141416] md:py-28', className)}\r\n    >\r\n      <div className=\"container\">\r\n        <div className=\"mx-auto max-w-3xl text-center\">\r\n          {eyebrow ? <p className=\"text-sm font-semibold text-[#e5484d]\">{eyebrow}</p> : null}\r\n          <h2 className=\"mt-5 text-4xl font-bold tracking-[-0.04em] md:text-6xl\">{title}</h2>\r\n          {description ? (\r\n            <p className=\"mx-auto mt-6 max-w-2xl text-lg leading-8 text-[#65656b]\">{description}</p>\r\n          ) : null}\r\n        </div>\r\n\r\n        <div className=\"relative mx-auto mt-14 max-w-6xl\">\r\n          <div className=\"grid grid-cols-4 gap-2 rounded-[2rem] border border-black/10 bg-[#d8d8dc] p-3 shadow-[0_30px_80px_-35px_rgba(0,0,0,.45)] sm:grid-cols-6 lg:grid-cols-12\">\r\n            {keys.slice(0, 12).map((key, index) => (\r\n              <div\r\n                key={`${key}-${index}`}\r\n                className={cn(\r\n                  'flex aspect-square items-center justify-center rounded-xl border border-black/10 bg-gradient-to-b from-white to-[#ededf0] text-sm font-semibold shadow-[0_3px_0_#b8b8bd]',\r\n                  index === 1 && 'bg-gradient-to-b from-[#ff6b63] to-[#e5484d] text-white',\r\n                )}\r\n              >\r\n                {key}\r\n              </div>\r\n            ))}\r\n          </div>\r\n\r\n          <div className=\"relative z-10 mx-auto -mt-2 grid max-w-5xl gap-px overflow-hidden rounded-2xl border border-black/10 bg-black/10 sm:grid-cols-2 lg:grid-cols-4\">\r\n            {principles.slice(0, 4).map((principle) => (\r\n              <article key={principle.title} className=\"bg-white p-6\">\r\n                <div className=\"flex items-center justify-between gap-4\">\r\n                  <span className=\"flex h-10 w-10 items-center justify-center rounded-xl bg-[#f1f1f3] text-[#e5484d]\">\r\n                    {principle.icon ?? principle.key ?? '⌘'}\r\n                  </span>\r\n                  {principle.key ? (\r\n                    <kbd className=\"rounded-md border bg-[#f7f7f8] px-2 py-1 text-[10px] text-[#777]\">\r\n                      {principle.key}\r\n                    </kbd>\r\n                  ) : null}\r\n                </div>\r\n                <h3 className=\"mt-5 font-semibold\">{principle.title}</h3>\r\n                <p className=\"mt-2 text-sm leading-6 text-[#65656b]\">{principle.description}</p>\r\n              </article>\r\n            ))}\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

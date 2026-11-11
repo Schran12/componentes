@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "product-grid",
+  "kind": "component",
+  "title": "ProductGrid",
+  "description": "Grade responsiva de produtos com imagem, badge e link.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.products",
+    "placement": "inside-main",
+    "stage": "servicos",
+    "topics": [
+      "products"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/data-display/ProductGrid",
+    "tags": [
+      "produtos",
+      "cards",
+      "ecommerce",
+      "grid"
+    ],
+    "variants": [
+      "com badge",
+      "sem badge"
+    ],
+    "props": [
+      {
+        "name": "products",
+        "type": "Product[]",
+        "description": "Produtos.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": false
+      }
+    ],
+    "example": "<ProductGrid title=\"Produtos\" products={products} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/ProductGrid.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/ProductGrid.tsx",
+      "content": "import Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { ArrowRight } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ProductGridProps = {\r\n  title?: string\r\n  products: Array<{\r\n    id: string\r\n    name: string\r\n    description?: string\r\n    image: { src: string; alt: string }\r\n    href: string\r\n    badge?: string\r\n  }>\r\n  className?: string\r\n}\r\n\r\nexport function ProductGrid({ title, products, className }: ProductGridProps) {\r\n  return (\r\n    <section\r\n      className={cn('py-16 md:py-24', className)}\r\n      aria-labelledby={title ? 'products-title' : undefined}\r\n    >\r\n      <div className=\"container\">\r\n        {title ? (\r\n          <h2 id=\"products-title\" className=\"mb-10 text-3xl font-bold tracking-tight md:text-4xl\">\r\n            {title}\r\n          </h2>\r\n        ) : null}\r\n        <div className=\"grid gap-6 sm:grid-cols-2 lg:grid-cols-3\">\r\n          {products.map((product) => (\r\n            <article\r\n              key={product.id}\r\n              className=\"group overflow-hidden rounded-2xl border bg-card shadow-sm\"\r\n            >\r\n              <Link\r\n                href={product.href}\r\n                className=\"block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\"\r\n              >\r\n                <div className=\"relative aspect-[4/3] overflow-hidden bg-muted\">\r\n                  <Image\r\n                    src={product.image.src}\r\n                    alt={product.image.alt}\r\n                    fill\r\n                    className=\"object-cover transition duration-500 group-hover:scale-105\"\r\n                    sizes=\"(min-width: 1024px) 33vw, 50vw\"\r\n                  />\r\n                  {product.badge ? (\r\n                    <span className=\"absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-xs font-semibold\">\r\n                      {product.badge}\r\n                    </span>\r\n                  ) : null}\r\n                </div>\r\n                <div className=\"p-6\">\r\n                  <h3 className=\"text-xl font-semibold\">{product.name}</h3>\r\n                  {product.description ? (\r\n                    <p className=\"mt-2 line-clamp-2 text-sm text-muted-foreground\">\r\n                      {product.description}\r\n                    </p>\r\n                  ) : null}\r\n                  <span className=\"mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary\">\r\n                    Conhecer <ArrowRight className=\"h-4 w-4\" aria-hidden=\"true\" />\r\n                  </span>\r\n                </div>\r\n              </Link>\r\n            </article>\r\n          ))}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

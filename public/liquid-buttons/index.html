@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Liquid Buttons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden}
+  body{
+    background:#E9E9E6;
+    font-family:"Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    transition:background .6s ease;
+  }
+  body.dark{background:#0E0E0E}
+  canvas{display:block;width:100vw;height:100vh;cursor:pointer}
+
+  #bar{
+    position:fixed; left:50%; bottom:26px; transform:translateX(-50%);
+    display:flex; align-items:center; gap:18px;
+    background:rgba(255,255,255,.82); backdrop-filter:blur(10px);
+    border:1px solid rgba(0,0,0,.10); border-radius:999px;
+    padding:9px 18px; box-shadow:0 8px 30px rgba(0,0,0,.10);
+    font-size:12px; z-index:10; color:#1C1006;
+    transition:background .4s ease, color .4s ease, border-color .4s ease;
+  }
+  body.dark #bar{
+    background:rgba(30,30,30,.82); color:#EDEDED; border-color:rgba(255,255,255,.14);
+  }
+  #bar button{
+    font-family:inherit; font-size:11px; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; cursor:pointer;
+    border:1px solid rgba(0,0,0,.14); background:#fff; color:inherit;
+    border-radius:999px; padding:5px 12px;
+  }
+  body.dark #bar button{background:#2A2A2A; border-color:rgba(255,255,255,.16)}
+  #bar span{font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; opacity:.6}
+
+  body.clean #bar{opacity:0; pointer-events:none}
+</style>
+  <script type="module" crossorigin src="./assets/index-AYZVkeMD.js"></script>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+
+<div id="bar">
+  <span>Click a button</span>
+  <button id="themeBtn">Dark</button>
+  <span id="hint">H to hide UI</span>
+</div>
+
+<script>
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'h') document.body.classList.toggle('clean');
+  });
+</script>
+</body>
+</html>

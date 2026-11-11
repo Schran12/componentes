@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nimbus AI — Document Q&A API</title>
+<meta name="description" content="Nimbus AI summarises documents and answers questions with verifiable citations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Design tokens
+   ============================================================ */
+:root {
+  --nm-bg: #05060f;
+  --nm-surface: rgba(14, 16, 32, 0.72);
+  --nm-border: rgba(232, 234, 240, 0.12);
+  --nm-border-bright: rgba(124, 58, 237, 0.55);
+  --nm-text: #e8eaf0;
+  --nm-muted: #c8cad8;
+  --nm-dim: rgba(200, 202, 216, 0.62);
+  --nm-violet: #7c3aed;
+  --nm-cyan: #06b6d4;
+  --nm-glow-v: rgba(124, 58, 237, 0.35);
+  --nm-glow-c: rgba(6, 182, 212, 0.28);
+  --nm-gutter: clamp(20px, 5vw, 72px);
+  --nm-max: 1120px;
+  --nm-radius: 16px;
+  --nm-font: 'Inter', system-ui, -apple-system, sans-serif;
+  --nm-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --nm-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --nm-mx: 50%;
+  --nm-my: 30%;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--nm-bg);
+  color: var(--nm-text);
+  font-family: var(--nm-font);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--nm-cyan); outline-offset: 3px; }
+
+/* ============================================================
+   Shared
+   ============================================================ */
+.nm-glass {
+  background: var(--nm-surface);
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  border: 1px solid var(--nm-border);
+}
+.nm-container {
+  width: min(100%, var(--nm-max));
+  margin-inline: auto;
+  padding-inline: var(--nm-gutter);
+}
+.nm-section { position: relative; padding: clamp(64px, 10vw, 112px) 0; }
+.nm-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--nm-muted);
+}
+.nm-h2 {
+  margin: 12px 0 0;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 650; letter-spacing: -0.03em; line-height: 1.15;
+}
+.nm-lead { margin: 14px 0 0; max-width: 52ch; color: var(--nm-muted); font-size: 17px; }
+.nm-gradient-text {
+  background: linear-gradient(115deg, var(--nm-violet), var(--nm-cyan));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.nm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 46px; padding: 0 22px; border-radius: 999px;
+  font-size: 14px; font-weight: 600; border: 1px solid transparent; cursor: pointer;
+  transition: transform 0.25s var(--nm-ease), box-shadow 0.25s var(--nm-ease), background 0.25s, border-color 0.25s;
+}
+.nm-btn-primary {
+  background: linear-gradient(120deg, #6d28d9, #0e7490); color: #fff;
+  box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.35), 0 12px 40px var(--nm-glow-v);
+}
+.nm-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.4), 0 16px 48px var(--nm-glow-c);
+}
+.nm-btn-ghost {
+  background: transparent; border-color: var(--nm-border); color: var(--nm-text);
+}
+.nm-btn-ghost:hover {
+  border-color: rgba(232, 234, 240, 0.28); background: rgba(255, 255, 255, 0.04);
+}
+.nm-pill {
+  display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px;
+  border-radius: 999px; border: 1px solid rgba(124, 58, 237, 0.4);
+  background: rgba(124, 58, 237, 0.12); font-size: 12px; font-weight: 600; color: #d8c6ff;
+}
+.nm-pill i {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--nm-cyan); box-shadow: 0 0 10px var(--nm-cyan);
+}
+
+/* ============================================================
+   Navbar
+   ============================================================ */
+.nm-header {
+  position: sticky; top: 0; z-index: 40; height: 68px;
+  display: flex; align-items: center;
+  transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
+  border-bottom: 1px solid transparent; background: transparent;
+}
+.nm-header.is-scrolled {
+  background: rgba(5, 6, 15, 0.72);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-bottom-color: var(--nm-border);
+}
+.nm-header-inner {
+  width: min(100%, var(--nm-max)); margin-inline: auto; padding-inline: var(--nm-gutter);
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+.nm-logo { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+.nm-logo span {
+  background: linear-gradient(115deg, var(--nm-violet), var(--nm-cyan));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.nm-nav {
+  display: flex; align-items: center; gap: 28px;
+  font-size: 14px; font-weight: 500; color: var(--nm-muted);
+}
+.nm-nav a:hover { color: var(--nm-text); }
+.nm-nav-cta { margin-left: 8px; height: 40px; padding: 0 16px; font-size: 13px; }
+.nm-menu-btn {
+  display: none; width: 40px; height: 40px; border-radius: 10px;
+  border: 1px solid var(--nm-border); background: rgba(255, 255, 255, 0.03);
+  align-items: center; justify-content: center; cursor: pointer;
+}
+.nm-menu-btn span,
+.nm-menu-btn span::before,
+.nm-menu-btn span::after {
+  display: block; width: 16px; height: 1.5px; background: var(--nm-text); position: relative;
+}
+.nm-menu-btn span::before, .nm-menu-btn span::after { content: ''; position: absolute; left: 0; }
+.nm-menu-btn span::before { top: -5px; }
+.nm-menu-btn span::after { top: 5px; }
+.nm-mobile-nav {
+  display: none; flex-direction: column; gap: 4px;
+  padding: 12px var(--nm-gutter) 20px; border-bottom: 1px solid var(--nm-border);
+  background: rgba(5, 6, 15, 0.92);
+}
+.nm-mobile-nav.is-open { display: flex; }
+.nm-mobile-nav a { padding: 12px 4px; color: var(--nm-muted); font-weight: 500; }
+.nm-mobile-nav a:hover { color: var(--nm-text); }
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.nm-hero {
+  position: relative; overflow: hidden;
+  padding: clamp(72px, 12vw, 120px) 0 clamp(56px, 8vw, 88px);
+  min-height: min(88vh, 820px); display: flex; align-items: center;
+}
+.nm-aurora { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.nm-aurora-blob {
+  position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.55; will-change: transform;
+}
+.nm-aurora-blob--a {
+  width: min(55vw, 520px); height: min(55vw, 520px); top: -12%; left: -8%;
+  background: var(--nm-glow-v); animation: nm-drift-a 18s ease-in-out infinite alternate;
+}
+.nm-aurora-blob--b {
+  width: min(50vw, 460px); height: min(50vw, 460px); top: 10%; right: -10%;
+  background: var(--nm-glow-c); animation: nm-drift-b 22s ease-in-out infinite alternate;
+}
+.nm-aurora-blob--c {
+  width: min(40vw, 380px); height: min(40vw, 380px); bottom: -8%; left: 35%;
+  background: rgba(124, 58, 237, 0.22); animation: nm-drift-c 26s ease-in-out infinite alternate;
+}
+@keyframes nm-drift-a {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(8%, 12%) scale(1.08); }
+}
+@keyframes nm-drift-b {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(-10%, 8%) scale(1.12); }
+}
+@keyframes nm-drift-c {
+  from { transform: translate(0, 0); }
+  to { transform: translate(6%, -10%); }
+}
+.nm-spotlight {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: radial-gradient(420px circle at var(--nm-mx) var(--nm-my), rgba(6, 182, 212, 0.12), transparent 55%);
+  opacity: 0; transition: opacity 0.4s;
+}
+.nm-hero:hover .nm-spotlight { opacity: 1; }
+.nm-hero-inner {
+  position: relative; z-index: 2;
+  width: min(100%, var(--nm-max)); margin-inline: auto; padding-inline: var(--nm-gutter);
+  max-width: 720px;
+}
+.nm-hero h1 {
+  margin: 18px 0 0; font-size: clamp(36px, 6.2vw, 64px);
+  font-weight: 700; letter-spacing: -0.035em; line-height: 1.08;
+}
+.nm-hero-support { margin: 20px 0 0; max-width: 48ch; font-size: 18px; color: var(--nm-muted); }
+.nm-hero-ctas { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ============================================================
+   Demo chat
+   ============================================================ */
+.nm-demo-card {
+  border-radius: var(--nm-radius); padding: 8px; margin-top: 36px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.nm-demo-bar {
+  display: flex; align-items: center; gap: 8px; padding: 10px 14px 14px;
+  border-bottom: 1px solid var(--nm-border); color: var(--nm-dim); font-size: 12px; font-weight: 500;
+}
+.nm-demo-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(232, 234, 240, 0.2); }
+.nm-demo-dot:nth-child(1) { background: #f87171; }
+.nm-demo-dot:nth-child(2) { background: #fbbf24; }
+.nm-demo-dot:nth-child(3) { background: #34d399; }
+.nm-demo-file { margin-left: auto; font-family: var(--nm-mono); font-size: 11px; color: var(--nm-cyan); }
+.nm-chat { display: flex; flex-direction: column; gap: 16px; padding: 20px 16px 22px; min-height: 220px; }
+.nm-msg {
+  max-width: 92%; padding: 14px 16px; border-radius: 14px; font-size: 14.5px; line-height: 1.55;
+}
+.nm-msg p { margin: 0; }
+.nm-msg--user {
+  align-self: flex-end; background: rgba(124, 58, 237, 0.18);
+  border: 1px solid rgba(124, 58, 237, 0.35); border-bottom-right-radius: 4px;
+}
+.nm-msg--assistant {
+  align-self: flex-start; background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--nm-border); color: var(--nm-muted); border-bottom-left-radius: 4px;
+}
+.nm-msg-meta {
+  margin-top: 10px; font-family: var(--nm-mono); font-size: 11px; color: var(--nm-cyan);
+}
+
+/* ============================================================
+   Capabilities
+   ============================================================ */
+.nm-cap-grid {
+  margin-top: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;
+}
+.nm-cap-card {
+  padding: 22px 20px; border-radius: 14px; background: rgba(12, 14, 28, 0.65);
+  border: 1px solid var(--nm-border);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s var(--nm-ease);
+}
+.nm-cap-card:hover {
+  border-color: var(--nm-border-bright);
+  box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.15), 0 20px 50px rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px);
+}
+.nm-cap-icon {
+  width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center;
+  background: rgba(124, 58, 237, 0.12); border: 1px solid rgba(124, 58, 237, 0.28);
+  color: #c4b5fd; margin-bottom: 14px;
+}
+.nm-cap-card h3 { margin: 0; font-size: 17px; font-weight: 650; letter-spacing: -0.02em; }
+.nm-cap-card p { margin: 8px 0 0; font-size: 14.5px; color: var(--nm-muted); }
+
+/* ============================================================
+   Developer
+   ============================================================ */
+.nm-dev-grid {
+  margin-top: 40px; display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 48px); align-items: start;
+}
+.nm-code-panel {
+  border-radius: var(--nm-radius); overflow: hidden; background: #080a16;
+  border: 1px solid var(--nm-border); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+}
+.nm-code-tabs {
+  display: flex; align-items: center; gap: 4px; padding: 10px 12px;
+  border-bottom: 1px solid var(--nm-border); background: rgba(255, 255, 255, 0.02);
+}
+.nm-code-tab {
+  height: 34px; padding: 0 12px; border-radius: 8px; border: 0; background: transparent;
+  color: var(--nm-dim); font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.nm-code-tab.is-active { background: rgba(124, 58, 237, 0.2); color: var(--nm-text); }
+.nm-code-copy {
+  margin-left: auto; height: 34px; padding: 0 12px; border-radius: 8px;
+  border: 1px solid var(--nm-border); background: transparent; color: var(--nm-muted);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.nm-code-copy:hover { border-color: rgba(6, 182, 212, 0.45); color: var(--nm-text); }
+.nm-code-body {
+  margin: 0; padding: 20px 18px 24px; overflow-x: auto;
+  font-family: var(--nm-mono); font-size: 12.5px; line-height: 1.65; color: #b8c0d9; white-space: pre;
+}
+.nm-code-panel [data-code] { display: none; }
+.nm-code-panel [data-code].is-active { display: block; }
+
+/* ============================================================
+   Use cases
+   ============================================================ */
+.nm-use-grid {
+  margin-top: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px;
+}
+.nm-use-card {
+  padding: 28px 24px; border-radius: 16px; min-height: 220px;
+  background: linear-gradient(160deg, rgba(18, 20, 40, 0.9), rgba(8, 10, 22, 0.85));
+  border: 1px solid var(--nm-border); transition: border-color 0.25s, box-shadow 0.25s;
+}
+.nm-use-card:hover {
+  border-color: rgba(6, 182, 212, 0.4); box-shadow: 0 0 40px rgba(6, 182, 212, 0.08);
+}
+.nm-use-card .nm-eyebrow { color: var(--nm-cyan); }
+.nm-use-card h3 { margin: 14px 0 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
+.nm-use-card p { margin: 12px 0 0; color: var(--nm-muted); font-size: 15px; }
+
+/* ============================================================
+   Pricing
+   ============================================================ */
+.nm-price-note { margin: 16px 0 0; max-width: 62ch; font-size: 14px; color: var(--nm-dim); }
+.nm-price-grid {
+  margin-top: 36px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;
+}
+.nm-price-card {
+  padding: 28px 24px; border-radius: 16px; background: rgba(12, 14, 28, 0.75);
+  border: 1px solid var(--nm-border); display: flex; flex-direction: column;
+}
+.nm-price-card.is-hot {
+  border-color: rgba(124, 58, 237, 0.55);
+  box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.2), 0 24px 60px rgba(124, 58, 237, 0.12);
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.14), rgba(12, 14, 28, 0.9));
+}
+.nm-price-card h3 { margin: 0; font-size: 18px; font-weight: 650; }
+.nm-price-amount {
+  margin-top: 14px; font-size: 36px; font-weight: 700; letter-spacing: -0.03em; line-height: 1;
+}
+.nm-price-amount small {
+  font-size: 14px; font-weight: 500; color: var(--nm-dim); margin-left: 4px;
+}
+.nm-price-blurb { margin: 10px 0 0; font-size: 14px; color: var(--nm-muted); }
+.nm-price-list {
+  margin: 22px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; flex: 1;
+}
+.nm-price-list li {
+  display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--nm-muted);
+}
+.nm-price-list li::before {
+  content: ''; width: 6px; height: 6px; margin-top: 7px; border-radius: 50%;
+  background: var(--nm-cyan); box-shadow: 0 0 8px var(--nm-cyan); flex-shrink: 0;
+}
+.nm-price-card .nm-btn { margin-top: 28px; width: 100%; }
+
+/* ============================================================
+   CTA + footer
+   ============================================================ */
+.nm-cta-band {
+  text-align: center; padding: clamp(56px, 8vw, 88px) var(--nm-gutter); border-radius: 20px;
+  border: 1px solid var(--nm-border);
+  background:
+    radial-gradient(ellipse at 30% 0%, rgba(124, 58, 237, 0.22), transparent 55%),
+    radial-gradient(ellipse at 80% 100%, rgba(6, 182, 212, 0.16), transparent 50%),
+    rgba(10, 12, 24, 0.85);
+}
+.nm-cta-band h2 {
+  margin: 0; font-size: clamp(26px, 4vw, 36px); font-weight: 700; letter-spacing: -0.03em;
+}
+.nm-cta-band p { margin: 12px auto 0; max-width: 40ch; color: var(--nm-muted); }
+.nm-cta-band .nm-btn { margin-top: 24px; }
+.nm-footer { border-top: 1px solid var(--nm-border); padding: 36px 0 48px; }
+.nm-footer-inner {
+  width: min(100%, var(--nm-max)); margin-inline: auto; padding-inline: var(--nm-gutter);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;
+}
+.nm-footer-brand { font-weight: 700; letter-spacing: -0.02em; }
+.nm-footer-links { display: flex; flex-wrap: wrap; gap: 18px; font-size: 14px; color: var(--nm-dim); }
+.nm-footer-links a:hover { color: var(--nm-text); }
+.nm-footer-copy { width: 100%; margin-top: 8px; font-size: 13px; color: var(--nm-dim); }
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .nm-aurora-blob, .nm-btn, .nm-cap-card, .nm-use-card, .nm-spotlight {
+    animation: none !important; transition: none !important;
+  }
+  .nm-cap-card:hover, .nm-btn-primary:hover { transform: none; }
+  .nm-spotlight { display: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1200px) {
+  .nm-cap-grid, .nm-use-grid, .nm-price-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nm-dev-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 768px) {
+  .nm-nav { display: none; }
+  .nm-menu-btn { display: inline-flex; }
+  .nm-cap-grid, .nm-use-grid, .nm-price-grid { grid-template-columns: minmax(0, 1fr); }
+  .nm-hero h1 { font-size: clamp(32px, 9vw, 44px); }
+  .nm-footer-inner { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+<header class="nm-header" id="nm-header">
+  <div class="nm-header-inner">
+    <a href="#hero" class="nm-logo">Nimbus<span>.</span></a>
+    <nav class="nm-nav" aria-label="Primary">
+      <a href="#docs">Docs</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#blog">Blog</a>
+      <a href="#pricing" class="nm-btn nm-btn-primary nm-nav-cta">Get API key</a>
+    </nav>
+    <button type="button" class="nm-menu-btn" id="nm-menu-btn" aria-expanded="false" aria-controls="nm-mobile-nav" aria-label="Open menu">
+      <span></span>
+    </button>
+  </div>
+  <div class="nm-mobile-nav" id="nm-mobile-nav">
+    <a href="#docs">Docs</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#blog">Blog</a>
+    <a href="#pricing" class="nm-btn nm-btn-primary">Get API key</a>
+  </div>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section id="hero" class="nm-hero" aria-label="Hero">
+    <div class="nm-aurora" aria-hidden="true">
+      <div class="nm-aurora-blob nm-aurora-blob--a"></div>
+      <div class="nm-aurora-blob nm-aurora-blob--b"></div>
+      <div class="nm-aurora-blob nm-aurora-blob--c"></div>
+    </div>
+    <div class="nm-spotlight" aria-hidden="true"></div>
+    <div class="nm-hero-inner">
+      <span class="nm-pill"><i aria-hidden="true"></i> Now in public beta</span>
+      <h1>Documents that answer — <span class="nm-gradient-text">with citations</span></h1>
+      <p class="nm-hero-support">Nimbus AI is an API that summarises PDFs and knowledge bases, then answers questions with source spans your team can verify.</p>
+      <div class="nm-hero-ctas">
+        <a href="#pricing" class="nm-btn nm-btn-primary">Get API key</a>
+        <a href="#docs" class="nm-btn nm-btn-ghost">View docs</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section id="demo" class="nm-section" aria-labelledby="nm-demo-title">
+    <div class="nm-container">
+      <p class="nm-eyebrow">Live product feel</p>
+      <h2 id="nm-demo-title" class="nm-h2">Ask the document — get a grounded answer</h2>
+      <p class="nm-lead">Drop a PDF, ask in plain language, and receive a reply tied to the exact clause or page.</p>
+      <div class="nm-demo-card nm-glass">
+        <div class="nm-demo-bar">
+          <span class="nm-demo-dot"></span>
+          <span class="nm-demo-dot"></span>
+          <span class="nm-demo-dot"></span>
+          <span class="nm-demo-file">Acme_MSA_2024.pdf</span>
+        </div>
+        <div class="nm-chat" role="log" aria-live="polite">
+          <div class="nm-msg nm-msg--user">
+            <p>From Acme_MSA_2024.pdf — what is the renewal notice period, and which section says so?</p>
+          </div>
+          <div class="nm-msg nm-msg--assistant">
+            <p>Either party may terminate for convenience with 60 days’ written notice before the renewal date. The term auto-renews for successive 12-month periods unless that notice is given.</p>
+            <div class="nm-msg-meta">Cited · §7.2 Term &amp; Renewal · p. 11</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Capabilities -->
+  <section id="capabilities" class="nm-section" aria-labelledby="nm-cap-title">
+    <div class="nm-container">
+      <p class="nm-eyebrow">Capabilities</p>
+      <h2 id="nm-cap-title" class="nm-h2">Six primitives for document intelligence</h2>
+      <p class="nm-lead">Compose summarise, extract, and ask endpoints — or run them alone against your corpus.</p>
+      <div class="nm-cap-grid">
+        <article class="nm-cap-card">
+          <div class="nm-cap-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h14"/></svg>
+          </div>
+          <h3>Summarise</h3>
+          <p>Condense multi-page PDFs into executive briefs with controllable length and tone.</p>
+        </article>
+        <article class="nm-cap-card">
+          <div class="nm-cap-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 12h5M8 15h6"/></svg>
+          </div>
+          <h3>Extract</h3>
+          <p>Pull structured fields — dates, amounts, parties — into JSON ready for your pipeline.</p>
+        </article>
+        <article class="nm-cap-card">
+          <div class="nm-cap-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 7h6v6H4zM14 7h6v4h-6zM14 14h6v3h-6zM4 16h6v4H4z"/></svg>
+          </div>
+          <h3>Classify</h3>
+          <p>Route contracts, invoices, and tickets with custom labels and confidence scores.</p>
+        </article>
+        <article class="nm-cap-card">
+          <div class="nm-cap-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M5 5h6M8 5c0 6-3 10-6 12M11 5c-.5 3-2 6-5 8"/><path d="M13 19l3-8 3 8M14.2 16h3.6"/></svg>
+          </div>
+          <h3>Translate</h3>
+          <p>Preserve layout-aware meaning across 40+ languages without losing citations.</p>
+        </article>
+        <article class="nm-cap-card">
+          <div class="nm-cap-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-3.5-3.5"/></svg>
+          </div>
+          <h3>Search</h3>
+          <p>Semantic retrieval over your corpus with filters for file type, date, and ACL.</p>
+        </article>
+        <article class="nm-cap-card">
+          <div class="nm-cap-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M8 7H5v5h3a2.5 2.5 0 0 0 0-5zM19 7h-3v5h3a2.5 2.5 0 0 0 0-5z"/><path d="M8 12v2a4 4 0 0 1-4 4M19 12v2a4 4 0 0 1-4 4"/></svg>
+          </div>
+          <h3>Cite sources</h3>
+          <p>Every answer links back to page spans so reviewers can verify in one click.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Developer -->
+  <section id="docs" class="nm-section" aria-labelledby="nm-dev-title">
+    <div class="nm-container">
+      <div class="nm-dev-grid">
+        <div>
+          <p class="nm-eyebrow">Developers</p>
+          <h2 id="nm-dev-title" class="nm-h2">One POST. Cited JSON back.</h2>
+          <p class="nm-lead">Authenticate with a bearer key, send a document id and question, and receive an answer plus source spans. Streaming and webhooks are available on Growth and Scale.</p>
+          <p class="nm-lead" style="margin-top:12px">SDKs for Python and Node mirror the REST surface — no new concepts to learn.</p>
+        </div>
+        <div class="nm-code-panel" id="nm-code-panel">
+          <div class="nm-code-tabs" role="tablist" aria-label="Code language">
+            <button type="button" class="nm-code-tab is-active" role="tab" aria-selected="true" data-tab="curl">cURL</button>
+            <button type="button" class="nm-code-tab" role="tab" aria-selected="false" data-tab="python">Python</button>
+            <button type="button" class="nm-code-tab" role="tab" aria-selected="false" data-tab="javascript">JavaScript</button>
+            <button type="button" class="nm-code-copy" id="nm-code-copy">Copy</button>
+          </div>
+          <pre class="nm-code-body is-active" data-code="curl" role="tabpanel"><code>curl https://api.nimbus.ai/v1/ask \
+  -H "Authorization: Bearer $NIMBUS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "document_id": "doc_8f3a",
+    "question": "What is the renewal notice period?"
+  }'</code></pre>
+          <pre class="nm-code-body" data-code="python" role="tabpanel" hidden><code>import requests
+
+res = requests.post(
+  "https://api.nimbus.ai/v1/ask",
+  headers={"Authorization": f"Bearer {API_KEY}"},
+  json={
+    "document_id": "doc_8f3a",
+    "question": "What is the renewal notice period?",
+  },
+)
+print(res.json()["answer"])</code></pre>
+          <pre class="nm-code-body" data-code="javascript" role="tabpanel" hidden><code>const res = await fetch("https://api.nimbus.ai/v1/ask", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.NIMBUS_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    document_id: "doc_8f3a",
+    question: "What is the renewal notice period?",
+  }),
+});
+const { answer } = await res.json();</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use cases -->
+  <section id="use-cases" class="nm-section" aria-labelledby="nm-use-title">
+    <div class="nm-container">
+      <p class="nm-eyebrow">Use cases</p>
+      <h2 id="nm-use-title" class="nm-h2">Built for teams that must show their work</h2>
+      <p class="nm-lead">Support, research, and legal all need answers they can audit — not black-box chat.</p>
+      <div class="nm-use-grid">
+        <article class="nm-use-card">
+          <p class="nm-eyebrow">Customer support</p>
+          <h3>Answer from the knowledge base</h3>
+          <p>Connect product manuals and help articles so agents — and bots — reply with cited passages instead of guesswork.</p>
+        </article>
+        <article class="nm-use-card">
+          <p class="nm-eyebrow">Research teams</p>
+          <h3>Synthesize long reports fast</h3>
+          <p>Upload whitepapers and transcripts; ask for themes, contradictions, and quotable excerpts with page references.</p>
+        </article>
+        <article class="nm-use-card">
+          <p class="nm-eyebrow">Legal &amp; compliance</p>
+          <h3>Ground answers in the clause</h3>
+          <p>Query NDAs and policies with source spans. Reviewers jump straight to the paragraph that backs each claim.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="nm-section" aria-labelledby="nm-price-title">
+    <div class="nm-container">
+      <p class="nm-eyebrow">Pricing</p>
+      <h2 id="nm-price-title" class="nm-h2">Usage-based plans that scale with you</h2>
+      <p class="nm-price-note">A request is one API call: summarise, ask, extract, classify, translate, or search against uploaded documents. Tokens are billed separately for large context windows.</p>
+      <div class="nm-price-grid">
+        <article class="nm-price-card">
+          <h3>Starter</h3>
+          <div class="nm-price-amount">$29<small>/ month</small></div>
+          <p class="nm-price-blurb">For prototypes and solo builders.</p>
+          <ul class="nm-price-list">
+            <li>5,000 requests / month</li>
+            <li>50 MB document storage</li>
+            <li>Community support</li>
+            <li>Standard models</li>
+          </ul>
+          <a href="#pricing" class="nm-btn nm-btn-primary">Get API key</a>
+        </article>
+        <article class="nm-price-card is-hot">
+          <h3>Growth</h3>
+          <div class="nm-price-amount">$149<small>/ month</small></div>
+          <p class="nm-price-blurb">For product teams shipping to production.</p>
+          <ul class="nm-price-list">
+            <li>50,000 requests / month</li>
+            <li>5 GB document storage</li>
+            <li>Priority email support</li>
+            <li>Citation + ACL filters</li>
+            <li>Webhook deliveries</li>
+          </ul>
+          <a href="#pricing" class="nm-btn nm-btn-primary">Start Growth</a>
+        </article>
+        <article class="nm-price-card">
+          <h3>Scale</h3>
+          <div class="nm-price-amount">Custom</div>
+          <p class="nm-price-blurb">For high volume and strict compliance.</p>
+          <ul class="nm-price-list">
+            <li>Volume request pricing</li>
+            <li>Dedicated VPC / region</li>
+            <li>SSO + audit logs</li>
+            <li>SLA &amp; onboarding</li>
+            <li>Custom retention</li>
+          </ul>
+          <a href="#pricing" class="nm-btn nm-btn-primary">Talk to sales</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="nm-section" aria-labelledby="nm-cta-title" id="blog">
+    <div class="nm-container">
+      <div class="nm-cta-band">
+        <h2 id="nm-cta-title">Start building in 5 minutes</h2>
+        <p>Create a key, upload a sample PDF, and ship your first cited answer before standup ends.</p>
+        <a href="#pricing" class="nm-btn nm-btn-primary">Get API key</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="nm-footer">
+  <div class="nm-footer-inner">
+    <div class="nm-footer-brand">Nimbus<span class="nm-gradient-text">.</span></div>
+    <nav class="nm-footer-links" aria-label="Footer">
+      <a href="#docs">Docs</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#status">Status</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#terms">Terms</a>
+    </nav>
+    <p class="nm-footer-copy">© 2026 Nimbus AI. Document answers you can verify.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var header = document.getElementById('nm-header');
+  var menuBtn = document.getElementById('nm-menu-btn');
+  var mobileNav = document.getElementById('nm-mobile-nav');
+  var hero = document.getElementById('hero');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Navbar scroll blur */
+  function onScroll() {
+    if (!header) return;
+    header.classList.toggle('is-scrolled', window.scrollY > 12);
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* Mobile menu */
+  if (menuBtn && mobileNav) {
+    menuBtn.addEventListener('click', function () {
+      var open = mobileNav.classList.toggle('is-open');
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+    mobileNav.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        mobileNav.classList.remove('is-open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  /* Hero spotlight — disabled when reduced motion */
+  if (hero && !reduce) {
+    hero.addEventListener('mousemove', function (e) {
+      var rect = hero.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width) * 100;
+      var y = ((e.clientY - rect.top) / rect.height) * 100;
+      hero.style.setProperty('--nm-mx', x + '%');
+      hero.style.setProperty('--nm-my', y + '%');
+    });
+  }
+
+  /* Code tabs + copy */
+  var panel = document.getElementById('nm-code-panel');
+  var copyBtn = document.getElementById('nm-code-copy');
+  if (panel) {
+    var tabs = panel.querySelectorAll('.nm-code-tab');
+    var blocks = panel.querySelectorAll('[data-code]');
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var id = tab.getAttribute('data-tab');
+        tabs.forEach(function (t) {
+          t.classList.toggle('is-active', t === tab);
+          t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+        });
+        blocks.forEach(function (b) {
+          var on = b.getAttribute('data-code') === id;
+          b.classList.toggle('is-active', on);
+          if (on) b.removeAttribute('hidden');
+          else b.setAttribute('hidden', '');
+        });
+      });
+    });
+  }
+  if (copyBtn && panel) {
+    copyBtn.addEventListener('click', function () {
+      var active = panel.querySelector('[data-code].is-active code');
+      if (!active) return;
+      var text = active.textContent || '';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          copyBtn.textContent = 'Copied';
+          setTimeout(function () { copyBtn.textContent = 'Copy'; }, 1600);
+        });
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "number-ticker",
+  "kind": "component",
+  "title": "NumberTicker",
+  "description": "Contador numérico declarativo acionado pela viewport.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/NumberTicker",
+    "tags": [
+      "número",
+      "contador",
+      "viewport",
+      "framer-motion"
+    ],
+    "variants": [
+      "locale",
+      "decimais",
+      "prefixo",
+      "sufixo"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "description": "Valor final.",
+        "required": true
+      },
+      {
+        "name": "from",
+        "type": "number",
+        "description": "Valor inicial.",
+        "required": false,
+        "default": "0"
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "description": "Duração.",
+        "required": false,
+        "default": "1.5"
+      },
+      {
+        "name": "decimals",
+        "type": "number",
+        "description": "Casas decimais.",
+        "required": false,
+        "default": "0"
+      },
+      {
+        "name": "prefix",
+        "type": "string",
+        "description": "Prefixo.",
+        "required": false
+      },
+      {
+        "name": "suffix",
+        "type": "string",
+        "description": "Sufixo.",
+        "required": false
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Locale numérico.",
+        "required": false,
+        "default": "'pt-BR'"
+      }
+    ],
+    "example": "<NumberTicker value={98.7} decimals={1} suffix=\"%\" />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/NumberTicker.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/NumberTicker.tsx",
+      "content": "'use client'\r\n\r\nimport { useEffect, useRef, useState } from 'react'\r\nimport { animate, useInView, useMotionValue, useReducedMotion } from 'framer-motion'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type NumberTickerProps = {\r\n  value: number\r\n  from?: number\r\n  duration?: number\r\n  decimals?: number\r\n  prefix?: string\r\n  suffix?: string\r\n  once?: boolean\r\n  className?: string\r\n  locale?: string\r\n}\r\n\r\nexport function NumberTicker({\r\n  value,\r\n  from = 0,\r\n  duration = 1.5,\r\n  decimals = 0,\r\n  prefix = '',\r\n  suffix = '',\r\n  once = true,\r\n  className,\r\n  locale = 'pt-BR',\r\n}: NumberTickerProps) {\r\n  const ref = useRef<HTMLSpanElement>(null)\r\n  const inView = useInView(ref, { once, amount: 0.5 })\r\n  const reduceMotion = useReducedMotion()\r\n  const motionValue = useMotionValue(from)\r\n  const [display, setDisplay] = useState(from)\r\n\r\n  useEffect(() => {\r\n    if (!inView) return\r\n    if (reduceMotion) {\r\n      setDisplay(value)\r\n      return\r\n    }\r\n\r\n    const unsubscribe = motionValue.on('change', (latest) => setDisplay(latest))\r\n    const controls = animate(motionValue, value, { duration, ease: 'easeOut' })\r\n    return () => {\r\n      unsubscribe()\r\n      controls.stop()\r\n    }\r\n  }, [duration, inView, motionValue, reduceMotion, value])\r\n\r\n  const formatted = new Intl.NumberFormat(locale, {\r\n    minimumFractionDigits: decimals,\r\n    maximumFractionDigits: decimals,\r\n  }).format(display)\r\n\r\n  return (\r\n    <span ref={ref} className={cn('tabular-nums', className)}>\r\n      {prefix}\r\n      {formatted}\r\n      {suffix}\r\n    </span>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

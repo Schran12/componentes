@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "product-info-tabs",
+  "kind": "component",
+  "title": "ProductInfoTabs",
+  "description": "Abas acessíveis de descrição e detalhes técnicos do produto, com setas do teclado.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.products",
+    "placement": "inside-main",
+    "stage": "servicos",
+    "topics": [
+      "products"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/data-display/ProductInfoTabs",
+    "tags": [
+      "produto",
+      "abas",
+      "tabs",
+      "especificações",
+      "template-next"
+    ],
+    "variants": [
+      "glow",
+      "industrial",
+      "industrial-dark"
+    ],
+    "props": [
+      {
+        "name": "paragraphs",
+        "type": "readonly string[]",
+        "description": "Texto da aba descrição.",
+        "required": true
+      },
+      {
+        "name": "details",
+        "type": "readonly { title; description? }[]",
+        "description": "Itens da aba detalhes.",
+        "required": true
+      },
+      {
+        "name": "descriptionLabel",
+        "type": "string",
+        "description": "Rótulo da aba descrição.",
+        "required": false
+      },
+      {
+        "name": "detailsLabel",
+        "type": "string",
+        "description": "Rótulo da aba detalhes.",
+        "required": false
+      },
+      {
+        "name": "action",
+        "type": "{ label: string; href: string }",
+        "description": "Ação.",
+        "required": false
+      },
+      {
+        "name": "tone",
+        "type": "'glow' | 'industrial' | 'industrial-dark'",
+        "description": "Tema visual: glow (escuro rosa/roxo), industrial (claro âmbar) ou industrial-dark.",
+        "required": false,
+        "default": "'industrial'"
+      }
+    ],
+    "example": "<ProductInfoTabs paragraphs={['Lorem ipsum.']} details={[{ title: 'Potência', description: '5 kW' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/ProductInfoTabs.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/ProductInfoTabs.tsx",
+      "content": "'use client'\r\n\r\nimport { useId, useState } from 'react'\r\nimport { Phone } from 'lucide-react'\r\n\r\nimport { AccentButton } from '@/components/library/primitives/AccentButton'\r\nimport {\r\n  getAccentTone,\r\n  padIndex,\r\n  type AccentTone,\r\n} from '@/components/library/primitives/accentTones'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ProductInfoTabsProps = {\r\n  paragraphs: readonly string[]\r\n  details: readonly { title: string; description?: string }[]\r\n  descriptionLabel?: string\r\n  detailsLabel?: string\r\n  action?: { label: string; href: string }\r\n  tone?: AccentTone\r\n  className?: string\r\n}\r\n\r\ntype TabId = 'description' | 'details'\r\n\r\n/** Painel de produto com abas Descrição/Detalhes, transição suave e chamada de orçamento. */\r\nexport function ProductInfoTabs({\r\n  paragraphs,\r\n  details,\r\n  descriptionLabel = 'Descrição',\r\n  detailsLabel = 'Detalhes',\r\n  action,\r\n  tone = 'industrial',\r\n  className,\r\n}: ProductInfoTabsProps) {\r\n  const t = getAccentTone(tone)\r\n  const isGlow = tone === 'glow'\r\n  const baseId = useId()\r\n  const [tab, setTab] = useState<TabId>('description')\r\n  const tabs: { id: TabId; label: string }[] = [\r\n    { id: 'description', label: descriptionLabel },\r\n    { id: 'details', label: detailsLabel },\r\n  ]\r\n\r\n  const activeTab = isGlow\r\n    ? 'bg-gradient-to-r from-[#86196b] to-[#5327b3] text-white'\r\n    : tone === 'industrial'\r\n      ? 'bg-slate-950 text-white'\r\n      : 'bg-amber-500 text-slate-950'\r\n  const idleTab = isGlow\r\n    ? 'bg-[#121212] text-[#c1c1c1] hover:text-white'\r\n    : tone === 'industrial'\r\n      ? 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-900'\r\n      : 'bg-slate-950 text-slate-400 hover:text-white'\r\n\r\n  const eyebrow = (label: string) => (\r\n    <div className=\"mb-4 flex items-center gap-3\">\r\n      <span className={cn('h-px w-8', t.line)} aria-hidden />\r\n      <span className={cn('text-[0.65rem] uppercase tracking-[0.28em]', t.accent)}>{label}</span>\r\n    </div>\r\n  )\r\n\r\n  return (\r\n    <div\r\n      className={cn(\r\n        'flex min-h-[28rem] flex-col border',\r\n        t.border,\r\n        t.panel,\r\n        isGlow && 'overflow-hidden rounded-2xl',\r\n        className,\r\n      )}\r\n    >\r\n      <div\r\n        className={cn('grid grid-cols-2 border-b', t.border)}\r\n        role=\"tablist\"\r\n        aria-label=\"Informações do produto\"\r\n      >\r\n        {tabs.map((item, index) => {\r\n          const selected = tab === item.id\r\n          return (\r\n            <button\r\n              key={item.id}\r\n              id={`${baseId}-tab-${item.id}`}\r\n              type=\"button\"\r\n              role=\"tab\"\r\n              aria-selected={selected}\r\n              aria-controls={`${baseId}-panel-${item.id}`}\r\n              tabIndex={selected ? 0 : -1}\r\n              onClick={() => setTab(item.id)}\r\n              onKeyDown={(event) => {\r\n                if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {\r\n                  const next: TabId = tab === 'description' ? 'details' : 'description'\r\n                  setTab(next)\r\n                  document.getElementById(`${baseId}-tab-${next}`)?.focus()\r\n                }\r\n              }}\r\n              className={cn(\r\n                'relative px-4 py-4 text-sm font-semibold uppercase tracking-wide transition-all duration-500 ease-out sm:px-6 sm:py-5 sm:text-base',\r\n                index > 0 && cn('border-l', t.border),\r\n                selected ? activeTab : idleTab,\r\n                t.focus,\r\n              )}\r\n            >\r\n              {item.label}\r\n              <span\r\n                className={cn(\r\n                  'absolute inset-x-0 bottom-0 h-0.5 origin-left transition-transform duration-500 ease-out',\r\n                  isGlow ? 'bg-[#ffb0eb]' : 'bg-amber-500',\r\n                  selected ? 'scale-x-100' : 'scale-x-0',\r\n                )}\r\n                aria-hidden\r\n              />\r\n            </button>\r\n          )\r\n        })}\r\n      </div>\r\n\r\n      <div className=\"flex flex-1 flex-col p-6 sm:p-8 lg:p-10\">\r\n        <div className=\"relative flex-1\">\r\n          <div\r\n            id={`${baseId}-panel-description`}\r\n            role=\"tabpanel\"\r\n            aria-labelledby={`${baseId}-tab-description`}\r\n            hidden={tab !== 'description'}\r\n            className=\"duration-500 animate-in fade-in-0 slide-in-from-bottom-2\"\r\n          >\r\n            {eyebrow(descriptionLabel)}\r\n            <div className={cn('space-y-4 text-base leading-relaxed', t.body)}>\r\n              {paragraphs.map((paragraph, index) => (\r\n                <p key={index}>{paragraph}</p>\r\n              ))}\r\n            </div>\r\n          </div>\r\n\r\n          <div\r\n            id={`${baseId}-panel-details`}\r\n            role=\"tabpanel\"\r\n            aria-labelledby={`${baseId}-tab-details`}\r\n            hidden={tab !== 'details'}\r\n            className=\"duration-500 animate-in fade-in-0 slide-in-from-bottom-2\"\r\n          >\r\n            {eyebrow(detailsLabel)}\r\n            <ul className={cn('divide-y border-y', t.divide, t.border)}>\r\n              {details.map((detail, index) => (\r\n                <li key={detail.title} className=\"flex items-start gap-4 py-4 sm:items-center\">\r\n                  <span className={cn('text-xs tracking-[0.2em]', t.accent)}>\r\n                    {padIndex(index)}\r\n                  </span>\r\n                  <div>\r\n                    <p className={cn('text-base font-medium', t.strong)}>{detail.title}</p>\r\n                    {detail.description ? (\r\n                      <p className={cn('mt-1 text-sm leading-relaxed', t.muted)}>\r\n                        {detail.description}\r\n                      </p>\r\n                    ) : null}\r\n                  </div>\r\n                </li>\r\n              ))}\r\n            </ul>\r\n          </div>\r\n        </div>\r\n\r\n        {action ? (\r\n          <div className=\"mt-auto pt-8\">\r\n            <AccentButton\r\n              href={action.href}\r\n              tone={tone === 'industrial' ? 'industrial-dark' : tone}\r\n              icon={<Phone className=\"h-4 w-4\" aria-hidden />}\r\n            >\r\n              {action.label}\r\n            </AccentButton>\r\n          </div>\r\n        ) : null}\r\n      </div>\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/AccentButton.tsx",
+      "type": "component",
+      "target": "src/components/library/primitives/AccentButton.tsx",
+      "content": "import type { MouseEventHandler, ReactNode } from 'react'\r\nimport Link from 'next/link'\r\nimport { ArrowUpRight } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nimport type { AccentTone } from './accentTones'\r\n\r\nexport type AccentButtonProps = {\r\n  children: ReactNode\r\n  href?: string\r\n  tone?: AccentTone\r\n  size?: 'md' | 'lg'\r\n  icon?: ReactNode\r\n  external?: boolean\r\n  type?: 'button' | 'submit'\r\n  disabled?: boolean\r\n  onClick?: MouseEventHandler<HTMLElement>\r\n  className?: string\r\n}\r\n\r\nconst slideBase =\r\n  'group relative inline-flex w-fit cursor-pointer items-center overflow-hidden rounded-sm font-semibold tracking-wide transition-all duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60'\r\n\r\nconst slideSizes = {\r\n  md: {\r\n    root: 'h-12 p-1.5 ps-5 pe-14 text-sm hover:ps-14 hover:pe-5',\r\n    icon: 'right-1.5 h-9 w-9 group-hover:right-[calc(100%-42px)]',\r\n  },\r\n  lg: {\r\n    root: 'h-14 p-1 ps-6 pe-20 text-base hover:ps-20 hover:pe-6 md:text-lg',\r\n    icon: 'right-1.5 h-11 w-11 group-hover:right-[calc(100%-50px)]',\r\n  },\r\n}\r\n\r\nconst toneClasses: Record<AccentTone, { root: string; icon: string }> = {\r\n  glow: {\r\n    root: 'inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#7c39cf] bg-transparent px-4 py-2 font-semibold text-[#ae89ff] transition-[color,border-color,box-shadow,background-color] duration-300 hover:border-[#c642a5] hover:bg-gradient-to-r hover:from-[#86196b] hover:to-[#5327b3] hover:text-white hover:shadow-[0_0_8px_#c642a5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c642a5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121212] disabled:pointer-events-none disabled:opacity-60',\r\n    icon: '',\r\n  },\r\n  industrial: {\r\n    root: 'bg-slate-900 text-white hover:bg-amber-500 hover:text-slate-950',\r\n    icon: 'bg-white text-slate-900 group-hover:bg-slate-950 group-hover:text-white',\r\n  },\r\n  'industrial-dark': {\r\n    root: 'bg-amber-500 text-slate-950 hover:bg-white',\r\n    icon: 'bg-white text-slate-950 group-hover:bg-slate-950 group-hover:text-white',\r\n  },\r\n}\r\n\r\n/** Botão de ação dos templates: contorno com gradiente (glow) ou ícone deslizante (industrial). */\r\nexport function AccentButton({\r\n  children,\r\n  href,\r\n  tone = 'glow',\r\n  size = 'md',\r\n  icon,\r\n  external,\r\n  type = 'button',\r\n  disabled,\r\n  onClick,\r\n  className,\r\n}: AccentButtonProps) {\r\n  const styles = toneClasses[tone]\r\n  const isGlow = tone === 'glow'\r\n  const resolvedIcon = icon ?? <ArrowUpRight className=\"h-4 w-4 shrink-0\" aria-hidden />\r\n  const classes = isGlow\r\n    ? cn(styles.root, size === 'lg' && 'px-6 py-3 text-lg', className)\r\n    : cn(slideBase, slideSizes[size].root, styles.root, className)\r\n\r\n  const content = isGlow ? (\r\n    <>\r\n      {icon}\r\n      {children}\r\n    </>\r\n  ) : (\r\n    <>\r\n      <span className=\"relative z-10 transition-colors duration-500\">{children}</span>\r\n      <span\r\n        className={cn(\r\n          'absolute flex items-center justify-center rounded-full transition-all duration-500 group-hover:rotate-12',\r\n          slideSizes[size].icon,\r\n          styles.icon,\r\n        )}\r\n        aria-hidden\r\n      >\r\n        {resolvedIcon}\r\n      </span>\r\n    </>\r\n  )\r\n\r\n  if (href) {\r\n    const isExternal = external ?? /^(https?:|mailto:|tel:)/.test(href)\r\n    if (isExternal) {\r\n      return (\r\n        <a\r\n          href={href}\r\n          className={classes}\r\n          onClick={onClick}\r\n          target={href.startsWith('http') ? '_blank' : undefined}\r\n          rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}\r\n        >\r\n          {content}\r\n        </a>\r\n      )\r\n    }\r\n    return (\r\n      <Link href={href} className={classes} onClick={onClick}>\r\n        {content}\r\n      </Link>\r\n    )\r\n  }\r\n\r\n  return (\r\n    <button type={type} className={classes} onClick={onClick} disabled={disabled}>\r\n      {content}\r\n    </button>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/accentTones.ts",
+      "type": "component",
+      "target": "src/components/library/primitives/accentTones.ts",
+      "content": "/**\r\n * Temas visuais compartilhados pelos componentes de origem dos templates Next.\r\n * - glow: fundo escuro com gradiente rosa/roxo.\r\n * - industrial: fundo claro com destaque âmbar.\r\n * - industrial-dark: fundo slate escuro com destaque âmbar.\r\n */\r\nexport type AccentTone = 'glow' | 'industrial' | 'industrial-dark'\r\n\r\nexport type AccentToneTokens = {\r\n  section: string\r\n  alt: string\r\n  panel: string\r\n  panelHover: string\r\n  border: string\r\n  divide: string\r\n  heading: string\r\n  strong: string\r\n  body: string\r\n  muted: string\r\n  accent: string\r\n  line: string\r\n  fill: string\r\n  onFill: string\r\n  iconButton: string\r\n  radius: string\r\n  overlayFrom: string\r\n  chip: string\r\n  focus: string\r\n  hoverLift: string\r\n  input: string\r\n  error: string\r\n}\r\n\r\nexport const accentTones: Record<AccentTone, AccentToneTokens> = {\r\n  glow: {\r\n    section: 'bg-[#121212] text-[#c1c1c1]',\r\n    alt: 'bg-[#0e0e0e] text-[#c1c1c1]',\r\n    panel: 'bg-[#221d2f]',\r\n    panelHover: 'hover:bg-[#2a2339]',\r\n    border: 'border-[#493849]',\r\n    divide: 'divide-[#493849]',\r\n    heading:\r\n      'w-fit bg-gradient-to-r from-[#c642a5] to-[#7c39cf] bg-clip-text font-normal text-transparent',\r\n    strong: 'text-white',\r\n    body: 'text-[#c1c1c1]',\r\n    muted: 'text-[#c1c1c1]/75',\r\n    accent: 'text-[#ffb0eb]',\r\n    line: 'bg-gradient-to-r from-[#c642a5] to-[#7c39cf]',\r\n    fill: 'bg-gradient-to-br from-[#c642a5] to-[#7c39cf]',\r\n    onFill: 'text-white',\r\n    iconButton:\r\n      'rounded-full border border-[#493849] text-white hover:border-[#c642a5] hover:bg-[#c642a5]',\r\n    radius: 'rounded-2xl',\r\n    overlayFrom: 'from-[#121212]',\r\n    chip: 'border-[#493849] bg-[#121212]/70',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c642a5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121212]',\r\n    hoverLift:\r\n      'hover:-translate-y-1 hover:border-[#c642a5]/50 hover:shadow-[0_12px_40px_rgba(198,66,165,0.18)]',\r\n    input:\r\n      'rounded-md border-[#493849] bg-[#221d2f] text-white placeholder:text-[#c1c1c1]/70 focus-visible:ring-[#c642a5]',\r\n    error: 'text-red-400',\r\n  },\r\n  industrial: {\r\n    section: 'bg-slate-50 text-slate-600',\r\n    alt: 'bg-white text-slate-600',\r\n    panel: 'bg-white',\r\n    panelHover: 'hover:bg-slate-50',\r\n    border: 'border-slate-200',\r\n    divide: 'divide-slate-200',\r\n    heading: 'font-semibold uppercase tracking-wide text-slate-900',\r\n    strong: 'text-slate-900',\r\n    body: 'text-slate-600',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-600',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-slate-300 text-slate-700 hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/15 bg-slate-950/50',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-amber-500',\r\n    error: 'text-red-600',\r\n  },\r\n  'industrial-dark': {\r\n    section: 'bg-slate-950 text-slate-400',\r\n    alt: 'bg-slate-900 text-slate-400',\r\n    panel: 'bg-slate-900',\r\n    panelHover: 'hover:bg-white/5',\r\n    border: 'border-white/10',\r\n    divide: 'divide-white/10',\r\n    heading: 'font-semibold uppercase tracking-wide text-white',\r\n    strong: 'text-white',\r\n    body: 'text-slate-400',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-500',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-white/20 text-white hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/10 bg-slate-950/40',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-white/10 bg-slate-900 text-white placeholder:text-slate-500 focus-visible:ring-amber-500',\r\n    error: 'text-red-400',\r\n  },\r\n}\r\n\r\nexport function getAccentTone(tone: AccentTone = 'glow'): AccentToneTokens {\r\n  return accentTones[tone]\r\n}\r\n\r\nexport function padIndex(index: number): string {\r\n  return String(index + 1).padStart(2, '0')\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

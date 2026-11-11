@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "pillars-hero",
+  "kind": "component",
+  "title": "PillarsHero",
+  "description": "Hero em duas colunas com eyebrow técnico, chips, card de estatística flutuante e faixa de pilares com reveal.",
+  "meta": {
+    "category": "marketing",
+    "role": "page.hero",
+    "placement": "start-of-main",
+    "stage": "hero",
+    "topics": [
+      "banner"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/marketing/PillarsHero",
+    "tags": [
+      "hero",
+      "banner",
+      "pilares",
+      "institucional",
+      "industrial"
+    ],
+    "variants": [
+      "com pilares",
+      "com estatística",
+      "sem chips"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título principal.",
+        "required": true
+      },
+      {
+        "name": "image",
+        "type": "{ src: string; alt: string }",
+        "description": "Imagem lateral.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Texto de apoio.",
+        "required": false
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "description": "Eyebrow com prefixo //.",
+        "required": false
+      },
+      {
+        "name": "primaryAction",
+        "type": "{ label: string; href: string }",
+        "description": "CTA principal.",
+        "required": false
+      },
+      {
+        "name": "secondaryAction",
+        "type": "{ label: string; href: string }",
+        "description": "CTA secundário.",
+        "required": false
+      },
+      {
+        "name": "chips",
+        "type": "string[]",
+        "description": "Selos curtos abaixo dos botões.",
+        "required": false
+      },
+      {
+        "name": "pillars",
+        "type": "Array<{ title; description; icon? }>",
+        "description": "Pilares exibidos abaixo do hero.",
+        "required": false
+      },
+      {
+        "name": "stat",
+        "type": "{ value: string; label: string }",
+        "description": "Card flutuante sobre a imagem.",
+        "required": false
+      }
+    ],
+    "example": "<PillarsHero title=\"Soluções que duram mais\" eyebrow=\"Serviços\" image={{ src: '/hero.jpg', alt: '' }} stat={{ value: '30+', label: 'Anos de experiência' }} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/marketing/PillarsHero.tsx",
+      "type": "component",
+      "target": "src/components/library/marketing/PillarsHero.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport type { ReactNode } from 'react'\r\nimport { motion, useReducedMotion } from 'framer-motion'\r\nimport { ArrowRight } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type PillarsHeroProps = {\r\n  title: string\r\n  description?: string\r\n  eyebrow?: string\r\n  primaryAction?: { label: string; href: string }\r\n  secondaryAction?: { label: string; href: string }\r\n  chips?: string[]\r\n  pillars?: Array<{ title: string; description: string; icon?: ReactNode }>\r\n  image: { src: string; alt: string }\r\n  stat?: { value: string; label: string }\r\n  className?: string\r\n}\r\n\r\nexport function PillarsHero({\r\n  title,\r\n  description,\r\n  eyebrow,\r\n  primaryAction,\r\n  secondaryAction,\r\n  chips = [],\r\n  pillars = [],\r\n  image,\r\n  stat,\r\n  className,\r\n}: PillarsHeroProps) {\r\n  const reduceMotion = useReducedMotion()\r\n  const enter = (delay: number) =>\r\n    reduceMotion\r\n      ? {}\r\n      : {\r\n          initial: { opacity: 0, y: 24 },\r\n          animate: { opacity: 1, y: 0 },\r\n          transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] },\r\n        }\r\n\r\n  return (\r\n    <section className={cn('relative overflow-hidden py-16 md:py-24', className)}>\r\n      <div\r\n        className=\"pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/15 blur-3xl\"\r\n        aria-hidden=\"true\"\r\n      />\r\n      <div className=\"container grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]\">\r\n        <div>\r\n          {eyebrow ? (\r\n            <motion.p\r\n              {...enter(0)}\r\n              className=\"font-mono text-sm font-semibold uppercase tracking-widest text-primary\"\r\n            >\r\n              {'// '}\r\n              {eyebrow}\r\n            </motion.p>\r\n          ) : null}\r\n          <motion.h1\r\n            {...enter(0.08)}\r\n            className=\"mt-4 text-4xl font-bold leading-tight tracking-tight md:text-5xl lg:text-6xl\"\r\n          >\r\n            {title}\r\n          </motion.h1>\r\n          {description ? (\r\n            <motion.p\r\n              {...enter(0.16)}\r\n              className=\"mt-6 max-w-xl text-lg leading-8 text-muted-foreground\"\r\n            >\r\n              {description}\r\n            </motion.p>\r\n          ) : null}\r\n          {primaryAction || secondaryAction ? (\r\n            <motion.div {...enter(0.24)} className=\"mt-8 flex flex-wrap gap-3\">\r\n              {primaryAction ? (\r\n                <a\r\n                  href={primaryAction.href}\r\n                  className=\"group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover\"\r\n                >\r\n                  {primaryAction.label}\r\n                  <ArrowRight className=\"h-4 w-4 transition group-hover:translate-x-1\" />\r\n                </a>\r\n              ) : null}\r\n              {secondaryAction ? (\r\n                <a\r\n                  href={secondaryAction.href}\r\n                  className=\"inline-flex items-center rounded-full border px-6 py-3 text-sm font-semibold transition hover:border-primary hover:text-primary\"\r\n                >\r\n                  {secondaryAction.label}\r\n                </a>\r\n              ) : null}\r\n            </motion.div>\r\n          ) : null}\r\n          {chips.length ? (\r\n            <motion.ul {...enter(0.32)} className=\"mt-8 flex flex-wrap gap-2\">\r\n              {chips.map((chip) => (\r\n                <li\r\n                  key={chip}\r\n                  className=\"inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold\"\r\n                >\r\n                  <span className=\"h-1.5 w-1.5 rounded-full bg-primary\" aria-hidden=\"true\" />\r\n                  {chip}\r\n                </li>\r\n              ))}\r\n            </motion.ul>\r\n          ) : null}\r\n        </div>\r\n\r\n        <motion.div {...enter(0.2)} className=\"relative\">\r\n          <div className=\"relative aspect-[4/5] overflow-hidden rounded-3xl bg-muted shadow-2xl\">\r\n            <Image\r\n              src={image.src}\r\n              alt={image.alt}\r\n              fill\r\n              priority\r\n              className=\"object-cover\"\r\n              sizes=\"(min-width: 1024px) 40vw, 100vw\"\r\n            />\r\n          </div>\r\n          {stat ? (\r\n            <motion.div\r\n              animate={reduceMotion ? undefined : { y: [0, -10, 0] }}\r\n              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}\r\n              className=\"absolute -bottom-6 left-4 max-w-[14rem] rounded-2xl bg-primary p-5 text-primary-foreground shadow-xl md:-left-8\"\r\n            >\r\n              <p className=\"text-4xl font-bold\">{stat.value}</p>\r\n              <p className=\"mt-1 text-sm opacity-85\">{stat.label}</p>\r\n            </motion.div>\r\n          ) : null}\r\n        </motion.div>\r\n      </div>\r\n\r\n      {pillars.length ? (\r\n        <div className=\"container mt-16\">\r\n          <ul className=\"grid gap-px overflow-hidden rounded-2xl border bg-border md:grid-cols-3\">\r\n            {pillars.map((pillar, index) => (\r\n              <motion.li\r\n                key={pillar.title}\r\n                initial={reduceMotion ? false : { opacity: 0, y: 20 }}\r\n                whileInView={{ opacity: 1, y: 0 }}\r\n                viewport={{ once: true, amount: 0.4 }}\r\n                transition={{ duration: 0.5, delay: index * 0.1 }}\r\n                className=\"group bg-background p-6 transition hover:bg-primary/5\"\r\n              >\r\n                {pillar.icon ? (\r\n                  <span className=\"mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground\">\r\n                    {pillar.icon}\r\n                  </span>\r\n                ) : null}\r\n                <h2 className=\"text-lg font-semibold\">{pillar.title}</h2>\r\n                <p className=\"mt-2 text-sm leading-6 text-muted-foreground\">{pillar.description}</p>\r\n              </motion.li>\r\n            ))}\r\n          </ul>\r\n        </div>\r\n      ) : null}\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

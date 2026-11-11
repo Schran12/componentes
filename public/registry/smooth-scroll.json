@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "smooth-scroll",
+  "kind": "component",
+  "title": "SmoothScroll",
+  "description": "Rolagem suave global com Lenis sincronizada ao GSAP ScrollTrigger; respeita reduced motion.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/SmoothScroll",
+    "tags": [
+      "scroll",
+      "smooth",
+      "lenis",
+      "gsap",
+      "template-next"
+    ],
+    "variants": [
+      "lenis",
+      "scrolltrigger"
+    ],
+    "props": [
+      {
+        "name": "duration",
+        "type": "number",
+        "description": "Duração da interpolação.",
+        "required": false,
+        "default": "0.95"
+      },
+      {
+        "name": "anchorOffset",
+        "type": "number",
+        "description": "Offset de âncoras em px.",
+        "required": false,
+        "default": "-100"
+      },
+      {
+        "name": "syncScrollTrigger",
+        "type": "boolean",
+        "description": "Atualiza o ScrollTrigger no scroll.",
+        "required": false,
+        "default": "true"
+      }
+    ],
+    "example": "<SmoothScroll />"
+  },
+  "dependencies": [
+    "gsap@^3.12.2",
+    "lenis@^1.3.26"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/SmoothScroll.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/SmoothScroll.tsx",
+      "content": "'use client'\r\n\r\nimport { useEffect } from 'react'\r\nimport Lenis from 'lenis'\r\nimport gsap from 'gsap'\r\nimport { ScrollTrigger } from 'gsap/ScrollTrigger'\r\n\r\nimport 'lenis/dist/lenis.css'\r\n\r\nimport { prefersReducedMotion } from './useReducedMotion'\r\n\r\nexport type SmoothScrollProps = {\r\n  duration?: number\r\n  anchorOffset?: number\r\n  syncScrollTrigger?: boolean\r\n}\r\n\r\n/** Rolagem suave global com Lenis, sincronizada com o ticker do GSAP/ScrollTrigger. */\r\nexport function SmoothScroll({\r\n  duration = 0.95,\r\n  anchorOffset = -100,\r\n  syncScrollTrigger = true,\r\n}: SmoothScrollProps) {\r\n  useEffect(() => {\r\n    if (prefersReducedMotion()) return\r\n\r\n    gsap.registerPlugin(ScrollTrigger)\r\n    const lenis = new Lenis({ duration, smoothWheel: true, anchors: { offset: anchorOffset } })\r\n    if (syncScrollTrigger) lenis.on('scroll', ScrollTrigger.update)\r\n\r\n    const onTick = (time: number): void => {\r\n      lenis.raf(time * 1000)\r\n    }\r\n    gsap.ticker.add(onTick)\r\n    gsap.ticker.lagSmoothing(0)\r\n\r\n    return () => {\r\n      gsap.ticker.remove(onTick)\r\n      gsap.ticker.lagSmoothing(500, 33)\r\n      lenis.destroy()\r\n    }\r\n  }, [anchorOffset, duration, syncScrollTrigger])\r\n\r\n  return null\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/motion/useReducedMotion.ts",
+      "type": "component",
+      "target": "src/components/library/motion/useReducedMotion.ts",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\nconst QUERY = '(prefers-reduced-motion: reduce)'\r\n\r\nexport function prefersReducedMotion(): boolean {\r\n  return typeof window !== 'undefined' && window.matchMedia(QUERY).matches\r\n}\r\n\r\nexport function useReducedMotion(): boolean {\r\n  const [reduced, setReduced] = useState(false)\r\n\r\n  useEffect(() => {\r\n    const media = window.matchMedia(QUERY)\r\n    const update = (): void => setReduced(media.matches)\r\n\r\n    update()\r\n    media.addEventListener('change', update)\r\n    return () => media.removeEventListener('change', update)\r\n  }, [])\r\n\r\n  return reduced\r\n}\r\n"
+    }
+  ]
+}

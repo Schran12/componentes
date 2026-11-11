@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "hover-tilt-card",
+  "kind": "component",
+  "title": "HoverTiltCard",
+  "description": "Card 3D orientado pelo ponteiro com spring e reflexo luminoso.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": "cards",
+    "topics": [
+      "cards"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/HoverTiltCard",
+    "tags": [
+      "hover",
+      "tilt",
+      "3d",
+      "framer-motion"
+    ],
+    "variants": [
+      "3D",
+      "glare",
+      "reduced-motion"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Conteúdo do card.",
+        "required": true
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "description": "Intensidade da rotação.",
+        "required": false,
+        "default": "10"
+      },
+      {
+        "name": "scale",
+        "type": "number",
+        "description": "Escala durante hover.",
+        "required": false,
+        "default": "1.02"
+      },
+      {
+        "name": "glare",
+        "type": "boolean",
+        "description": "Ativa reflexo luminoso.",
+        "required": false,
+        "default": "true"
+      }
+    ],
+    "example": "<HoverTiltCard intensity={8} glare className=\"rounded-3xl\"><article>Conteúdo</article></HoverTiltCard>"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/HoverTiltCard.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/HoverTiltCard.tsx",
+      "content": "'use client'\r\n\r\nimport type { MouseEvent, ReactNode } from 'react'\r\nimport {\r\n  motion,\r\n  useMotionTemplate,\r\n  useMotionValue,\r\n  useReducedMotion,\r\n  useSpring,\r\n  useTransform,\r\n} from 'framer-motion'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type HoverTiltCardProps = {\r\n  children: ReactNode\r\n  intensity?: number\r\n  scale?: number\r\n  glare?: boolean\r\n  className?: string\r\n}\r\n\r\nexport function HoverTiltCard({\r\n  children,\r\n  intensity = 10,\r\n  scale = 1.02,\r\n  glare = true,\r\n  className,\r\n}: HoverTiltCardProps) {\r\n  const reduceMotion = useReducedMotion()\r\n  const pointerX = useMotionValue(0.5)\r\n  const pointerY = useMotionValue(0.5)\r\n  const rotateX = useSpring(useTransform(pointerY, [0, 1], [intensity, -intensity]), {\r\n    stiffness: 220,\r\n    damping: 24,\r\n  })\r\n  const rotateY = useSpring(useTransform(pointerX, [0, 1], [-intensity, intensity]), {\r\n    stiffness: 220,\r\n    damping: 24,\r\n  })\r\n  const glareX = useTransform(pointerX, [0, 1], ['0%', '100%'])\r\n  const glareY = useTransform(pointerY, [0, 1], ['0%', '100%'])\r\n  const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX} ${glareY}, white 0%, transparent 55%)`\r\n\r\n  function updatePointer(event: MouseEvent<HTMLDivElement>) {\r\n    const bounds = event.currentTarget.getBoundingClientRect()\r\n    pointerX.set((event.clientX - bounds.left) / bounds.width)\r\n    pointerY.set((event.clientY - bounds.top) / bounds.height)\r\n  }\r\n\r\n  function resetPointer() {\r\n    pointerX.set(0.5)\r\n    pointerY.set(0.5)\r\n  }\r\n\r\n  return (\r\n    <motion.div\r\n      className={cn('group relative transform-gpu overflow-hidden', className)}\r\n      style={reduceMotion ? undefined : { rotateX, rotateY, transformPerspective: 900 }}\r\n      whileHover={reduceMotion ? undefined : { scale }}\r\n      onMouseMove={reduceMotion ? undefined : updatePointer}\r\n      onMouseLeave={reduceMotion ? undefined : resetPointer}\r\n      transition={{ type: 'spring', stiffness: 220, damping: 24 }}\r\n    >\r\n      {children}\r\n      {glare && !reduceMotion ? (\r\n        <motion.span\r\n          aria-hidden=\"true\"\r\n          className=\"pointer-events-none absolute inset-0 opacity-0 mix-blend-soft-light transition-opacity duration-300 group-hover:opacity-100\"\r\n          style={{ background: glareBackground }}\r\n        />\r\n      ) : null}\r\n    </motion.div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

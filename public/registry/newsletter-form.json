@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "newsletter-form",
+  "kind": "component",
+  "title": "NewsletterForm",
+  "description": "Formulário de newsletter com consentimento e estados de envio acessíveis.",
+  "meta": {
+    "category": "forms",
+    "role": "element.form",
+    "placement": "inside-main",
+    "stage": "contato",
+    "topics": [
+      "contact"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/forms/NewsletterForm",
+    "tags": [
+      "newsletter",
+      "email",
+      "formulário",
+      "conversão"
+    ],
+    "variants": [
+      "inline",
+      "card",
+      "loading",
+      "success",
+      "error"
+    ],
+    "props": [
+      {
+        "name": "onSubmit",
+        "type": "(email: string) => Promise<void> | void",
+        "description": "Processa a inscrição.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título do formulário.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Texto de apoio.",
+        "required": false
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "description": "Placeholder do e-mail.",
+        "required": false,
+        "default": "'voce@empresa.com'"
+      },
+      {
+        "name": "submitLabel",
+        "type": "string",
+        "description": "Rótulo de envio.",
+        "required": false,
+        "default": "'Inscrever-se'"
+      },
+      {
+        "name": "variant",
+        "type": "'inline' | 'card'",
+        "description": "Layout do formulário.",
+        "required": false,
+        "default": "'card'"
+      },
+      {
+        "name": "consentLabel",
+        "type": "string",
+        "description": "Texto de consentimento obrigatório.",
+        "required": false
+      }
+    ],
+    "example": "<NewsletterForm description=\"Uma curadoria mensal.\" onSubmit={async (email) => console.log(email)} />"
+  },
+  "dependencies": [
+    "@radix-ui/react-slot@^1.0.2",
+    "class-variance-authority@^0.7.0",
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/forms/NewsletterForm.tsx",
+      "type": "component",
+      "target": "src/components/library/forms/NewsletterForm.tsx",
+      "content": "'use client'\r\n\r\nimport { useId, useState, type FormEvent, type HTMLAttributes } from 'react'\r\nimport { ArrowRight, CheckCircle2 } from 'lucide-react'\r\nimport { Button } from '@/components/ui/button'\r\nimport { Input } from '@/components/ui/input'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport interface NewsletterFormProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSubmit'> {\r\n  title?: string\r\n  description?: string\r\n  placeholder?: string\r\n  submitLabel?: string\r\n  successMessage?: string\r\n  errorMessage?: string\r\n  variant?: 'inline' | 'card'\r\n  consentLabel?: string\r\n  onSubmit: (email: string) => Promise<void> | void\r\n}\r\n\r\nexport function NewsletterForm({\r\n  title = 'Receba nossas novidades',\r\n  description,\r\n  placeholder = 'voce@empresa.com',\r\n  submitLabel = 'Inscrever-se',\r\n  successMessage = 'Inscrição realizada com sucesso.',\r\n  errorMessage = 'Não foi possível concluir a inscrição.',\r\n  variant = 'card',\r\n  consentLabel,\r\n  onSubmit,\r\n  className,\r\n  ...props\r\n}: NewsletterFormProps) {\r\n  const id = useId()\r\n  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')\r\n\r\n  async function handleSubmit(event: FormEvent<HTMLFormElement>) {\r\n    event.preventDefault()\r\n    const form = event.currentTarget\r\n    const email = String(new FormData(form).get('email') ?? '')\r\n    setStatus('loading')\r\n    try {\r\n      await onSubmit(email)\r\n      setStatus('success')\r\n      form.reset()\r\n    } catch {\r\n      setStatus('error')\r\n    }\r\n  }\r\n\r\n  return (\r\n    <div\r\n      className={cn(\r\n        variant === 'card' && 'rounded-2xl border bg-card p-6 shadow-sm md:p-8',\r\n        className,\r\n      )}\r\n      {...props}\r\n    >\r\n      {title ? <h2 className=\"text-2xl font-bold tracking-tight\">{title}</h2> : null}\r\n      {description ? <p className=\"mt-2 text-muted-foreground\">{description}</p> : null}\r\n      <form className=\"mt-5\" onSubmit={handleSubmit}>\r\n        <label htmlFor={id} className=\"sr-only\">\r\n          E-mail\r\n        </label>\r\n        <div\r\n          className={cn('flex gap-2', variant === 'inline' ? 'flex-col sm:flex-row' : 'flex-col')}\r\n        >\r\n          <Input\r\n            id={id}\r\n            name=\"email\"\r\n            type=\"email\"\r\n            autoComplete=\"email\"\r\n            required\r\n            placeholder={placeholder}\r\n            aria-describedby={`${id}-status`}\r\n          />\r\n          <Button type=\"submit\" disabled={status === 'loading'} className=\"shrink-0\">\r\n            {status === 'loading' ? 'Enviando…' : submitLabel}\r\n            {status !== 'loading' ? (\r\n              <ArrowRight className=\"ml-2 h-4 w-4\" aria-hidden=\"true\" />\r\n            ) : null}\r\n          </Button>\r\n        </div>\r\n        {consentLabel ? (\r\n          <label className=\"mt-3 flex items-start gap-2 text-xs text-muted-foreground\">\r\n            <input\r\n              type=\"checkbox\"\r\n              required\r\n              className=\"mt-0.5 h-4 w-4 rounded border-input accent-primary\"\r\n            />\r\n            <span>{consentLabel}</span>\r\n          </label>\r\n        ) : null}\r\n        <div id={`${id}-status`} aria-live=\"polite\" className=\"mt-3 min-h-5 text-sm\">\r\n          {status === 'success' ? (\r\n            <p className=\"flex items-center gap-2 text-emerald-600\">\r\n              <CheckCircle2 className=\"h-4 w-4\" />\r\n              {successMessage}\r\n            </p>\r\n          ) : null}\r\n          {status === 'error' ? <p className=\"text-destructive\">{errorMessage}</p> : null}\r\n        </div>\r\n      </form>\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "type": "ui",
+      "target": "src/components/ui/button.tsx",
+      "content": "import * as React from 'react'\r\nimport { Slot } from '@radix-ui/react-slot'\r\nimport { cva, type VariantProps } from 'class-variance-authority'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nconst buttonVariants = cva(\r\n  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',\r\n  {\r\n    variants: {\r\n      variant: {\r\n        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',\r\n        destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',\r\n        outline:\r\n          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',\r\n        secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',\r\n        ghost: 'hover:bg-accent hover:text-accent-foreground',\r\n        link: 'text-primary underline-offset-4 hover:underline',\r\n      },\r\n      size: {\r\n        default: 'h-9 px-4 py-2',\r\n        sm: 'h-8 rounded-md px-3 text-xs',\r\n        lg: 'h-10 rounded-md px-8',\r\n        icon: 'h-9 w-9',\r\n      },\r\n    },\r\n    defaultVariants: {\r\n      variant: 'default',\r\n      size: 'default',\r\n    },\r\n  },\r\n)\r\n\r\nexport interface ButtonProps\r\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {\r\n  asChild?: boolean\r\n}\r\n\r\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\r\n  ({ className, variant, size, asChild = false, ...props }, ref) => {\r\n    const Comp = asChild ? Slot : 'button'\r\n    return (\r\n      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />\r\n    )\r\n  },\r\n)\r\nButton.displayName = 'Button'\r\n\r\nexport { Button, buttonVariants }\r\n"
+    },
+    {
+      "path": "src/components/ui/input.tsx",
+      "type": "ui",
+      "target": "src/components/ui/input.tsx",
+      "content": "import * as React from 'react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nconst Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(\r\n  ({ className, type, ...props }, ref) => {\r\n    return (\r\n      <input\r\n        type={type}\r\n        className={cn(\r\n          'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',\r\n          className,\r\n        )}\r\n        ref={ref}\r\n        {...props}\r\n      />\r\n    )\r\n  },\r\n)\r\nInput.displayName = 'Input'\r\n\r\nexport { Input }\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "pill-nav",
+  "kind": "component",
+  "title": "PillNav",
+  "description": "Navegação em pílula com destaque deslizante que acompanha o item ativo e o hover.",
+  "meta": {
+    "category": "navigation",
+    "role": "element.navigation",
+    "placement": "inside-main",
+    "stage": "header",
+    "topics": [
+      "navbar"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/navigation/PillNav",
+    "tags": [
+      "navbar",
+      "menu",
+      "pílula",
+      "animação"
+    ],
+    "variants": [
+      "com logo",
+      "sem logo",
+      "rota ativa"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "PillNavItem[]",
+        "description": "Links com label e href.",
+        "required": true
+      },
+      {
+        "name": "activeHref",
+        "type": "string",
+        "description": "Href ativo; usa a rota atual por padrão.",
+        "required": false
+      },
+      {
+        "name": "logo",
+        "type": "ReactNode",
+        "description": "Logo exibido no círculo à esquerda.",
+        "required": false
+      },
+      {
+        "name": "logoHref",
+        "type": "string",
+        "description": "Destino do logo.",
+        "required": false,
+        "default": "'/'"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "description": "Rótulo acessível.",
+        "required": false,
+        "default": "'Navegação principal'"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes extras.",
+        "required": false
+      }
+    ],
+    "example": "<PillNav\n  logo={<span className=\"font-black\">B</span>}\n  items={[\n    { label: 'Início', href: '/' },\n    { label: 'Sobre', href: '/sobre' },\n    { label: 'Serviços', href: '/servicos' },\n    { label: 'Contato', href: '/contato' },\n  ]}\n/>"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/navigation/PillNav.tsx",
+      "type": "component",
+      "target": "src/components/library/navigation/PillNav.tsx",
+      "content": "'use client'\r\n\r\nimport Link from 'next/link'\r\nimport { usePathname } from 'next/navigation'\r\nimport { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type PillNavItem = {\r\n  label: string\r\n  href: string\r\n}\r\n\r\nexport type PillNavProps = {\r\n  items: PillNavItem[]\r\n  activeHref?: string\r\n  logo?: ReactNode\r\n  logoHref?: string\r\n  ariaLabel?: string\r\n  className?: string\r\n}\r\n\r\nconst useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect\r\n\r\nexport function PillNav({\r\n  items,\r\n  activeHref,\r\n  logo,\r\n  logoHref = '/',\r\n  ariaLabel = 'Navegação principal',\r\n  className,\r\n}: PillNavProps) {\r\n  const pathname = usePathname()\r\n  const [current, setCurrent] = useState(activeHref ?? pathname)\r\n  const [hovered, setHovered] = useState<number | null>(null)\r\n  const [highlight, setHighlight] = useState({ left: 0, width: 0, ready: false })\r\n  const listRef = useRef<HTMLUListElement>(null)\r\n  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([])\r\n\r\n  useEffect(() => setCurrent(activeHref ?? pathname), [activeHref, pathname])\r\n\r\n  const activeIndex = items.findIndex((item) => item.href === current)\r\n  const targetIndex = hovered ?? activeIndex\r\n\r\n  useIsomorphicLayoutEffect(() => {\r\n    const measure = () => {\r\n      const element = itemRefs.current[targetIndex]\r\n      if (!element) return setHighlight((value) => ({ ...value, width: 0 }))\r\n      setHighlight({ left: element.offsetLeft, width: element.offsetWidth, ready: true })\r\n    }\r\n    measure()\r\n    const observer = new ResizeObserver(measure)\r\n    if (listRef.current) observer.observe(listRef.current)\r\n    return () => observer.disconnect()\r\n  }, [targetIndex, items])\r\n\r\n  return (\r\n    <nav\r\n      aria-label={ariaLabel}\r\n      className={cn(\r\n        'inline-flex max-w-full items-center gap-2 rounded-full border bg-background/80 p-1.5 shadow-lg shadow-foreground/5 backdrop-blur',\r\n        className,\r\n      )}\r\n    >\r\n      {logo ? (\r\n        <Link\r\n          href={logoHref}\r\n          className=\"flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-foreground text-background transition hover:rotate-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\"\r\n        >\r\n          {logo}\r\n        </Link>\r\n      ) : null}\r\n      <ul\r\n        ref={listRef}\r\n        className=\"relative flex min-w-0 items-center overflow-x-auto [scrollbar-width:none]\"\r\n        onPointerLeave={() => setHovered(null)}\r\n      >\r\n        <li\r\n          aria-hidden=\"true\"\r\n          className={cn(\r\n            'pointer-events-none absolute inset-y-0 left-0 rounded-full bg-primary',\r\n            highlight.ready &&\r\n              'transition-[transform,width,opacity] duration-500 [transition-timing-function:cubic-bezier(.22,1,.36,1)]',\r\n          )}\r\n          style={{\r\n            width: highlight.width,\r\n            transform: `translateX(${highlight.left}px)`,\r\n            transitionTimingFunction: 'cubic-bezier(.22,1,.36,1)',\r\n            opacity: highlight.width ? 1 : 0,\r\n          }}\r\n        />\r\n        {items.map((item, index) => {\r\n          const isActive = index === activeIndex\r\n          const isLit = index === targetIndex\r\n          return (\r\n            <li key={item.href} className=\"relative\">\r\n              <Link\r\n                ref={(element) => {\r\n                  itemRefs.current[index] = element\r\n                }}\r\n                href={item.href}\r\n                aria-current={isActive ? 'page' : undefined}\r\n                onPointerEnter={() => setHovered(index)}\r\n                onFocus={() => setHovered(index)}\r\n                onBlur={() => setHovered(null)}\r\n                onClick={() => setCurrent(item.href)}\r\n                className={cn(\r\n                  'relative block whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold transition-colors duration-300 focus-visible:outline-none',\r\n                  isLit ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground',\r\n                )}\r\n              >\r\n                {item.label}\r\n              </Link>\r\n            </li>\r\n          )\r\n        })}\r\n      </ul>\r\n    </nav>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

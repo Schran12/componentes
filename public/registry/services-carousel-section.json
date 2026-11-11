@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "services-carousel-section",
+  "kind": "component",
+  "title": "ServicesCarouselSection",
+  "description": "Carrossel editorial numerado para apresentar um catálogo amplo de serviços.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": "servicos",
+    "topics": [
+      "products"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/data-display/ServicesCarouselSection",
+    "tags": [
+      "serviços",
+      "carrossel",
+      "swiper",
+      "agência"
+    ],
+    "variants": [
+      "manual",
+      "autoplay",
+      "imagem",
+      "ícone",
+      "reduced-motion"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "items",
+        "type": "readonly ServiceCarouselItem[]",
+        "description": "Serviços.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "action",
+        "type": "{ label: string; href: string }",
+        "description": "Ação geral.",
+        "required": false
+      },
+      {
+        "name": "autoplayDelay",
+        "type": "number | false",
+        "description": "Autoplay.",
+        "required": false,
+        "default": "false"
+      }
+    ],
+    "example": "<ServicesCarouselSection title=\"Nossas soluções\" items={services} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "swiper@^11.0.5",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/ServicesCarouselSection.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/ServicesCarouselSection.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { ArrowUpRight } from 'lucide-react'\r\nimport { A11y, Autoplay, Keyboard, Navigation } from 'swiper/modules'\r\nimport { Swiper, SwiperSlide } from 'swiper/react'\r\n\r\nimport { useReducedMotion } from '@/components/library/motion/useReducedMotion'\r\nimport { cn } from '@/lib/utils'\r\n\r\nimport 'swiper/css'\r\nimport 'swiper/css/navigation'\r\n\r\nexport type ServiceCarouselItem = {\r\n  id: string\r\n  title: string\r\n  description: string\r\n  href: string\r\n  image?: { src: string; alt: string }\r\n  icon?: React.ReactNode\r\n}\r\n\r\nexport type ServicesCarouselSectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description?: string\r\n  items: readonly ServiceCarouselItem[]\r\n  action?: { label: string; href: string }\r\n  autoplayDelay?: number | false\r\n  className?: string\r\n}\r\n\r\nexport function ServicesCarouselSection({\r\n  eyebrow,\r\n  title,\r\n  description,\r\n  items,\r\n  action,\r\n  autoplayDelay = false,\r\n  className,\r\n}: ServicesCarouselSectionProps) {\r\n  const reducedMotion = useReducedMotion()\r\n\r\n  return (\r\n    <section className={cn('overflow-hidden bg-[#f4f0f6] py-20 md:py-28', className)}>\r\n      <div className=\"container\">\r\n        <header className=\"flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between\">\r\n          <div className=\"max-w-3xl\">\r\n            {eyebrow ? (\r\n              <p className=\"text-xs font-bold uppercase tracking-[0.24em] text-[#752871]\">\r\n                {eyebrow}\r\n              </p>\r\n            ) : null}\r\n            <h2 className=\"mt-4 text-3xl font-bold tracking-tight text-[#10100e] md:text-5xl\">\r\n              {title}\r\n            </h2>\r\n            {description ? (\r\n              <p className=\"mt-5 max-w-2xl leading-7 text-[#5a5560]\">{description}</p>\r\n            ) : null}\r\n          </div>\r\n          {action ? (\r\n            <Link\r\n              href={action.href}\r\n              className=\"inline-flex w-fit items-center gap-2 rounded-full border border-[#752871]/20 bg-white px-5 py-3 text-sm font-semibold text-[#752871] transition hover:border-[#752871]/40 hover:shadow-md\"\r\n            >\r\n              {action.label}\r\n              <ArrowUpRight className=\"h-4 w-4\" aria-hidden />\r\n            </Link>\r\n          ) : null}\r\n        </header>\r\n\r\n        <Swiper\r\n          modules={[A11y, Autoplay, Keyboard, Navigation]}\r\n          navigation\r\n          keyboard={{ enabled: true }}\r\n          autoplay={\r\n            autoplayDelay && !reducedMotion\r\n              ? { delay: autoplayDelay, pauseOnMouseEnter: true, disableOnInteraction: true }\r\n              : false\r\n          }\r\n          spaceBetween={20}\r\n          slidesPerView={1.08}\r\n          breakpoints={{\r\n            640: { slidesPerView: 2 },\r\n            1024: { slidesPerView: 3 },\r\n            1280: { slidesPerView: 3.4 },\r\n          }}\r\n          className=\"mt-12 !overflow-visible !pb-3\"\r\n        >\r\n          {items.map((item, index) => (\r\n            <SwiperSlide key={item.id} className=\"h-auto\">\r\n              <article className=\"group flex h-full min-h-[480px] flex-col overflow-hidden rounded-[2rem] border border-[#752871]/10 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl\">\r\n                <div className=\"flex items-start justify-between gap-4\">\r\n                  <span className=\"text-xs font-bold tracking-[0.2em] text-[#752871]\">\r\n                    {String(index + 1).padStart(2, '0')}/{String(items.length).padStart(2, '0')}\r\n                  </span>\r\n                  {item.icon ? (\r\n                    <span className=\"flex h-11 w-11 items-center justify-center rounded-2xl bg-[#752871]/10 text-[#752871]\">\r\n                      {item.icon}\r\n                    </span>\r\n                  ) : null}\r\n                </div>\r\n\r\n                {item.image ? (\r\n                  <div className=\"relative mt-7 aspect-[16/10] overflow-hidden rounded-2xl bg-[#ede8ef]\">\r\n                    <Image\r\n                      src={item.image.src}\r\n                      alt={item.image.alt}\r\n                      fill\r\n                      className=\"object-cover transition-transform duration-700 group-hover:scale-105\"\r\n                      sizes=\"(min-width: 1024px) 30vw, 80vw\"\r\n                    />\r\n                  </div>\r\n                ) : (\r\n                  <div className=\"relative mt-7 aspect-[16/10] overflow-hidden rounded-2xl bg-[#3f2644]\">\r\n                    <span className=\"absolute -bottom-12 -right-8 h-44 w-44 rounded-full bg-[#752871]\" />\r\n                    <span className=\"absolute -left-8 top-8 h-32 w-32 rounded-[40%_60%] bg-[#9b4b96]\" />\r\n                  </div>\r\n                )}\r\n\r\n                <h3 className=\"mt-7 text-2xl font-semibold text-[#10100e]\">{item.title}</h3>\r\n                <p className=\"mt-3 line-clamp-3 text-sm leading-6 text-[#5a5560]\">\r\n                  {item.description}\r\n                </p>\r\n                <Link\r\n                  href={item.href}\r\n                  className=\"mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-[#752871]\"\r\n                >\r\n                  Leia mais\r\n                  <ArrowUpRight\r\n                    className=\"h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5\"\r\n                    aria-hidden\r\n                  />\r\n                </Link>\r\n              </article>\r\n            </SwiperSlide>\r\n          ))}\r\n        </Swiper>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/motion/useReducedMotion.ts",
+      "type": "component",
+      "target": "src/components/library/motion/useReducedMotion.ts",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\nconst QUERY = '(prefers-reduced-motion: reduce)'\r\n\r\nexport function prefersReducedMotion(): boolean {\r\n  return typeof window !== 'undefined' && window.matchMedia(QUERY).matches\r\n}\r\n\r\nexport function useReducedMotion(): boolean {\r\n  const [reduced, setReduced] = useState(false)\r\n\r\n  useEffect(() => {\r\n    const media = window.matchMedia(QUERY)\r\n    const update = (): void => setReduced(media.matches)\r\n\r\n    update()\r\n    media.addEventListener('change', update)\r\n    return () => media.removeEventListener('change', update)\r\n  }, [])\r\n\r\n  return reduced\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

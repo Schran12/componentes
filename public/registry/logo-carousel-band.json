@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "logo-carousel-band",
+  "kind": "component",
+  "title": "LogoCarouselBand",
+  "description": "Faixa de logos de clientes em carrossel contínuo (swiper), com modo monocromático.",
+  "meta": {
+    "category": "content",
+    "role": "section.content",
+    "placement": "inside-main",
+    "stage": "sobre",
+    "topics": [
+      "about"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/content/LogoCarouselBand",
+    "tags": [
+      "clientes",
+      "logos",
+      "parceiros",
+      "carrossel",
+      "swiper",
+      "template-next"
+    ],
+    "variants": [
+      "monochrome",
+      "glow",
+      "industrial"
+    ],
+    "props": [
+      {
+        "name": "logos",
+        "type": "readonly { name; src; href? }[]",
+        "description": "Logos.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": false
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "description": "Eyebrow.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "monochrome",
+        "type": "boolean",
+        "description": "Logos em escala de cinza até o hover.",
+        "required": false
+      },
+      {
+        "name": "autoplayDelay",
+        "type": "number",
+        "description": "Intervalo do autoplay em ms.",
+        "required": false,
+        "default": "2200"
+      },
+      {
+        "name": "tone",
+        "type": "'glow' | 'industrial' | 'industrial-dark'",
+        "description": "Tema visual: glow (escuro rosa/roxo), industrial (claro âmbar) ou industrial-dark.",
+        "required": false,
+        "default": "'glow'"
+      }
+    ],
+    "example": "<LogoCarouselBand title=\"Clientes\" logos={[{ name: 'Cliente', src: '/images/logo.svg' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "swiper@^11.0.5",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/LogoCarouselBand.tsx",
+      "type": "component",
+      "target": "src/components/library/content/LogoCarouselBand.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport { A11y, Autoplay } from 'swiper/modules'\r\nimport { Swiper, SwiperSlide } from 'swiper/react'\r\n\r\nimport { EyebrowHeading } from '@/components/library/primitives/EyebrowHeading'\r\nimport { getAccentTone, type AccentTone } from '@/components/library/primitives/accentTones'\r\nimport { useReducedMotion } from '@/components/library/motion/useReducedMotion'\r\nimport { cn } from '@/lib/utils'\r\n\r\nimport 'swiper/css'\r\n\r\nexport type LogoCarouselBandLogo = {\r\n  name: string\r\n  src: string\r\n  href?: string\r\n}\r\n\r\nexport type LogoCarouselBandProps = {\r\n  logos: readonly LogoCarouselBandLogo[]\r\n  title?: string\r\n  eyebrow?: string\r\n  description?: string\r\n  monochrome?: boolean\r\n  autoplayDelay?: number\r\n  tone?: AccentTone\r\n  className?: string\r\n}\r\n\r\n/** Faixa de logos em carrossel contínuo com divisórias e realce no hover. */\r\nexport function LogoCarouselBand({\r\n  logos,\r\n  title,\r\n  eyebrow,\r\n  description,\r\n  monochrome = true,\r\n  autoplayDelay = 2200,\r\n  tone = 'glow',\r\n  className,\r\n}: LogoCarouselBandProps) {\r\n  const t = getAccentTone(tone)\r\n  const reduced = useReducedMotion()\r\n  const light = tone === 'industrial'\r\n  const items = logos.length < 8 ? [...logos, ...logos] : logos\r\n\r\n  return (\r\n    <section className={cn('relative overflow-hidden', t.section, className)}>\r\n      <div className=\"container py-14 lg:py-16\">\r\n        {title ? (\r\n          <EyebrowHeading\r\n            tone={tone}\r\n            eyebrow={eyebrow}\r\n            title={title}\r\n            description={description}\r\n            layout=\"split\"\r\n            className=\"mb-10 lg:mb-12\"\r\n          />\r\n        ) : null}\r\n\r\n        <div\r\n          className={cn(\r\n            'overflow-hidden border',\r\n            t.border,\r\n            t.panel,\r\n            tone === 'glow' && 'rounded-md',\r\n          )}\r\n        >\r\n          <Swiper\r\n            modules={[A11y, Autoplay]}\r\n            spaceBetween={0}\r\n            slidesPerView={2}\r\n            loop\r\n            speed={800}\r\n            autoplay={reduced ? false : { delay: autoplayDelay, disableOnInteraction: false }}\r\n            breakpoints={{\r\n              640: { slidesPerView: 3 },\r\n              768: { slidesPerView: 4 },\r\n              1024: { slidesPerView: 6 },\r\n            }}\r\n          >\r\n            {items.map((logo, index) => {\r\n              const content = (\r\n                <Image\r\n                  src={logo.src}\r\n                  alt={logo.name}\r\n                  width={140}\r\n                  height={64}\r\n                  className={cn(\r\n                    'max-h-12 w-auto object-contain opacity-70 transition-all duration-500 group-hover:opacity-100',\r\n                    monochrome &&\r\n                      (light ? 'grayscale group-hover:grayscale-0' : 'brightness-0 invert'),\r\n                  )}\r\n                />\r\n              )\r\n              return (\r\n                <SwiperSlide key={`${logo.name}-${index}`}>\r\n                  <div\r\n                    className={cn(\r\n                      'group flex h-28 items-center justify-center border-l px-6 transition-colors duration-300',\r\n                      t.border,\r\n                      light ? 'hover:bg-slate-50' : 'hover:bg-white/5',\r\n                    )}\r\n                  >\r\n                    {logo.href ? (\r\n                      <a\r\n                        href={logo.href}\r\n                        target=\"_blank\"\r\n                        rel=\"noopener noreferrer\"\r\n                        aria-label={logo.name}\r\n                        className={t.focus}\r\n                      >\r\n                        {content}\r\n                      </a>\r\n                    ) : (\r\n                      content\r\n                    )}\r\n                  </div>\r\n                </SwiperSlide>\r\n              )\r\n            })}\r\n          </Swiper>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/motion/useReducedMotion.ts",
+      "type": "component",
+      "target": "src/components/library/motion/useReducedMotion.ts",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\nconst QUERY = '(prefers-reduced-motion: reduce)'\r\n\r\nexport function prefersReducedMotion(): boolean {\r\n  return typeof window !== 'undefined' && window.matchMedia(QUERY).matches\r\n}\r\n\r\nexport function useReducedMotion(): boolean {\r\n  const [reduced, setReduced] = useState(false)\r\n\r\n  useEffect(() => {\r\n    const media = window.matchMedia(QUERY)\r\n    const update = (): void => setReduced(media.matches)\r\n\r\n    update()\r\n    media.addEventListener('change', update)\r\n    return () => media.removeEventListener('change', update)\r\n  }, [])\r\n\r\n  return reduced\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/accentTones.ts",
+      "type": "component",
+      "target": "src/components/library/primitives/accentTones.ts",
+      "content": "/**\r\n * Temas visuais compartilhados pelos componentes de origem dos templates Next.\r\n * - glow: fundo escuro com gradiente rosa/roxo.\r\n * - industrial: fundo claro com destaque âmbar.\r\n * - industrial-dark: fundo slate escuro com destaque âmbar.\r\n */\r\nexport type AccentTone = 'glow' | 'industrial' | 'industrial-dark'\r\n\r\nexport type AccentToneTokens = {\r\n  section: string\r\n  alt: string\r\n  panel: string\r\n  panelHover: string\r\n  border: string\r\n  divide: string\r\n  heading: string\r\n  strong: string\r\n  body: string\r\n  muted: string\r\n  accent: string\r\n  line: string\r\n  fill: string\r\n  onFill: string\r\n  iconButton: string\r\n  radius: string\r\n  overlayFrom: string\r\n  chip: string\r\n  focus: string\r\n  hoverLift: string\r\n  input: string\r\n  error: string\r\n}\r\n\r\nexport const accentTones: Record<AccentTone, AccentToneTokens> = {\r\n  glow: {\r\n    section: 'bg-[#121212] text-[#c1c1c1]',\r\n    alt: 'bg-[#0e0e0e] text-[#c1c1c1]',\r\n    panel: 'bg-[#221d2f]',\r\n    panelHover: 'hover:bg-[#2a2339]',\r\n    border: 'border-[#493849]',\r\n    divide: 'divide-[#493849]',\r\n    heading:\r\n      'w-fit bg-gradient-to-r from-[#c642a5] to-[#7c39cf] bg-clip-text font-normal text-transparent',\r\n    strong: 'text-white',\r\n    body: 'text-[#c1c1c1]',\r\n    muted: 'text-[#c1c1c1]/75',\r\n    accent: 'text-[#ffb0eb]',\r\n    line: 'bg-gradient-to-r from-[#c642a5] to-[#7c39cf]',\r\n    fill: 'bg-gradient-to-br from-[#c642a5] to-[#7c39cf]',\r\n    onFill: 'text-white',\r\n    iconButton:\r\n      'rounded-full border border-[#493849] text-white hover:border-[#c642a5] hover:bg-[#c642a5]',\r\n    radius: 'rounded-2xl',\r\n    overlayFrom: 'from-[#121212]',\r\n    chip: 'border-[#493849] bg-[#121212]/70',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c642a5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121212]',\r\n    hoverLift:\r\n      'hover:-translate-y-1 hover:border-[#c642a5]/50 hover:shadow-[0_12px_40px_rgba(198,66,165,0.18)]',\r\n    input:\r\n      'rounded-md border-[#493849] bg-[#221d2f] text-white placeholder:text-[#c1c1c1]/70 focus-visible:ring-[#c642a5]',\r\n    error: 'text-red-400',\r\n  },\r\n  industrial: {\r\n    section: 'bg-slate-50 text-slate-600',\r\n    alt: 'bg-white text-slate-600',\r\n    panel: 'bg-white',\r\n    panelHover: 'hover:bg-slate-50',\r\n    border: 'border-slate-200',\r\n    divide: 'divide-slate-200',\r\n    heading: 'font-semibold uppercase tracking-wide text-slate-900',\r\n    strong: 'text-slate-900',\r\n    body: 'text-slate-600',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-600',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-slate-300 text-slate-700 hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/15 bg-slate-950/50',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-amber-500',\r\n    error: 'text-red-600',\r\n  },\r\n  'industrial-dark': {\r\n    section: 'bg-slate-950 text-slate-400',\r\n    alt: 'bg-slate-900 text-slate-400',\r\n    panel: 'bg-slate-900',\r\n    panelHover: 'hover:bg-white/5',\r\n    border: 'border-white/10',\r\n    divide: 'divide-white/10',\r\n    heading: 'font-semibold uppercase tracking-wide text-white',\r\n    strong: 'text-white',\r\n    body: 'text-slate-400',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-500',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-white/20 text-white hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/10 bg-slate-950/40',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-white/10 bg-slate-900 text-white placeholder:text-slate-500 focus-visible:ring-amber-500',\r\n    error: 'text-red-400',\r\n  },\r\n}\r\n\r\nexport function getAccentTone(tone: AccentTone = 'glow'): AccentToneTokens {\r\n  return accentTones[tone]\r\n}\r\n\r\nexport function padIndex(index: number): string {\r\n  return String(index + 1).padStart(2, '0')\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/EyebrowHeading.tsx",
+      "type": "component",
+      "target": "src/components/library/primitives/EyebrowHeading.tsx",
+      "content": "import type { ReactNode } from 'react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nimport { getAccentTone, type AccentTone } from './accentTones'\r\n\r\nexport type EyebrowHeadingProps = {\r\n  title: ReactNode\r\n  eyebrow?: ReactNode\r\n  description?: ReactNode\r\n  tone?: AccentTone\r\n  align?: 'left' | 'center'\r\n  layout?: 'stacked' | 'split'\r\n  size?: 'md' | 'lg'\r\n  titleAs?: 'h1' | 'h2' | 'h3'\r\n  action?: ReactNode\r\n  className?: string\r\n}\r\n\r\nconst titleSizes = {\r\n  md: 'text-3xl leading-[1.15] sm:text-4xl lg:text-[2.5rem]',\r\n  lg: 'text-3xl leading-[1.12] sm:text-4xl md:text-5xl lg:text-[3.25rem]',\r\n}\r\n\r\n/** Cabeçalho de seção com linha de destaque, título temático e descrição opcional ao lado. */\r\nexport function EyebrowHeading({\r\n  title,\r\n  eyebrow,\r\n  description,\r\n  tone = 'glow',\r\n  align = 'left',\r\n  layout = 'stacked',\r\n  size = 'md',\r\n  titleAs: Title = 'h2',\r\n  action,\r\n  className,\r\n}: EyebrowHeadingProps) {\r\n  const t = getAccentTone(tone)\r\n  const centered = align === 'center'\r\n  const split = layout === 'split' && !centered\r\n\r\n  const line = <span className={cn('h-px w-8 shrink-0', t.line)} aria-hidden />\r\n\r\n  return (\r\n    <div\r\n      className={cn(\r\n        split && 'flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between',\r\n        centered && 'mx-auto max-w-3xl text-center',\r\n        className,\r\n      )}\r\n    >\r\n      <div className={cn(split ? 'max-w-2xl' : centered ? '' : 'max-w-3xl')}>\r\n        {eyebrow ? (\r\n          <div className={cn('mb-4 flex items-center gap-3', centered && 'justify-center')}>\r\n            {line}\r\n            <span\r\n              className={cn('text-[0.65rem] font-medium uppercase tracking-[0.28em]', t.accent)}\r\n            >\r\n              {eyebrow}\r\n            </span>\r\n            {centered ? line : null}\r\n          </div>\r\n        ) : null}\r\n        <Title className={cn(t.heading, titleSizes[size], centered && 'mx-auto')}>{title}</Title>\r\n        {!split && description ? (\r\n          <p\r\n            className={cn(\r\n              'mt-5 max-w-2xl text-base leading-relaxed md:text-lg',\r\n              t.body,\r\n              centered && 'mx-auto',\r\n            )}\r\n          >\r\n            {description}\r\n          </p>\r\n        ) : null}\r\n        {!split && action ? (\r\n          <div className={cn('mt-8 flex flex-wrap gap-3', centered && 'justify-center')}>\r\n            {action}\r\n          </div>\r\n        ) : null}\r\n      </div>\r\n      {split && (description || action) ? (\r\n        <div className=\"max-w-md space-y-5\">\r\n          {description ? (\r\n            <p className={cn('text-sm leading-relaxed lg:text-base', t.body)}>{description}</p>\r\n          ) : null}\r\n          {action}\r\n        </div>\r\n      ) : null}\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

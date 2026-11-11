@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "workspace-feature-showcase",
+  "kind": "component",
+  "title": "WorkspaceFeatureShowcase",
+  "description": "Showcase em abas para recursos de criação, publicação, comunidade e análises.",
+  "meta": {
+    "category": "content",
+    "role": "section.content",
+    "placement": "inside-main",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/content/WorkspaceFeatureShowcase",
+    "tags": [
+      "social media",
+      "recursos",
+      "tabs",
+      "workspace",
+      "interativo"
+    ],
+    "variants": [
+      "blue",
+      "yellow",
+      "green",
+      "pink",
+      "visual customizado"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "features",
+        "type": "readonly WorkspaceFeature[]",
+        "description": "Recursos navegáveis.",
+        "required": true
+      },
+      {
+        "name": "initialFeatureId",
+        "type": "string",
+        "description": "Recurso inicialmente selecionado.",
+        "required": false
+      }
+    ],
+    "example": "<WorkspaceFeatureShowcase title=\"Recursos principais\" features={[{ id: 'publish', label: 'Publicar', title: 'Organize sua fila', description: 'Lorem ipsum.' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/WorkspaceFeatureShowcase.tsx",
+      "type": "component",
+      "target": "src/components/library/content/WorkspaceFeatureShowcase.tsx",
+      "content": "'use client'\r\n\r\nimport type { ReactNode } from 'react'\r\nimport { useState } from 'react'\r\nimport Link from 'next/link'\r\nimport { ArrowRight, BarChart3, CalendarDays, MessageCircle, Sparkles } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type WorkspaceFeature = {\r\n  id: string\r\n  label: string\r\n  title: string\r\n  description: string\r\n  action?: { label: string; href: string }\r\n  accent?: 'blue' | 'yellow' | 'green' | 'pink'\r\n  visual?: ReactNode\r\n}\r\n\r\nexport type WorkspaceFeatureShowcaseProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description?: string\r\n  features: readonly WorkspaceFeature[]\r\n  initialFeatureId?: string\r\n  className?: string\r\n}\r\n\r\nconst accents = {\r\n  blue: 'bg-[#dce7ff] text-[#2f6fed]',\r\n  yellow: 'bg-[#fff1b8] text-[#8a6500]',\r\n  green: 'bg-[#d9f2e2] text-[#247a46]',\r\n  pink: 'bg-[#ffddec] text-[#a83369]',\r\n}\r\n\r\nexport function WorkspaceFeatureShowcase({\r\n  eyebrow,\r\n  title,\r\n  description,\r\n  features,\r\n  initialFeatureId,\r\n  className,\r\n}: WorkspaceFeatureShowcaseProps) {\r\n  const [activeId, setActiveId] = useState(\r\n    initialFeatureId && features.some((feature) => feature.id === initialFeatureId)\r\n      ? initialFeatureId\r\n      : features[0]?.id,\r\n  )\r\n  const active = features.find((feature) => feature.id === activeId) ?? features[0]\r\n\r\n  if (!active) return null\r\n  const accent = active.accent ?? 'blue'\r\n\r\n  return (\r\n    <section className={cn('bg-[#fffdf8] py-20 text-[#1b1b1b] md:py-28', className)}>\r\n      <div className=\"container\">\r\n        <div className=\"mx-auto max-w-3xl text-center\">\r\n          {eyebrow ? <p className=\"text-sm font-bold text-[#2f6fed]\">{eyebrow}</p> : null}\r\n          <h2 className=\"mt-4 text-4xl font-bold tracking-[-0.04em] md:text-6xl\">{title}</h2>\r\n          {description ? (\r\n            <p className=\"mx-auto mt-6 max-w-2xl text-lg leading-8 text-[#555]\">{description}</p>\r\n          ) : null}\r\n        </div>\r\n\r\n        <div\r\n          className=\"mt-12 flex flex-wrap justify-center gap-2\"\r\n          role=\"tablist\"\r\n          aria-label={title}\r\n        >\r\n          {features.map((feature) => {\r\n            const selected = feature.id === active.id\r\n            return (\r\n              <button\r\n                key={feature.id}\r\n                type=\"button\"\r\n                role=\"tab\"\r\n                aria-selected={selected}\r\n                onClick={() => setActiveId(feature.id)}\r\n                className={cn(\r\n                  'rounded-full border-2 px-5 py-2.5 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6fed] focus-visible:ring-offset-2',\r\n                  selected\r\n                    ? 'border-[#1b1b1b] bg-[#1b1b1b] text-white'\r\n                    : 'border-[#dedbd2] bg-white hover:border-[#1b1b1b]',\r\n                )}\r\n              >\r\n                {feature.label}\r\n              </button>\r\n            )\r\n          })}\r\n        </div>\r\n\r\n        <article\r\n          role=\"tabpanel\"\r\n          className=\"mt-8 grid overflow-hidden rounded-[2rem] border-2 border-[#1b1b1b] bg-white shadow-[8px_8px_0_#1b1b1b] lg:grid-cols-[.82fr_1.18fr]\"\r\n        >\r\n          <div className=\"flex flex-col justify-center p-8 sm:p-12 lg:p-14\">\r\n            <span\r\n              className={cn(\r\n                'flex h-12 w-12 items-center justify-center rounded-xl',\r\n                accents[accent],\r\n              )}\r\n            >\r\n              {accent === 'green' ? (\r\n                <MessageCircle className=\"h-5 w-5\" aria-hidden />\r\n              ) : accent === 'pink' ? (\r\n                <Sparkles className=\"h-5 w-5\" aria-hidden />\r\n              ) : accent === 'yellow' ? (\r\n                <BarChart3 className=\"h-5 w-5\" aria-hidden />\r\n              ) : (\r\n                <CalendarDays className=\"h-5 w-5\" aria-hidden />\r\n              )}\r\n            </span>\r\n            <h3 className=\"mt-7 text-3xl font-bold tracking-tight md:text-4xl\">{active.title}</h3>\r\n            <p className=\"mt-5 leading-7 text-[#555]\">{active.description}</p>\r\n            {active.action ? (\r\n              <Link\r\n                href={active.action.href}\r\n                className=\"mt-8 inline-flex w-fit items-center gap-2 text-sm font-bold text-[#2f6fed] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6fed]\"\r\n              >\r\n                {active.action.label}\r\n                <ArrowRight className=\"h-4 w-4\" aria-hidden />\r\n              </Link>\r\n            ) : null}\r\n          </div>\r\n\r\n          <div className={cn('min-h-[480px] p-6 sm:p-10', accents[accent])}>\r\n            {active.visual ?? (\r\n              <div className=\"h-full rounded-[1.5rem] border-2 border-[#1b1b1b] bg-white p-5 text-[#1b1b1b] shadow-[6px_6px_0_rgba(27,27,27,.18)]\">\r\n                <div className=\"flex items-center justify-between border-b border-[#dedbd2] pb-4\">\r\n                  <div>\r\n                    <p className=\"text-sm font-bold\">{active.label}</p>\r\n                    <p className=\"mt-1 text-xs text-[#777]\">Espaço de trabalho</p>\r\n                  </div>\r\n                  <span className=\"rounded-lg bg-[#1b1b1b] px-3 py-2 text-xs font-bold text-white\">\r\n                    Novo\r\n                  </span>\r\n                </div>\r\n                <div className=\"mt-5 grid gap-4 sm:grid-cols-2\">\r\n                  {[1, 2, 3, 4].map((item) => (\r\n                    <div key={item} className=\"rounded-xl border border-[#dedbd2] p-4\">\r\n                      <div className={cn('h-24 rounded-lg', accents[accent])} />\r\n                      <span className=\"mt-4 block h-2 w-4/5 rounded bg-[#1b1b1b]/20\" />\r\n                      <span className=\"mt-2 block h-2 w-1/2 rounded bg-[#1b1b1b]/10\" />\r\n                    </div>\r\n                  ))}\r\n                </div>\r\n              </div>\r\n            )}\r\n          </div>\r\n        </article>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

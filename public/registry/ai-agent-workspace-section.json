@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "ai-agent-workspace-section",
+  "kind": "component",
+  "title": "AIAgentWorkspaceSection",
+  "description": "Workspace de agente de IA com ferramentas executadas, resultado e capacidades.",
+  "meta": {
+    "category": "content",
+    "role": "section.content",
+    "placement": "inside-main",
+    "stage": null,
+    "topics": [],
+    "clientComponent": false,
+    "importPath": "@/components/library/content/AIAgentWorkspaceSection",
+    "tags": [
+      "produtividade",
+      "ia",
+      "agente",
+      "ferramentas",
+      "chat"
+    ],
+    "variants": [
+      "ferramentas",
+      "capacidades",
+      "prompt customizado"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": true
+      },
+      {
+        "name": "prompt",
+        "type": "string",
+        "description": "Solicitação do usuário.",
+        "required": false
+      },
+      {
+        "name": "result",
+        "type": "string",
+        "description": "Resultado do agente.",
+        "required": false
+      },
+      {
+        "name": "capabilities",
+        "type": "readonly AgentCapability[]",
+        "description": "Capacidades.",
+        "required": false
+      },
+      {
+        "name": "tools",
+        "type": "readonly string[]",
+        "description": "Ferramentas executadas.",
+        "required": false
+      }
+    ],
+    "example": "<AIAgentWorkspaceSection title=\"Assistente integrado\" description=\"Lorem ipsum.\" tools={['Buscar tarefas', 'Atualizar agenda']} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/AIAgentWorkspaceSection.tsx",
+      "type": "component",
+      "target": "src/components/library/content/AIAgentWorkspaceSection.tsx",
+      "content": "import Link from 'next/link'\r\nimport { ArrowRight, Bot, CheckCircle2, Sparkles, Wrench } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type AgentCapability = {\r\n  title: string\r\n  description: string\r\n}\r\n\r\nexport type AIAgentWorkspaceSectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description: string\r\n  prompt?: string\r\n  result?: string\r\n  capabilities?: readonly AgentCapability[]\r\n  tools?: readonly string[]\r\n  action?: { label: string; href: string }\r\n  className?: string\r\n}\r\n\r\nexport function AIAgentWorkspaceSection({\r\n  eyebrow,\r\n  title,\r\n  description,\r\n  prompt = 'Organize minhas tarefas prioritárias e bloqueie tempo no calendário.',\r\n  result = 'Encontrei 5 tarefas prioritárias e preparei blocos de foco para amanhã.',\r\n  capabilities = [],\r\n  tools = [],\r\n  action,\r\n  className,\r\n}: AIAgentWorkspaceSectionProps) {\r\n  return (\r\n    <section\r\n      className={cn(\r\n        'overflow-hidden bg-gradient-to-b from-[#19191d] to-[#08080a] py-20 text-white md:py-28',\r\n        className,\r\n      )}\r\n    >\r\n      <div className=\"container grid items-center gap-14 lg:grid-cols-[.88fr_1.12fr]\">\r\n        <div>\r\n          {eyebrow ? <p className=\"text-sm font-semibold text-[#ff6b63]\">{eyebrow}</p> : null}\r\n          <h2 className=\"mt-5 text-4xl font-bold tracking-[-0.04em] md:text-6xl\">{title}</h2>\r\n          <p className=\"mt-6 max-w-xl text-lg leading-8 text-white/55\">{description}</p>\r\n\r\n          {capabilities.length ? (\r\n            <div className=\"mt-9 grid gap-6 sm:grid-cols-2\">\r\n              {capabilities.slice(0, 4).map((capability) => (\r\n                <div key={capability.title}>\r\n                  <h3 className=\"flex items-center gap-2 font-semibold\">\r\n                    <Sparkles className=\"h-4 w-4 text-[#ff6b63]\" aria-hidden />\r\n                    {capability.title}\r\n                  </h3>\r\n                  <p className=\"mt-2 text-sm leading-6 text-white/45\">{capability.description}</p>\r\n                </div>\r\n              ))}\r\n            </div>\r\n          ) : null}\r\n\r\n          {action ? (\r\n            <Link\r\n              href={action.href}\r\n              className=\"mt-9 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-black transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b63]\"\r\n            >\r\n              {action.label}\r\n              <ArrowRight className=\"h-4 w-4\" aria-hidden />\r\n            </Link>\r\n          ) : null}\r\n        </div>\r\n\r\n        <div className=\"relative\">\r\n          <div aria-hidden className=\"absolute -inset-12 rounded-full bg-[#7c4dff]/20 blur-3xl\" />\r\n          <div className=\"relative overflow-hidden rounded-2xl border border-white/15 bg-[#151518] shadow-2xl\">\r\n            <div className=\"flex items-center justify-between border-b border-white/10 px-5 py-4\">\r\n              <div className=\"flex items-center gap-3\">\r\n                <span className=\"flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-[#ff6b63] to-[#7c4dff]\">\r\n                  <Bot className=\"h-4 w-4\" aria-hidden />\r\n                </span>\r\n                <div>\r\n                  <p className=\"text-sm font-semibold\">Agente de produtividade</p>\r\n                  <p className=\"text-[10px] text-white/35\">Ferramentas conectadas</p>\r\n                </div>\r\n              </div>\r\n              <span className=\"flex items-center gap-1.5 text-[10px] text-[#8ee3a8]\">\r\n                <span className=\"h-1.5 w-1.5 rounded-full bg-[#4dcc72]\" />\r\n                Ativo\r\n              </span>\r\n            </div>\r\n\r\n            <div className=\"space-y-5 p-5 sm:p-7\">\r\n              <div className=\"ml-auto max-w-[88%] rounded-2xl rounded-br-sm bg-white p-4 text-sm leading-6 text-black\">\r\n                {prompt}\r\n              </div>\r\n\r\n              <div className=\"space-y-2\">\r\n                {tools.slice(0, 3).map((tool, index) => (\r\n                  <div\r\n                    key={tool}\r\n                    className=\"flex items-center gap-3 rounded-xl border border-white/10 bg-white/[.03] p-3 text-xs\"\r\n                  >\r\n                    <Wrench className=\"h-4 w-4 text-[#ff6b63]\" aria-hidden />\r\n                    <span className=\"flex-1 text-white/65\">{tool}</span>\r\n                    <CheckCircle2 className=\"h-4 w-4 text-[#4dcc72]\" aria-hidden />\r\n                    <span className=\"text-white/25\">{index + 1}</span>\r\n                  </div>\r\n                ))}\r\n              </div>\r\n\r\n              <div className=\"max-w-[92%] rounded-2xl rounded-bl-sm bg-white/10 p-4 text-sm leading-6 text-white/75\">\r\n                {result}\r\n              </div>\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

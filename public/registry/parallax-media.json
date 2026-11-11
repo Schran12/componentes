@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "parallax-media",
+  "kind": "component",
+  "title": "ParallaxMedia",
+  "description": "Parallax de mídia vinculado ao scroll e sensível a preferências.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/ParallaxMedia",
+    "tags": [
+      "parallax",
+      "scroll",
+      "mídia",
+      "gsap"
+    ],
+    "variants": [
+      "scrub boolean",
+      "scrub numérico",
+      "reduced-motion"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Mídia animada.",
+        "required": true
+      },
+      {
+        "name": "amount",
+        "type": "number",
+        "description": "Deslocamento percentual.",
+        "required": false,
+        "default": "10"
+      },
+      {
+        "name": "scrub",
+        "type": "boolean | number",
+        "description": "Suavização do scroll.",
+        "required": false,
+        "default": "0.6"
+      },
+      {
+        "name": "mediaClassName",
+        "type": "string",
+        "description": "Classes da mídia interna.",
+        "required": false
+      }
+    ],
+    "example": "<ParallaxMedia amount={8}><img src=\"/capa.jpg\" alt=\"Capa\" /></ParallaxMedia>"
+  },
+  "dependencies": [
+    "gsap@^3.12.2"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/ParallaxMedia.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/ParallaxMedia.tsx",
+      "content": "'use client'\r\n\r\nimport { useRef, type ReactNode } from 'react'\r\nimport { useGSAP } from '@/lib/hooks/useGSAP'\r\nimport { prefersReducedMotion, useReducedMotion } from './useReducedMotion'\r\n\r\nexport type ParallaxMediaProps = {\r\n  children: ReactNode\r\n  className?: string\r\n  mediaClassName?: string\r\n  amount?: number\r\n  scrub?: boolean | number\r\n}\r\n\r\nexport function ParallaxMedia({\r\n  children,\r\n  className,\r\n  mediaClassName,\r\n  amount = 10,\r\n  scrub = 0.6,\r\n}: ParallaxMediaProps) {\r\n  const root = useRef<HTMLDivElement>(null)\r\n  const media = useRef<HTMLDivElement>(null)\r\n  const reduced = useReducedMotion()\r\n\r\n  useGSAP(\r\n    ({ gsap }) => {\r\n      const container = root.current\r\n      const target = media.current\r\n      if (!container || !target || reduced || prefersReducedMotion()) return\r\n\r\n      gsap.fromTo(\r\n        target,\r\n        { yPercent: -Math.abs(amount) },\r\n        {\r\n          yPercent: Math.abs(amount),\r\n          ease: 'none',\r\n          scrollTrigger: {\r\n            trigger: container,\r\n            start: 'top bottom',\r\n            end: 'bottom top',\r\n            scrub,\r\n          },\r\n        },\r\n      )\r\n    },\r\n    [amount, reduced, scrub],\r\n    root,\r\n  )\r\n\r\n  return (\r\n    <div ref={root} className={className} style={{ overflow: 'hidden' }}>\r\n      <div ref={media} className={mediaClassName}>\r\n        {children}\r\n      </div>\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/motion/useReducedMotion.ts",
+      "type": "component",
+      "target": "src/components/library/motion/useReducedMotion.ts",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\nconst QUERY = '(prefers-reduced-motion: reduce)'\r\n\r\nexport function prefersReducedMotion(): boolean {\r\n  return typeof window !== 'undefined' && window.matchMedia(QUERY).matches\r\n}\r\n\r\nexport function useReducedMotion(): boolean {\r\n  const [reduced, setReduced] = useState(false)\r\n\r\n  useEffect(() => {\r\n    const media = window.matchMedia(QUERY)\r\n    const update = (): void => setReduced(media.matches)\r\n\r\n    update()\r\n    media.addEventListener('change', update)\r\n    return () => media.removeEventListener('change', update)\r\n  }, [])\r\n\r\n  return reduced\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/hooks/useGSAP.ts",
+      "type": "hook",
+      "target": "src/lib/hooks/useGSAP.ts",
+      "content": "'use client'\r\n\r\nimport gsap from 'gsap'\r\nimport { ScrollTrigger } from 'gsap/ScrollTrigger'\r\nimport { useEffect, type DependencyList, type RefObject } from 'react'\r\n\r\nlet registered = false\r\n\r\nfunction ensureGsapPlugins(): void {\r\n  if (typeof window === 'undefined' || registered) return\r\n  gsap.registerPlugin(ScrollTrigger)\r\n  registered = true\r\n}\r\n\r\nexport type GSAPTools = {\r\n  gsap: typeof gsap\r\n  ScrollTrigger: typeof ScrollTrigger\r\n}\r\n\r\nexport type GSAPCallback = (tools: GSAPTools) => void | (() => void)\r\n\r\nexport function useGSAP(\r\n  callback: GSAPCallback,\r\n  deps: DependencyList = [],\r\n  scope?: RefObject<Element | null>,\r\n): void {\r\n  useEffect(() => {\r\n    if (typeof window === 'undefined') return\r\n\r\n    ensureGsapPlugins()\r\n\r\n    let dispose: void | (() => void)\r\n    const context = gsap.context(() => {\r\n      dispose = callback({ gsap, ScrollTrigger })\r\n    }, scope?.current ?? undefined)\r\n\r\n    return () => {\r\n      dispose?.()\r\n      context.revert()\r\n    }\r\n\r\n    // Dependencies are deliberately controlled by each animation consumer.\r\n    // eslint-disable-next-line react-hooks/exhaustive-deps\r\n  }, deps)\r\n}\r\n"
+    }
+  ]
+}

@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liquid Glass Carousel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&family=Space+Mono&display=swap" rel="stylesheet" />
+  <style>
+    /*
+    ═══════════════════════════════════════════════════════════════════════════
+    :root CUSTOMISE — tweak carousel look & motion without touching JS below
+    ═══════════════════════════════════════════════════════════════════════════
+    --panel-max-vh: caps strip height as % of viewport height (default 30)
+    --panel-max-vw: caps strip height as % of viewport width (default 17.5)
+    --gap-ratio: horizontal gap between panels as fraction of panel height
+    --nav-duration: slide tween duration in seconds (matches GSAP expo.inOut)
+    --autoplay-ms: delay between automatic advances when not hovering
+    --glass-base-k: resting cylinder bend strength (1 = spec default)
+    --glass-chroma-base: resting chromatic aberration multiplier
+    --shadow-alpha: opacity of radial shadow under strip
+    --explore-bg: pill button background
+    --explore-fg: pill button label colour
+    ═══════════════════════════════════════════════════════════════════════════
+    */
+    :root {
+      --panel-max-vh: 30;
+      --panel-max-vw: 17.5;
+      --gap-ratio: 0.16;
+      --nav-duration: 1.15;
+      --autoplay-ms: 2600;
+      --glass-base-k: 1;
+      --glass-chroma-base: 0.004;
+      --shadow-alpha: 0.14;
+      --explore-bg: #111111;
+      --explore-fg: #ffffff;
+      --subtitle-grey: #8a8a8a;
+      --page-bg: #ffffff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--page-bg);
+      color: #111;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      touch-action: pan-y;
+    }
+
+    .meta {
+      text-align: center;
+      margin-bottom: clamp(12px, 2.5vh, 28px);
+      min-height: 4.5em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .meta-title {
+      font-weight: 500;
+      font-size: clamp(1.35rem, 3.2vw, 2.35rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.02em;
+    }
+
+    .meta-title .char {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    .meta-sub {
+      font-family: "Space Mono", ui-monospace, monospace;
+      font-size: clamp(0.68rem, 1.35vw, 0.82rem);
+      color: var(--subtitle-grey);
+      margin-top: 0.55em;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.05em;
+    }
+
+    .meta-sub .char {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    .carousel-wrap {
+      position: relative;
+      width: 100%;
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .strip-shadow {
+      position: absolute;
+      left: 50%;
+      top: 58%;
+      transform: translate(-50%, -50%);
+      width: min(72vw, 920px);
+      height: min(22vh, 180px);
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, var(--shadow-alpha)) 0%, rgba(0, 0, 0, 0) 68%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(8px);
+    }
+
+    .gl-canvas {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      cursor: grab;
+    }
+
+    .gl-canvas.is-dragging { cursor: grabbing; }
+
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-50%) scale(1.06);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .nav-btn:active { transform: translateY(-50%) scale(0.96); }
+
+    .nav-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: #222;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-prev { left: max(12px, 2vw); }
+    .nav-next { right: max(12px, 2vw); }
+
+    .explore-row {
+      margin-top: clamp(16px, 3vh, 32px);
+      z-index: 4;
+    }
+
+    .explore-btn {
+      appearance: none;
+      border: none;
+      font-family: "Space Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.95em 1.85em;
+      border-radius: 999px;
+      background: var(--explore-bg);
+      color: var(--explore-fg);
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .explore-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    }
+
+    .explore-btn:focus-visible {
+      outline: 2px solid #111;
+      outline-offset: 3px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-btn { transition: none; }
+      .explore-btn { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <div class="meta" aria-live="polite">
+      <h1 class="meta-title" id="metaTitle"></h1>
+      <p class="meta-sub" id="metaSub"></p>
+    </div>
+
+    <div class="carousel-wrap" id="carouselWrap">
+      <div class="strip-shadow" aria-hidden="true"></div>
+      <button type="button" class="nav-btn nav-prev" id="btnPrev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <canvas class="gl-canvas" id="glCanvas" aria-hidden="true"></canvas>
+      <button type="button" class="nav-btn nav-next" id="btnNext" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+
+    <div class="explore-row">
+      <button type="button" class="explore-btn" id="btnExplore">Explore</button>
+    </div>
+
+    <p class="sr-only" id="slideAnnouncer"></p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  /* ─── Read CSS custom properties ─── */
+  const rootStyles = getComputedStyle(document.documentElement);
+  const cssNum = (name, fallback) => {
+    const v = parseFloat(rootStyles.getPropertyValue(name));
+    return Number.isFinite(v) ? v : fallback;
+  };
+  const NAV_DURATION = cssNum("--nav-duration", 1.15);
+  const AUTOPLAY_MS = cssNum("--autoplay-ms", 2600);
+  const GAP_RATIO = cssNum("--gap-ratio", 0.16);
+  const PANEL_MAX_VH = cssNum("--panel-max-vh", 30) / 100;
+  const PANEL_MAX_VW = cssNum("--panel-max-vw", 17.5) / 100;
+  const GLASS_BASE_K = cssNum("--glass-base-k", 1);
+  const CHROMA_BASE = cssNum("--glass-chroma-base", 0.004);
+
+  const RHYTHM = [1.5, 0.78, 0.78];
+
+  /** @type {Array<{src:string,title:string,subtitle:string,ratio?:number}>} */
+  const SLIDES = [
+    {
+      src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1400&q=80&auto=format&fit=crop",
+      title: "Alpine Horizon",
+      subtitle: "Where cloud meets stone"
+    },
+    {
+      src: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1400&q=80&auto=format&fit=crop",
+      title: "Retail Ritual",
+      subtitle: "Curated objects, calm light",
+      "data-ratio": 0.85
+    },
+    {
+      src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1400&q=80&auto=format&fit=crop",
+      title: "Summit Line",
+      subtitle: "Vertical silence"
+    },
+    {
+      src: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1400&q=80&auto=format&fit=crop",
+      title: "Monochrome Time",
+      subtitle: "Product study — matte steel",
+      "data-ratio": 1.1
+    },
+    {
+      src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1400&q=80&auto=format&fit=crop",
+      title: "Valley Mist",
+      subtitle: "Dawn over evergreen"
+    },
+    {
+      src: "https://images.unsplash.com/photo-1491553895911-0055ebdb2bdb?w=1400&q=80&auto=format&fit=crop",
+      title: "Workspace Flow",
+      subtitle: "Tools for deep focus"
+    },
+    {
+      src: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=1400&q=80&auto=format&fit=crop",
+      title: "Soft Carry",
+      subtitle: "Leather grain & brass"
+    }
+  ];
+
+  const stage = document.getElementById("stage");
+  const canvas = document.getElementById("glCanvas");
+  const metaTitle = document.getElementById("metaTitle");
+  const metaSub = document.getElementById("metaSub");
+  const btnPrev = document.getElementById("btnPrev");
+  const btnNext = document.getElementById("btnNext");
+  const btnExplore = document.getElementById("btnExplore");
+  const announcer = document.getElementById("slideAnnouncer");
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ─── Layout state ─── */
+  let panelH = 200;
+  let gapPx = 32;
+  let layouts = [];
+  let cycleWidth = 0;
+  let images = [];
+  let imagesReady = false;
+
+  /* Carousel continuous position in slide-index space (wraps 0..n) */
+  let pos = 0;
+  let displayIndex = 0;
+  let prevPos = 0;
+  let lastFrameTime = performance.now();
+  let velocitySlidesPerSec = 0;
+
+  /* Glass dynamics */
+  let kExtra = reducedMotion ? 0 : 1.8;
+  let introY = reducedMotion ? 0 : 1.15;
+
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartPos = 0;
+  let dragLastX = 0;
+  let dragLastT = 0;
+  let dragVelPx = 0;
+  let navTween = null;
+  let autoplayTimer = null;
+  let hoverPaused = false;
+
+  /* ─── WebGL ─── */
+  const gl = canvas.getContext("webgl", { alpha: false, antialias: false, premultipliedAlpha: false });
+  if (!gl) {
+    canvas.parentElement.innerHTML = "<p style='padding:2rem'>WebGL not supported.</p>";
+    return;
+  }
+
+  const offscreen = document.createElement("canvas");
+  const ctx2d = offscreen.getContext("2d", { alpha: false });
+
+  const vertSrc = `
+    attribute vec2 a_pos;
+    varying vec2 v_uv;
+    void main() {
+      v_uv = a_pos * 0.5 + 0.5;
+      v_uv.y = 1.0 - v_uv.y;
+      gl_Position = vec4(a_pos, 0.0, 1.0);
+    }
+  `;
+
+  const fragSrc = `
+    precision mediump float;
+    varying vec2 v_uv;
+    uniform sampler2D u_tex;
+    uniform float u_k;
+    uniform float u_ca;
+    uniform float u_time;
+
+    float easeEdge(float t) {
+      return t * t * (3.0 - 2.0 * t);
+    }
+
+    vec2 glassMap(vec2 uv, float k, float cx) {
+      float d = abs(uv.x - 0.5);
+      float e = smoothstep(0.16, 0.5, d);
+      e = easeEdge(e);
+      float wobble = sin(uv.y * 12.0 + u_time * 1.4) * 0.0015 * e;
+      float sampleX = 0.5 + cx * (1.0 - 0.10 * k * e) + wobble;
+      float sampleY = 0.5 + (uv.y - 0.5) / (1.0 + 0.85 * k * e);
+      return vec2(sampleX, sampleY);
+    }
+
+    void main() {
+      float cx = v_uv.x - 0.5;
+      float d = abs(v_uv.x - 0.5);
+      float e = smoothstep(0.16, 0.5, d);
+      e = easeEdge(e);
+
+      vec2 uvR = glassMap(v_uv, u_k, cx - u_ca * e * e);
+      vec2 uvG = glassMap(v_uv, u_k, cx);
+      vec2 uvB = glassMap(v_uv, u_k, cx + u_ca * e * e);
+
+      vec4 colR = texture2D(u_tex, uvR);
+      vec4 colG = texture2D(u_tex, uvG);
+      vec4 colB = texture2D(u_tex, uvB);
+
+      vec3 rgb = vec3(colR.r, colG.g, colB.b);
+
+      float edgeSheen = pow(e, 2.2) * 0.22;
+      rgb += vec3(edgeSheen);
+
+      float alpha = max(max(colR.a, colG.a), colB.a);
+      if (alpha < 0.01) {
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        return;
+      }
+      gl_FragColor = vec4(rgb, 1.0);
+    }
+  `;
+
+  function compileShader(type, src) {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      console.error(gl.getShaderInfoLog(sh));
+      gl.deleteShader(sh);
+      return null;
+    }
+    return sh;
+  }
+
+  function createProgram(vs, fs) {
+    const v = compileShader(gl.VERTEX_SHADER, vs);
+    const f = compileShader(gl.FRAGMENT_SHADER, fs);
+    const prog = gl.createProgram();
+    gl.attachShader(prog, v);
+    gl.attachShader(prog, f);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      console.error(gl.getProgramInfoLog(prog));
+      return null;
+    }
+    return prog;
+  }
+
+  const program = createProgram(vertSrc, fragSrc);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    -1, -1, 1, -1, -1, 1,
+    -1, 1, 1, -1, 1, 1
+  ]), gl.STATIC_DRAW);
+
+  const aPos = gl.getAttribLocation(program, "a_pos");
+  const uTex = gl.getUniformLocation(program, "u_tex");
+  const uK = gl.getUniformLocation(program, "u_k");
+  const uCa = gl.getUniformLocation(program, "u_ca");
+  const uTime = gl.getUniformLocation(program, "u_time");
+
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+  /* ─── Helpers ─── */
+  const n = SLIDES.length;
+
+  function rhythmWidth(i, h) {
+    const r = RHYTHM[i % RHYTHM.length];
+    const slide = SLIDES[i];
+    const ratioMul = slide["data-ratio"] != null ? slide["data-ratio"] : 1;
+    return r * h * ratioMul;
+  }
+
+  function rebuildLayouts() {
+    gapPx = panelH * GAP_RATIO;
+    layouts = [];
+    let x = 0;
+    for (let i = 0; i < n; i++) {
+      const w = rhythmWidth(i, panelH);
+      layouts.push({ x, w, center: x + w * 0.5 });
+      x += w + gapPx;
+    }
+    cycleWidth = x;
+  }
+
+  function wrapIndex(i) {
+    return ((i % n) + n) % n;
+  }
+
+  function posToPixelOffset(p) {
+    const idx = Math.floor(p);
+    const frac = p - idx;
+    const i0 = wrapIndex(idx);
+    const i1 = wrapIndex(idx + 1);
+    const c0 = layouts[i0].center;
+    const c1 = layouts[i1].center + (idx + 1 >= n ? cycleWidth : 0);
+    let center = c0 + (c1 - c0) * frac;
+    const fullIdx = Math.floor(p);
+    const baseCycle = Math.floor(fullIdx / n) * cycleWidth;
+    center += baseCycle;
+    if (p < 0) {
+      center -= cycleWidth;
+    }
+    return center;
+  }
+
+  function pixelDeltaToPosDelta(dx) {
+    const avgW = cycleWidth / n;
+    return -dx / avgW;
+  }
+
+  function coverDraw(img, dx, dy, dw, dh) {
+    if (!img || !img.complete || !img.naturalWidth) return;
+    const ir = img.naturalWidth / img.naturalHeight;
+    const dr = dw / dh;
+    let sw, sh, sx, sy;
+    if (ir > dr) {
+      sh = img.naturalHeight;
+      sw = sh * dr;
+      sx = (img.naturalWidth - sw) * 0.5;
+      sy = 0;
+    } else {
+      sw = img.naturalWidth;
+      sh = sw / dr;
+      sx = 0;
+      sy = (img.naturalHeight - sh) * 0.5;
+    }
+    ctx2d.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+  }
+
+  function drawStrip() {
+    if (!imagesReady) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const viewW = canvas.clientWidth;
+    const viewH = panelH;
+    const texW = Math.max(1, Math.floor(viewW * dpr));
+    const texH = Math.max(1, Math.floor(viewH * dpr));
+
+    if (offscreen.width !== texW || offscreen.height !== texH) {
+      offscreen.width = texW;
+      offscreen.height = texH;
+    }
+
+    ctx2d.fillStyle = "#ffffff";
+    ctx2d.fillRect(0, 0, texW, texH);
+
+    const scale = dpr;
+    const activeCenter = posToPixelOffset(pos);
+    const stripOffset = texW * 0.5 - activeCenter * scale;
+
+    const copies = 3;
+    const startCopy = -1;
+    for (let copy = startCopy; copy < startCopy + copies; copy++) {
+      const copyShift = copy * cycleWidth * scale;
+      for (let i = 0; i < n; i++) {
+        const lay = layouts[i];
+        const px = stripOffset + copyShift + lay.x * scale;
+        const pw = lay.w * scale;
+        const ph = texH;
+        if (px + pw < 0 || px > texW) continue;
+        coverDraw(images[i], px, 0, pw, ph);
+      }
+    }
+
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, offscreen);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+  }
+
+  function renderGL(time) {
+    drawStrip();
+
+    const speed = Math.min(0.7, Math.abs(velocitySlidesPerSec) * 0.22);
+    const k = GLASS_BASE_K + speed + (kExtra - 1);
+    const ca = CHROMA_BASE + speed * 0.007;
+
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.clearColor(1, 1, 1, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    gl.useProgram(program);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.uniform1i(uTex, 0);
+    gl.uniform1f(uK, k);
+    gl.uniform1f(uCa, ca);
+    gl.uniform1f(uTime, time * 0.001);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+
+  function loop(now) {
+    const dt = Math.max(0.001, (now - lastFrameTime) / 1000);
+    lastFrameTime = now;
+    const dp = pos - prevPos;
+    if (!isDragging && !navTween) {
+      velocitySlidesPerSec += (0 - velocitySlidesPerSec) * Math.min(1, dt * 8);
+    } else {
+      velocitySlidesPerSec = dp / dt;
+    }
+    prevPos = pos;
+
+    const yOffset = introY * panelH;
+    canvas.style.transform = `translateY(${yOffset}px)`;
+
+    renderGL(now);
+    requestAnimationFrame(loop);
+  }
+
+  function resize() {
+    panelH = Math.min(window.innerHeight * PANEL_MAX_VH, window.innerWidth * PANEL_MAX_VW);
+    rebuildLayouts();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.style.height = panelH + "px";
+    canvas.width = Math.floor(canvas.clientWidth * dpr);
+    canvas.height = Math.floor(panelH * dpr);
+  }
+
+  /* ─── Typography roll ─── */
+  let titleChars = [];
+  let subChars = [];
+
+  function splitToChars(el, text) {
+    el.textContent = "";
+    const chars = [];
+    for (const ch of text) {
+      const span = document.createElement("span");
+      span.className = "char";
+      span.textContent = ch === " " ? "\u00a0" : ch;
+      el.appendChild(span);
+      chars.push(span);
+    }
+    return chars;
+  }
+
+  function setMetaImmediate(index) {
+    const s = SLIDES[wrapIndex(index)];
+    titleChars = splitToChars(metaTitle, s.title);
+    subChars = splitToChars(metaSub, s.subtitle);
+    gsap.set(titleChars, { y: 0, opacity: 1 });
+    gsap.set(subChars, { y: 0, opacity: 1 });
+    announcer.textContent = s.title + ". " + s.subtitle;
+  }
+
+  function animateMeta(fromIndex, toIndex) {
+    const outTitle = titleChars.slice();
+    const outSub = subChars.slice();
+    const next = SLIDES[wrapIndex(toIndex)];
+    titleChars = splitToChars(metaTitle, next.title);
+    subChars = splitToChars(metaSub, next.subtitle);
+
+    const dur = reducedMotion ? 0.01 : 0.42;
+    const stagger = reducedMotion ? 0 : 0.016;
+
+    if (outTitle.length) {
+      gsap.to(outTitle, {
+        y: -28,
+        opacity: 0,
+        duration: dur,
+        stagger: stagger,
+        ease: "power3.in"
+      });
+    }
+    if (outSub.length) {
+      gsap.to(outSub, {
+        y: -18,
+        opacity: 0,
+        duration: dur * 0.9,
+        stagger: stagger,
+        ease: "power3.in"
+      });
+    }
+
+    gsap.set(titleChars, { y: 32, opacity: 0 });
+    gsap.set(subChars, { y: 22, opacity: 0 });
+
+    gsap.to(titleChars, {
+      y: 0,
+      opacity: 1,
+      duration: dur,
+      stagger: stagger,
+      delay: reducedMotion ? 0 : 0.12,
+      ease: "power3.out"
+    });
+    gsap.to(subChars, {
+      y: 0,
+      opacity: 1,
+      duration: dur * 0.95,
+      stagger: stagger,
+      delay: reducedMotion ? 0 : 0.16,
+      ease: "power3.out"
+    });
+
+    announcer.textContent = next.title + ". " + next.subtitle;
+  }
+
+  /* ─── Navigation ─── */
+  function killNav() {
+    if (navTween) {
+      navTween.kill();
+      navTween = null;
+    }
+  }
+
+  function tweenToIndex(targetIndex, direction) {
+    killNav();
+    const current = pos;
+    let delta = targetIndex - wrapIndex(Math.round(current));
+    if (delta > n / 2) delta -= n;
+    if (delta < -n / 2) delta += n;
+    if (direction === 1 && delta <= 0) delta += n;
+    if (direction === -1 && delta >= 0) delta -= n;
+    const end = current + delta;
+    const fromIdx = displayIndex;
+    displayIndex = wrapIndex(targetIndex);
+
+    const dur = reducedMotion ? 0.01 : NAV_DURATION;
+
+    navTween = gsap.to(
+      { p: current },
+      {
+        p: end,
+        duration: dur,
+        ease: "expo.inOut",
+        onUpdate: function () {
+          pos = this.targets()[0].p;
+        },
+        onComplete: function () {
+          pos = end;
+          while (pos >= n) pos -= n;
+          while (pos < 0) pos += n;
+          navTween = null;
+          scheduleAutoplay();
+        }
+      }
+    );
+
+    if (fromIdx !== displayIndex) {
+      animateMeta(fromIdx, displayIndex);
+    }
+  }
+
+  function goNext() {
+    clearAutoplay();
+    tweenToIndex(wrapIndex(Math.round(pos) + 1), 1);
+  }
+
+  function goPrev() {
+    clearAutoplay();
+    tweenToIndex(wrapIndex(Math.round(pos) - 1), -1);
+  }
+
+  function snapToNearest() {
+    const target = Math.round(pos);
+    killNav();
+    const current = pos;
+    const end = target;
+    displayIndex = wrapIndex(target);
+    const dur = reducedMotion ? 0.01 : Math.min(NAV_DURATION, 0.85);
+
+    navTween = gsap.to(
+      { p: current },
+      {
+        p: end,
+        duration: dur,
+        ease: "expo.inOut",
+        onUpdate: function () {
+          pos = this.targets()[0].p;
+        },
+        onComplete: function () {
+          pos = ((pos % n) + n) % n;
+          navTween = null;
+          scheduleAutoplay();
+        }
+      }
+    );
+    animateMeta(wrapIndex(Math.round(current)), displayIndex);
+  }
+
+  /* ─── Drag ─── */
+  function onPointerDown(e) {
+    if (!imagesReady) return;
+    isDragging = true;
+    canvas.classList.add("is-dragging");
+    clearAutoplay();
+    killNav();
+    dragStartX = e.clientX;
+    dragStartPos = pos;
+    dragLastX = e.clientX;
+    dragLastT = performance.now();
+    dragVelPx = 0;
+    canvas.setPointerCapture(e.pointerId);
+  }
+
+  function onPointerMove(e) {
+    if (!isDragging) return;
+    const now = performance.now();
+    const dt = Math.max(1, now - dragLastT);
+    dragVelPx = (e.clientX - dragLastX) / dt;
+    dragLastX = e.clientX;
+    dragLastT = now;
+    const dx = e.clientX - dragStartX;
+    const avgW = cycleWidth / n;
+    pos = dragStartPos + pixelDeltaToPosDelta(dx);
+  }
+
+  function onPointerUp(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    canvas.classList.remove("is-dragging");
+    try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+
+    const avgW = cycleWidth / n;
+    const momentum = reducedMotion ? 0 : dragVelPx * 180;
+    const projected = pos + pixelDeltaToPosDelta(momentum);
+    const target = Math.round(projected);
+
+    killNav();
+    const current = pos;
+    const end = current + (target - Math.round(current));
+    displayIndex = wrapIndex(target);
+
+    const dur = reducedMotion ? 0.01 : Math.min(NAV_DURATION, 0.95 + Math.min(0.35, Math.abs(momentum) * 0.002));
+
+    navTween = gsap.to(
+      { p: current },
+      {
+        p: end,
+        duration: dur,
+        ease: "expo.inOut",
+        onUpdate: function () {
+          pos = this.targets()[0].p;
+        },
+        onComplete: function () {
+          pos = ((pos % n) + n) % n;
+          navTween = null;
+          scheduleAutoplay();
+        }
+      }
+    );
+    animateMeta(wrapIndex(Math.round(current)), displayIndex);
+  }
+
+  canvas.addEventListener("pointerdown", onPointerDown);
+  canvas.addEventListener("pointermove", onPointerMove);
+  canvas.addEventListener("pointerup", onPointerUp);
+  canvas.addEventListener("pointercancel", onPointerUp);
+
+  btnPrev.addEventListener("click", goPrev);
+  btnNext.addEventListener("click", goNext);
+  btnExplore.addEventListener("click", function () {
+    goNext();
+  });
+
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowLeft") { e.preventDefault(); goPrev(); }
+    if (e.key === "ArrowRight") { e.preventDefault(); goNext(); }
+  });
+
+  /* ─── Autoplay ─── */
+  function clearAutoplay() {
+    if (autoplayTimer) {
+      clearTimeout(autoplayTimer);
+      autoplayTimer = null;
+    }
+  }
+
+  function scheduleAutoplay() {
+    clearAutoplay();
+    if (reducedMotion || hoverPaused || isDragging) return;
+    autoplayTimer = setTimeout(function () {
+      goNext();
+    }, AUTOPLAY_MS);
+  }
+
+  stage.addEventListener("mouseenter", function () {
+    hoverPaused = true;
+    clearAutoplay();
+  });
+  stage.addEventListener("mouseleave", function () {
+    hoverPaused = false;
+    scheduleAutoplay();
+  });
+
+  /* ─── Intro ─── */
+  function runIntro() {
+    setMetaImmediate(0);
+    displayIndex = 0;
+    pos = 0;
+    prevPos = 0;
+
+    if (reducedMotion) {
+      introY = 0;
+      kExtra = 1;
+      scheduleAutoplay();
+      return;
+    }
+
+    gsap.fromTo(
+      { y: 1.15, k: 1.8 },
+      { y: 1.15, k: 1.8 },
+      {
+        y: 0,
+        k: 1,
+        duration: 1.35,
+        ease: "power3.out",
+        onUpdate: function () {
+          const o = this.targets()[0];
+          introY = o.y;
+          kExtra = o.k;
+        },
+        onComplete: scheduleAutoplay
+      }
+    );
+  }
+
+  /* ─── Image loading ─── */
+  function loadImages() {
+    return Promise.all(
+      SLIDES.map(function (slide, i) {
+        return new Promise(function (resolve) {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.decoding = "async";
+          img.onload = function () { resolve({ i, img }); };
+          img.onerror = function () {
+            const fallback = document.createElement("canvas");
+            fallback.width = 800;
+            fallback.height = 600;
+            const fctx = fallback.getContext("2d");
+            fctx.fillStyle = "#e8e8e8";
+            fctx.fillRect(0, 0, 800, 600);
+            fctx.fillStyle = "#999";
+            fctx.font = "24px sans-serif";
+            fctx.fillText("Image " + (i + 1), 320, 300);
+            const fi = new Image();
+            fi.src = fallback.toDataURL();
+            fi.onload = function () { resolve({ i, img: fi }); };
+          };
+          img.src = slide.src;
+        });
+      })
+    ).then(function (results) {
+      images = new Array(n);
+      results.forEach(function (r) { images[r.i] = r.img; });
+      imagesReady = true;
+    });
+  }
+
+  window.addEventListener("resize", resize);
+
+  resize();
+  loadImages().then(function () {
+    runIntro();
+    requestAnimationFrame(loop);
+  });
+})();
+  </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "faq-help-card",
+  "kind": "component",
+  "title": "FAQHelpCard",
+  "description": "FAQ em duas colunas: título e card \"ainda ficou com dúvida?\" com botão à esquerda, acordeão com ícones +/× à direita.",
+  "meta": {
+    "category": "feedback",
+    "role": "section.faq",
+    "placement": "inside-main",
+    "stage": "faq",
+    "topics": [
+      "faq"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/feedback/FAQHelpCard",
+    "tags": [
+      "faq",
+      "perguntas",
+      "acordeão",
+      "dúvidas",
+      "whatsapp"
+    ],
+    "variants": [
+      "com card de ajuda",
+      "sem card",
+      "tudo fechado"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título da seção.",
+        "required": true
+      },
+      {
+        "name": "items",
+        "type": "ReadonlyArray<{ question: string; answer: string }>",
+        "description": "Perguntas e respostas.",
+        "required": true
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "description": "Texto curto acima do título.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Texto de apoio.",
+        "required": false
+      },
+      {
+        "name": "help",
+        "type": "{ title: string; description?: string; icon?: ReactNode; action?: { label: string; href: string } }",
+        "description": "Card de ajuda abaixo do título.",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "number | null",
+        "description": "Pergunta aberta inicialmente.",
+        "required": false,
+        "default": "0"
+      }
+    ],
+    "example": "<FAQHelpCard eyebrow=\"Dúvidas frequentes\" title=\"Perguntas frequentes\" items={items} help={{ title: 'Ainda ficou alguma dúvida?', action: { label: 'Falar no WhatsApp', href: 'https://wa.me/5511999999999' } }} />"
+  },
+  "dependencies": [
+    "@radix-ui/react-accordion@^1.1.2",
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/feedback/FAQHelpCard.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/FAQHelpCard.tsx",
+      "content": "'use client'\r\n\r\nimport * as AccordionPrimitive from '@radix-ui/react-accordion'\r\nimport { MessagesSquare, Plus } from 'lucide-react'\r\nimport Link from 'next/link'\r\nimport type { ReactNode } from 'react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type FAQHelpCardProps = {\r\n  title: string\r\n  items: ReadonlyArray<{ question: string; answer: string }>\r\n  eyebrow?: string\r\n  description?: string\r\n  help?: {\r\n    title: string\r\n    description?: string\r\n    icon?: ReactNode\r\n    action?: { label: string; href: string }\r\n  }\r\n  /** Índice aberto inicialmente; use `null` para começar tudo fechado. */\r\n  defaultOpen?: number | null\r\n  className?: string\r\n}\r\n\r\n/** FAQ em duas colunas: título e card de ajuda à esquerda, acordeão com ícones +/× à direita. */\r\nexport function FAQHelpCard({\r\n  title,\r\n  items,\r\n  eyebrow,\r\n  description,\r\n  help,\r\n  defaultOpen = 0,\r\n  className,\r\n}: FAQHelpCardProps) {\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)}>\r\n      <div className=\"container grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-12\">\r\n        <div className=\"lg:sticky lg:top-24 lg:self-start\">\r\n          {eyebrow ? (\r\n            <p className=\"text-xs font-semibold uppercase tracking-[0.2em] text-primary\">\r\n              {eyebrow}\r\n            </p>\r\n          ) : null}\r\n          <h2 className=\"mt-2 text-3xl font-bold tracking-tight md:text-5xl\">{title}</h2>\r\n          {description ? (\r\n            <p className=\"mt-4 leading-7 text-muted-foreground\">{description}</p>\r\n          ) : null}\r\n\r\n          {help ? (\r\n            <div className=\"mt-8 rounded-2xl border bg-muted/50 p-6\">\r\n              <span className=\"text-primary\" aria-hidden=\"true\">\r\n                {help.icon ?? <MessagesSquare className=\"h-7 w-7\" />}\r\n              </span>\r\n              <h3 className=\"mt-4 text-lg font-bold\">{help.title}</h3>\r\n              {help.description ? (\r\n                <p className=\"mt-1.5 text-sm leading-6 text-muted-foreground\">{help.description}</p>\r\n              ) : null}\r\n              {help.action ? (\r\n                <Link\r\n                  href={help.action.href}\r\n                  className=\"mt-5 inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2\"\r\n                >\r\n                  {help.action.label}\r\n                </Link>\r\n              ) : null}\r\n            </div>\r\n          ) : null}\r\n        </div>\r\n\r\n        <AccordionPrimitive.Root\r\n          type=\"single\"\r\n          collapsible\r\n          defaultValue={defaultOpen === null ? undefined : `item-${defaultOpen}`}\r\n          className=\"grid content-start gap-3\"\r\n        >\r\n          {items.map((item, index) => (\r\n            <AccordionPrimitive.Item\r\n              key={item.question}\r\n              value={`item-${index}`}\r\n              className=\"rounded-2xl border bg-card transition data-[state=open]:shadow-md\"\r\n            >\r\n              <AccordionPrimitive.Header>\r\n                <AccordionPrimitive.Trigger className=\"group flex w-full items-center justify-between gap-4 rounded-2xl px-5 py-5 text-left font-semibold transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:text-primary\">\r\n                  {item.question}\r\n                  <span className=\"flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-primary transition group-data-[state=open]:border-primary group-data-[state=open]:bg-primary group-data-[state=open]:text-primary-foreground\">\r\n                    <Plus\r\n                      className=\"h-4 w-4 transition-transform duration-300 group-data-[state=open]:rotate-45\"\r\n                      aria-hidden=\"true\"\r\n                    />\r\n                  </span>\r\n                </AccordionPrimitive.Trigger>\r\n              </AccordionPrimitive.Header>\r\n              <AccordionPrimitive.Content className=\"overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down\">\r\n                <p className=\"px-5 pb-5 leading-7 text-muted-foreground\">{item.answer}</p>\r\n              </AccordionPrimitive.Content>\r\n            </AccordionPrimitive.Item>\r\n          ))}\r\n        </AccordionPrimitive.Root>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

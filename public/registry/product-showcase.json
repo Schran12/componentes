@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "product-showcase",
+  "kind": "component",
+  "title": "ProductShowcase",
+  "description": "Destaque detalhado de produto com benefícios e ação.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.products",
+    "placement": "inside-main",
+    "stage": "servicos",
+    "topics": [
+      "products"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/data-display/ProductShowcase",
+    "tags": [
+      "produto",
+      "showcase",
+      "detalhe",
+      "cta"
+    ],
+    "variants": [
+      "com features",
+      "com ação"
+    ],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "description": "Nome.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": true
+      },
+      {
+        "name": "image",
+        "type": "{ src: string; alt: string }",
+        "description": "Imagem.",
+        "required": true
+      },
+      {
+        "name": "features",
+        "type": "string[]",
+        "description": "Benefícios.",
+        "required": false
+      },
+      {
+        "name": "action",
+        "type": "{ label: string; href: string }",
+        "description": "Ação.",
+        "required": false
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "description": "Rótulo superior.",
+        "required": false
+      }
+    ],
+    "example": "<ProductShowcase name=\"Linha X\" description=\"Alta performance.\" image={{ src: '/produto.jpg', alt: 'Linha X' }} features={['Durável']} />"
+  },
+  "dependencies": [
+    "@radix-ui/react-slot@^1.0.2",
+    "class-variance-authority@^0.7.0",
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/ProductShowcase.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/ProductShowcase.tsx",
+      "content": "import Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { Check } from 'lucide-react'\r\nimport { Button } from '@/components/ui/button'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ProductShowcaseProps = {\r\n  name: string\r\n  description: string\r\n  image: { src: string; alt: string }\r\n  features?: string[]\r\n  action?: { label: string; href: string }\r\n  eyebrow?: string\r\n  className?: string\r\n}\r\n\r\nexport function ProductShowcase({\r\n  name,\r\n  description,\r\n  image,\r\n  features,\r\n  action,\r\n  eyebrow,\r\n  className,\r\n}: ProductShowcaseProps) {\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)} aria-labelledby=\"showcase-title\">\r\n      <div className=\"container grid items-center gap-12 lg:grid-cols-[1.1fr_.9fr]\">\r\n        <div className=\"relative aspect-square overflow-hidden rounded-3xl bg-muted\">\r\n          <Image\r\n            src={image.src}\r\n            alt={image.alt}\r\n            fill\r\n            className=\"object-cover\"\r\n            sizes=\"(min-width: 1024px) 55vw, 100vw\"\r\n          />\r\n        </div>\r\n        <div>\r\n          {eyebrow ? (\r\n            <p className=\"mb-3 text-sm font-semibold uppercase tracking-widest text-primary\">\r\n              {eyebrow}\r\n            </p>\r\n          ) : null}\r\n          <h2 id=\"showcase-title\" className=\"text-3xl font-bold tracking-tight md:text-5xl\">\r\n            {name}\r\n          </h2>\r\n          <p className=\"mt-5 text-lg leading-8 text-muted-foreground\">{description}</p>\r\n          {features?.length ? (\r\n            <ul className=\"mt-7 space-y-3\">\r\n              {features.map((feature) => (\r\n                <li key={feature} className=\"flex gap-3\">\r\n                  <Check className=\"mt-0.5 h-5 w-5 shrink-0 text-primary\" aria-hidden=\"true\" />\r\n                  <span>{feature}</span>\r\n                </li>\r\n              ))}\r\n            </ul>\r\n          ) : null}\r\n          {action ? (\r\n            <Button asChild size=\"lg\" className=\"mt-8\">\r\n              <Link href={action.href}>{action.label}</Link>\r\n            </Button>\r\n          ) : null}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "type": "ui",
+      "target": "src/components/ui/button.tsx",
+      "content": "import * as React from 'react'\r\nimport { Slot } from '@radix-ui/react-slot'\r\nimport { cva, type VariantProps } from 'class-variance-authority'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nconst buttonVariants = cva(\r\n  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',\r\n  {\r\n    variants: {\r\n      variant: {\r\n        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',\r\n        destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',\r\n        outline:\r\n          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',\r\n        secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',\r\n        ghost: 'hover:bg-accent hover:text-accent-foreground',\r\n        link: 'text-primary underline-offset-4 hover:underline',\r\n      },\r\n      size: {\r\n        default: 'h-9 px-4 py-2',\r\n        sm: 'h-8 rounded-md px-3 text-xs',\r\n        lg: 'h-10 rounded-md px-8',\r\n        icon: 'h-9 w-9',\r\n      },\r\n    },\r\n    defaultVariants: {\r\n      variant: 'default',\r\n      size: 'default',\r\n    },\r\n  },\r\n)\r\n\r\nexport interface ButtonProps\r\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {\r\n  asChild?: boolean\r\n}\r\n\r\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\r\n  ({ className, variant, size, asChild = false, ...props }, ref) => {\r\n    const Comp = asChild ? Slot : 'button'\r\n    return (\r\n      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />\r\n    )\r\n  },\r\n)\r\nButton.displayName = 'Button'\r\n\r\nexport { Button, buttonVariants }\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "agency-hero-section",
+  "kind": "component",
+  "title": "AgencyHeroSection",
+  "description": "Hero editorial para agências com destaque cromático, mídia e argumentos rápidos.",
+  "meta": {
+    "category": "marketing",
+    "role": "page.hero",
+    "placement": "start-of-main",
+    "stage": "hero",
+    "topics": [
+      "banner"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/marketing/AgencyHeroSection",
+    "tags": [
+      "agência",
+      "hero",
+      "banner",
+      "marketing"
+    ],
+    "variants": [
+      "com imagem",
+      "abstrato",
+      "uma ou duas ações"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "highlightedText",
+        "type": "string",
+        "description": "Trecho destacado.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": true
+      },
+      {
+        "name": "primaryAction",
+        "type": "{ label: string; href: string }",
+        "description": "Ação principal.",
+        "required": true
+      },
+      {
+        "name": "secondaryAction",
+        "type": "{ label: string; href: string }",
+        "description": "Ação secundária.",
+        "required": false
+      },
+      {
+        "name": "image",
+        "type": "{ src: string; alt: string }",
+        "description": "Imagem opcional.",
+        "required": false
+      },
+      {
+        "name": "highlights",
+        "type": "readonly string[]",
+        "description": "Argumentos rápidos.",
+        "required": false
+      }
+    ],
+    "example": "<AgencyHeroSection title=\"Sua marca mais visível,\" highlightedText=\"desejada e pronta para crescer.\" description=\"Lorem ipsum.\" primaryAction={{ label: 'Começar', href: '/contato' }} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/marketing/AgencyHeroSection.tsx",
+      "type": "component",
+      "target": "src/components/library/marketing/AgencyHeroSection.tsx",
+      "content": "import Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { ArrowUpRight, Sparkles } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type AgencyHeroSectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  highlightedText?: string\r\n  description: string\r\n  image?: { src: string; alt: string }\r\n  primaryAction: { label: string; href: string }\r\n  secondaryAction?: { label: string; href: string }\r\n  highlights?: readonly string[]\r\n  className?: string\r\n}\r\n\r\nexport function AgencyHeroSection({\r\n  eyebrow,\r\n  title,\r\n  highlightedText,\r\n  description,\r\n  image,\r\n  primaryAction,\r\n  secondaryAction,\r\n  highlights = [],\r\n  className,\r\n}: AgencyHeroSectionProps) {\r\n  return (\r\n    <section\r\n      className={cn(\r\n        'relative isolate overflow-hidden bg-[#faf8fb] py-20 text-[#10100e] md:py-28 lg:py-32',\r\n        className,\r\n      )}\r\n    >\r\n      <div className=\"absolute -left-32 top-12 -z-10 h-80 w-80 rounded-full bg-[#752871]/15 blur-3xl\" />\r\n      <div className=\"absolute -right-24 bottom-0 -z-10 h-96 w-96 rounded-full bg-[#752871]/20 blur-3xl\" />\r\n      <div className=\"absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-white to-transparent\" />\r\n\r\n      <div className=\"container grid items-center gap-14 lg:grid-cols-[1.05fr_.95fr]\">\r\n        <div className=\"relative z-10 max-w-3xl\">\r\n          {eyebrow ? (\r\n            <div className=\"inline-flex items-center gap-2 rounded-full border border-[#752871]/20 bg-white/70 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-[#752871] backdrop-blur\">\r\n              <Sparkles className=\"h-3.5 w-3.5\" aria-hidden />\r\n              {eyebrow}\r\n            </div>\r\n          ) : null}\r\n          <h1 className=\"mt-7 text-5xl font-bold leading-[1.02] tracking-[-0.04em] sm:text-6xl lg:text-7xl\">\r\n            {title}{' '}\r\n            {highlightedText ? <span className=\"text-[#752871]\">{highlightedText}</span> : null}\r\n          </h1>\r\n          <p className=\"mt-7 max-w-2xl text-lg leading-8 text-[#5a5560]\">{description}</p>\r\n\r\n          <div className=\"mt-9 flex flex-wrap gap-3\">\r\n            <Link\r\n              href={primaryAction.href}\r\n              className=\"inline-flex h-12 items-center gap-2 rounded-full bg-[#752871] px-7 font-semibold text-white shadow-lg shadow-[#752871]/20 transition hover:-translate-y-0.5 hover:bg-[#590b55] hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#752871]\"\r\n            >\r\n              {primaryAction.label}\r\n              <ArrowUpRight className=\"h-4 w-4\" aria-hidden />\r\n            </Link>\r\n            {secondaryAction ? (\r\n              <Link\r\n                href={secondaryAction.href}\r\n                className=\"inline-flex h-12 items-center rounded-full border border-[#3f2644]/20 bg-white/70 px-7 font-semibold text-[#3f2644] backdrop-blur transition hover:-translate-y-0.5 hover:border-[#752871]/40 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#752871]\"\r\n              >\r\n                {secondaryAction.label}\r\n              </Link>\r\n            ) : null}\r\n          </div>\r\n\r\n          {highlights.length ? (\r\n            <ul className=\"mt-10 flex flex-wrap gap-2\">\r\n              {highlights.map((item) => (\r\n                <li\r\n                  key={item}\r\n                  className=\"rounded-full border border-[#3f2644]/10 bg-white/60 px-3 py-1.5 text-xs font-medium text-[#5a5560]\"\r\n                >\r\n                  {item}\r\n                </li>\r\n              ))}\r\n            </ul>\r\n          ) : null}\r\n        </div>\r\n\r\n        <div className=\"relative mx-auto min-h-[480px] w-full max-w-xl\">\r\n          <div className=\"absolute inset-8 rotate-6 rounded-[3rem] bg-[#752871]\" />\r\n          <div className=\"absolute inset-0 -rotate-3 rounded-[3rem] border border-[#752871]/20 bg-[#ede8ef]\" />\r\n          {image ? (\r\n            <figure className=\"absolute inset-5 overflow-hidden rounded-[2.5rem] bg-[#3f2644] shadow-2xl\">\r\n              <Image\r\n                src={image.src}\r\n                alt={image.alt}\r\n                fill\r\n                priority\r\n                className=\"object-cover\"\r\n                sizes=\"(min-width: 1024px) 42vw, 90vw\"\r\n              />\r\n              <div className=\"absolute inset-0 bg-gradient-to-t from-[#3f2644]/45 to-transparent\" />\r\n            </figure>\r\n          ) : (\r\n            <div className=\"absolute inset-5 flex items-center justify-center overflow-hidden rounded-[2.5rem] bg-[#3f2644]\">\r\n              <div className=\"h-60 w-60 rounded-[45%_55%_52%_48%] bg-[#752871] shadow-[80px_-50px_0_#9b4b96,-70px_60px_0_#5b1d57]\" />\r\n            </div>\r\n          )}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

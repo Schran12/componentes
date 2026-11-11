@@ -1,0 +1,27 @@
+{
+  "name": "componentes-bloomin",
+  "version": "0.1.1",
+  "description": "CLI oficial para instalar componentes da biblioteca Componentes Bloomin.",
+  "type": "module",
+  "bin": {
+    "componentes-bloomin": "./bin/componentes-bloomin.mjs"
+  },
+  "files": [
+    "bin",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "react",
+    "nextjs",
+    "tailwind",
+    "components",
+    "bloomin"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

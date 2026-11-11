@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "before-after-slider",
+  "kind": "component",
+  "title": "BeforeAfterSlider",
+  "description": "Comparador acessível de imagens antes e depois controlado por range.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": "galeria",
+    "topics": [
+      "galleries"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/data-display/BeforeAfterSlider",
+    "tags": [
+      "comparação",
+      "antes",
+      "depois",
+      "slider"
+    ],
+    "variants": [
+      "video",
+      "square",
+      "wide",
+      "teclado"
+    ],
+    "props": [
+      {
+        "name": "before",
+        "type": "{ src: string; alt: string; label?: string }",
+        "description": "Imagem anterior.",
+        "required": true
+      },
+      {
+        "name": "after",
+        "type": "{ src: string; alt: string; label?: string }",
+        "description": "Imagem posterior.",
+        "required": true
+      },
+      {
+        "name": "initialPosition",
+        "type": "number",
+        "description": "Posição inicial percentual.",
+        "required": false,
+        "default": "50"
+      },
+      {
+        "name": "aspect",
+        "type": "'video' | 'square' | 'wide'",
+        "description": "Proporção.",
+        "required": false,
+        "default": "'video'"
+      }
+    ],
+    "example": "<BeforeAfterSlider before={{ src: '/antes.jpg', alt: 'Antes' }} after={{ src: '/depois.jpg', alt: 'Depois' }} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/BeforeAfterSlider.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/BeforeAfterSlider.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport { useState } from 'react'\r\nimport { GripVertical } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type BeforeAfterSliderProps = {\r\n  before: { src: string; alt: string; label?: string }\r\n  after: { src: string; alt: string; label?: string }\r\n  initialPosition?: number\r\n  className?: string\r\n  aspect?: 'video' | 'square' | 'wide'\r\n}\r\n\r\nexport function BeforeAfterSlider({\r\n  before,\r\n  after,\r\n  initialPosition = 50,\r\n  className,\r\n  aspect = 'video',\r\n}: BeforeAfterSliderProps) {\r\n  const [position, setPosition] = useState(Math.min(100, Math.max(0, initialPosition)))\r\n  const aspectClass = { video: 'aspect-video', square: 'aspect-square', wide: 'aspect-[21/9]' }[\r\n    aspect\r\n  ]\r\n\r\n  return (\r\n    <figure\r\n      className={cn(\r\n        'group relative isolate overflow-hidden rounded-3xl bg-muted shadow-xl',\r\n        aspectClass,\r\n        className,\r\n      )}\r\n    >\r\n      <Image\r\n        src={after.src}\r\n        alt={after.alt}\r\n        fill\r\n        className=\"object-cover\"\r\n        sizes=\"(min-width: 1280px) 1200px, 100vw\"\r\n      />\r\n      <div\r\n        className=\"absolute inset-0 overflow-hidden\"\r\n        style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}\r\n      >\r\n        <Image\r\n          src={before.src}\r\n          alt={before.alt}\r\n          fill\r\n          className=\"object-cover\"\r\n          sizes=\"(min-width: 1280px) 1200px, 100vw\"\r\n        />\r\n      </div>\r\n\r\n      <span className=\"absolute left-4 top-4 rounded-full bg-black/65 px-3 py-1 text-xs font-semibold text-white backdrop-blur\">\r\n        {before.label ?? 'Antes'}\r\n      </span>\r\n      <span className=\"absolute right-4 top-4 rounded-full bg-black/65 px-3 py-1 text-xs font-semibold text-white backdrop-blur\">\r\n        {after.label ?? 'Depois'}\r\n      </span>\r\n\r\n      <div\r\n        aria-hidden=\"true\"\r\n        className=\"pointer-events-none absolute inset-y-0 w-0.5 bg-white shadow-[0_0_0_1px_rgba(0,0,0,.15)]\"\r\n        style={{ left: `${position}%` }}\r\n      >\r\n        <span className=\"absolute left-1/2 top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-black/50 text-white shadow-xl backdrop-blur\">\r\n          <GripVertical className=\"h-5 w-5\" />\r\n        </span>\r\n      </div>\r\n\r\n      <label className=\"absolute inset-x-5 bottom-4\">\r\n        <span className=\"sr-only\">Posição da comparação entre antes e depois</span>\r\n        <input\r\n          type=\"range\"\r\n          min={0}\r\n          max={100}\r\n          value={position}\r\n          onChange={(event) => setPosition(Number(event.target.value))}\r\n          className=\"h-8 w-full cursor-ew-resize opacity-0\"\r\n          aria-valuetext={`${position}% da imagem anterior visível`}\r\n        />\r\n      </label>\r\n    </figure>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

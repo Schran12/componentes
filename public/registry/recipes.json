@@ -1,0 +1,416 @@
+{
+  "schemaVersion": 1,
+  "recipes": [
+    {
+      "id": "institutional",
+      "name": "Institucional",
+      "description": "Site equilibrado para empresas e serviços profissionais.",
+      "audience": "Escritórios, clínicas, consultorias e marcas corporativas.",
+      "components": [
+        "navbar-simple",
+        "banner-image",
+        "about-values-section",
+        "differentials-section",
+        "stats-grid",
+        "testimonials-spotlight",
+        "contact-split-section",
+        "footer-columns"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:institutional",
+      "registryItem": "recipe-institutional"
+    },
+    {
+      "id": "institutional-corporate",
+      "name": "Institucional corporativo",
+      "description": "Narrativa completa com credibilidade, equipe, processo e contato.",
+      "audience": "Empresas médias/grandes e grupos empresariais.",
+      "components": [
+        "navbar-accent",
+        "banner-split",
+        "credibility-section",
+        "about-metrics-section",
+        "process-steps",
+        "team-section",
+        "logo-carousel-band",
+        "testimonials-columns",
+        "faq-bordered",
+        "cta-banner",
+        "contact-channels-section",
+        "footer-contact-columns",
+        "scroll-to-top-button"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:institutional-corporate",
+      "registryItem": "recipe-institutional-corporate"
+    },
+    {
+      "id": "consulting",
+      "name": "Consultoria",
+      "description": "Autoridade, método, casos e conversão para serviços B2B.",
+      "audience": "Consultorias, assessorias e profissionais liberais.",
+      "components": [
+        "navbar-simple",
+        "banner-split",
+        "credibility-section",
+        "process-steps",
+        "icon-feature-cards",
+        "testimonials-quote-slider",
+        "faq-centered",
+        "cta-split-panel",
+        "contact-form",
+        "footer-columns"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:consulting",
+      "registryItem": "recipe-consulting"
+    },
+    {
+      "id": "industrial",
+      "name": "Industrial",
+      "description": "Presença B2B para indústria, manufatura e operação técnica.",
+      "audience": "Fábricas, indústrias e fornecedores técnicos.",
+      "components": [
+        "navbar-accent",
+        "image-overlay-hero",
+        "credibility-section",
+        "about-metrics-section",
+        "hover-reveal-services",
+        "process-steps",
+        "service-area-cards",
+        "logo-carousel-band",
+        "testimonials-grid",
+        "multi-step-quote-form",
+        "footer-contact-columns",
+        "floating-whatsapp-button"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:industrial",
+      "registryItem": "recipe-industrial"
+    },
+    {
+      "id": "industrial-services",
+      "name": "Tratamento de superfície",
+      "description": "Home B2B no modelo Axis Industrial: hero com pilares, tratamentos, problema→solução, processo, credibilidade, cobertura e orçamento via WhatsApp.",
+      "audience": "Galvanização, zincagem, fosfatização e prestadores de tratamento metálico industrial.",
+      "components": [
+        "navbar-accent",
+        "pillars-hero",
+        "about-metrics-section",
+        "hover-reveal-services",
+        "problem-solution-cards",
+        "logo-carousel-band",
+        "process-steps",
+        "credibility-section",
+        "coverage-callout",
+        "faq-help-card",
+        "whatsapp-quote-form",
+        "footer-contact-columns",
+        "floating-whatsapp-button",
+        "scroll-to-top-button"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:industrial-services",
+      "registryItem": "recipe-industrial-services"
+    },
+    {
+      "id": "saas",
+      "name": "Produto SaaS",
+      "description": "Página orientada a produto, benefícios, prova e conversão.",
+      "audience": "Software, plataformas e produtos digitais.",
+      "components": [
+        "navbar-floating",
+        "banner-split",
+        "product-feature-tabs",
+        "interactive-feature-showcase",
+        "pricing-cards",
+        "faq-centered",
+        "cta-banner",
+        "footer-columns"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:saas",
+      "registryItem": "recipe-saas"
+    },
+    {
+      "id": "fintech",
+      "name": "Fintech",
+      "description": "Hero forte, confiança, produto e planos para serviços financeiros.",
+      "audience": "Fintechs, bancos digitais e plataformas de pagamento.",
+      "components": [
+        "navbar-floating",
+        "fintech-hero-section",
+        "logo-carousel-band",
+        "feature-grid",
+        "comparison-table",
+        "pricing-cards",
+        "testimonials-spotlight",
+        "faq-search",
+        "cta-banner",
+        "footer-compact"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:fintech",
+      "registryItem": "recipe-fintech"
+    },
+    {
+      "id": "ecommerce",
+      "name": "E-commerce",
+      "description": "Vitrine com categorias, produtos, confiança e conversão.",
+      "audience": "Lojas e catálogos online.",
+      "components": [
+        "announcement-bar",
+        "navbar-mega",
+        "banner-carousel",
+        "category-mosaic",
+        "product-carousel",
+        "product-grid",
+        "testimonials-grid",
+        "newsletter-form",
+        "footer-columns"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:ecommerce",
+      "registryItem": "recipe-ecommerce"
+    },
+    {
+      "id": "hueline-saturation-ss27",
+      "name": "Hueline Saturation SS27",
+      "description": "Lookbook e shop fashion feminino — loader, hero film, wardrobe, lookbook, colour story e shop com Flip.",
+      "audience": "Marcas de moda, lookbooks e drops sazonais.",
+      "components": [
+        "hueline-navbar",
+        "hueline-hero",
+        "hueline-style-arches",
+        "hueline-product-rails",
+        "hueline-lookbook",
+        "hueline-colour-story",
+        "hueline-shop-grid",
+        "hueline-atelier",
+        "hueline-footer"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:hueline-saturation-ss27",
+      "registryItem": "recipe-hueline-saturation-ss27"
+    },
+    {
+      "id": "veloria-yacht-charter",
+      "name": "Veloria Yacht Charter",
+      "description": "Landing cinematográfica com vídeo de iate em tela cheia, seções transparentes sobre o casco e reserva no painel sólido.",
+      "audience": "Charters privados, luxury travel e marcas náuticas.",
+      "components": [
+        "veloria-navbar",
+        "veloria-hero",
+        "veloria-onboard",
+        "veloria-voyage",
+        "veloria-destinations",
+        "veloria-reserve"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:veloria-yacht-charter",
+      "registryItem": "recipe-veloria-yacht-charter"
+    },
+    {
+      "id": "nimbus-ai",
+      "name": "Nimbus AI",
+      "description": "Landing cinematográfica dark para API de documentos: aurora hero, demo chat, capabilities, code tabs, pricing usage-based.",
+      "audience": "APIs de IA, developer tools e SaaS B2B.",
+      "components": [
+        "nimbus-navbar",
+        "nimbus-hero",
+        "nimbus-demo",
+        "nimbus-capabilities",
+        "nimbus-developer",
+        "nimbus-use-cases",
+        "nimbus-pricing",
+        "nimbus-cta",
+        "nimbus-footer"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:nimbus-ai",
+      "registryItem": "recipe-nimbus-ai"
+    },
+    {
+      "id": "aviamentos-atacado",
+      "name": "Aviamentos atacado",
+      "description": "Home estilo Mix Metais: navbar com logo central, hero, coleções, carrossel de peças, diferenciais e cotação comercial.",
+      "audience": "Lojas de aviamentos, metais e acessórios para confecção no atacado.",
+      "components": [
+        "navbar-split-logo",
+        "banner-immersive",
+        "category-mosaic",
+        "product-carousel",
+        "differentials-section",
+        "stats-grid",
+        "contact-split-section",
+        "footer-contact-columns",
+        "floating-whatsapp-button",
+        "scroll-to-top-button"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:aviamentos-atacado",
+      "registryItem": "recipe-aviamentos-atacado"
+    },
+    {
+      "id": "real-estate",
+      "name": "Imobiliária",
+      "description": "Vitrine de imóveis, credibilidade local e captura de leads.",
+      "audience": "Imobiliárias, corretores e lançamentos.",
+      "components": [
+        "navbar-accent",
+        "banner-immersive",
+        "stats-grid",
+        "filterable-card-grid",
+        "location-showcase",
+        "testimonials-columns",
+        "faq-bordered",
+        "multi-step-quote-form",
+        "map-embed-section",
+        "footer-contact-columns",
+        "floating-whatsapp-button"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:real-estate",
+      "registryItem": "recipe-real-estate"
+    },
+    {
+      "id": "agency",
+      "name": "Agência ou portfólio",
+      "description": "Narrativa visual para serviços, projetos e contato.",
+      "audience": "Agências, estúdios e freelancers.",
+      "components": [
+        "navbar-minimal",
+        "banner-editorial",
+        "services-carousel-section",
+        "about-gallery",
+        "gallery-grid",
+        "process-steps",
+        "testimonials-carousel",
+        "contact-split-section",
+        "footer-compact"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:agency",
+      "registryItem": "recipe-agency"
+    },
+    {
+      "id": "landing-page",
+      "name": "Landing page",
+      "description": "Fluxo curto focado em uma oferta e uma ação principal.",
+      "audience": "Campanhas, lançamentos e captura de leads.",
+      "components": [
+        "navbar-pill",
+        "banner-immersive",
+        "feature-grid",
+        "comparison-table",
+        "testimonials-spotlight",
+        "faq-search",
+        "cta-inline",
+        "footer-compact"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:landing-page",
+      "registryItem": "recipe-landing-page"
+    },
+    {
+      "id": "event",
+      "name": "Evento",
+      "description": "Divulgação de evento com agenda, prova social e inscrição.",
+      "audience": "Congressos, workshops e lançamentos presenciais.",
+      "components": [
+        "announcement-bar",
+        "navbar-pill",
+        "banner-video",
+        "timeline",
+        "team-section",
+        "ticket-pricing-cards",
+        "testimonials-marquee",
+        "faq-cards",
+        "cta-centered-card",
+        "footer-compact"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:event",
+      "registryItem": "recipe-event"
+    },
+    {
+      "id": "clinic",
+      "name": "Clínica ou saúde",
+      "description": "Confiança, especialidades, equipe e agendamento.",
+      "audience": "Clínicas, consultórios e centros médicos.",
+      "components": [
+        "contact-info-bar",
+        "navbar-simple",
+        "banner-image",
+        "about-values-section",
+        "icon-feature-cards",
+        "team-grid",
+        "testimonials-spotlight",
+        "faq-help-card",
+        "contact-split-section",
+        "footer-columns",
+        "floating-whatsapp-button"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:clinic",
+      "registryItem": "recipe-clinic"
+    },
+    {
+      "id": "restaurant",
+      "name": "Restaurante",
+      "description": "Atmosfera, cardápio visual, localização e reserva.",
+      "audience": "Restaurantes, cafés e food service.",
+      "components": [
+        "navbar-minimal",
+        "banner-immersive",
+        "about-gallery",
+        "category-mosaic",
+        "gallery-grid",
+        "testimonials-carousel",
+        "map-embed-section",
+        "newsletter-form",
+        "footer-compact",
+        "floating-whatsapp-button"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:restaurant",
+      "registryItem": "recipe-restaurant"
+    },
+    {
+      "id": "education",
+      "name": "Educação / curso",
+      "description": "Oferta educacional com módulos, prova social e matrícula.",
+      "audience": "Escolas, cursos online e instituições de ensino.",
+      "components": [
+        "navbar-centered",
+        "banner-split",
+        "process-steps",
+        "feature-grid",
+        "pricing-cards",
+        "testimonials-columns",
+        "faq-centered",
+        "cta-banner",
+        "footer-columns"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:education",
+      "registryItem": "recipe-education"
+    },
+    {
+      "id": "blog",
+      "name": "Blog / conteúdo",
+      "description": "Home editorial com destaques, listagem e newsletter.",
+      "audience": "Marcas de conteúdo, publishers e portais.",
+      "components": [
+        "navbar-simple",
+        "page-header",
+        "blog-featured-listing",
+        "blog-grid",
+        "newsletter-form",
+        "footer-columns"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:blog",
+      "registryItem": "recipe-blog"
+    },
+    {
+      "id": "nonprofit",
+      "name": "ONG / causa",
+      "description": "Impacto, histórias, transparência e chamado à doação.",
+      "audience": "ONGs, projetos sociais e institutos.",
+      "components": [
+        "navbar-simple",
+        "banner-editorial",
+        "stats-grid",
+        "about-values-section",
+        "gallery-grid",
+        "testimonials-quote-slider",
+        "cta-split-panel",
+        "contact-channels-section",
+        "footer-columns"
+      ],
+      "installCommand": "npx componentes-bloomin@latest add recipe:nonprofit",
+      "registryItem": "recipe-nonprofit"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "breadcrumbs-steps",
+  "kind": "component",
+  "title": "BreadcrumbsSteps",
+  "description": "Breadcrumb em degraus (estilo wizard / chevron ribbon).",
+  "meta": {
+    "category": "navigation",
+    "role": "element.navigation",
+    "placement": "inside-main",
+    "stage": "breadcrumbs",
+    "topics": [
+      "breadcrumbs"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/navigation/Breadcrumbs",
+    "tags": [
+      "breadcrumb",
+      "migalhas",
+      "steps",
+      "wizard",
+      "navegação"
+    ],
+    "variants": [
+      "steps"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "readonly BreadcrumbItem[]",
+        "description": "Itens do caminho estrutural.",
+        "required": true
+      },
+      {
+        "name": "structuredData",
+        "type": "string",
+        "description": "URL do site; gera JSON-LD BreadcrumbList.",
+        "required": false
+      }
+    ],
+    "example": "<BreadcrumbsSteps items={[{ label: 'Início', href: '/' }, { label: 'Produtos', href: '/produtos' }, { label: 'Modelo Compacto' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/navigation/Breadcrumbs.tsx",
+      "type": "component",
+      "target": "src/components/library/navigation/Breadcrumbs.tsx",
+      "content": "import type { CSSProperties, HTMLAttributes, ReactNode } from 'react'\r\nimport { ArrowLeft, ArrowRight, ChevronRight, Home } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type BreadcrumbItem = {\r\n  label: string\r\n  href?: string\r\n  icon?: ReactNode\r\n}\r\n\r\nexport type BreadcrumbSeparator = 'chevron' | 'slash' | 'dot' | 'arrow'\r\n\r\nexport interface BreadcrumbsProps extends Omit<HTMLAttributes<HTMLElement>, 'children'> {\r\n  items: readonly BreadcrumbItem[]\r\n  label?: string\r\n  variant?: 'default' | 'contained' | 'pills' | 'steps' | 'underline'\r\n  separator?: BreadcrumbSeparator | ReactNode\r\n  tone?: 'default' | 'inverted'\r\n  size?: 'sm' | 'md'\r\n  mobile?: 'truncate' | 'scroll' | 'back'\r\n  showHomeIcon?: boolean\r\n  collapseAfter?: number\r\n  structuredData?: string\r\n}\r\n\r\nconst separators: Record<BreadcrumbSeparator, ReactNode> = {\r\n  chevron: <ChevronRight className=\"h-4 w-4\" />,\r\n  slash: <span className=\"px-0.5\">/</span>,\r\n  dot: <span className=\"block h-1 w-1 rounded-full bg-current\" />,\r\n  arrow: <ArrowRight className=\"h-3.5 w-3.5\" />,\r\n}\r\n\r\nconst stepShape = (first: boolean, last: boolean): CSSProperties => ({\r\n  clipPath: `polygon(0 0, ${last ? '100%' : 'calc(100% - 10px)'} 0, 100% 50%, ${\r\n    last ? '100%' : 'calc(100% - 10px)'\r\n  } 100%, 0 100%, ${first ? '0' : '10px'} 50%)`,\r\n})\r\n\r\nfunction resolveSeparator(separator: BreadcrumbsProps['separator']) {\r\n  if (separator === undefined) return separators.chevron\r\n  if (typeof separator === 'string' && separator in separators) {\r\n    return separators[separator as BreadcrumbSeparator]\r\n  }\r\n  return separator\r\n}\r\n\r\nfunction toAbsolute(siteUrl: string, href: string) {\r\n  if (/^https?:\\/\\//.test(href)) return href\r\n  return `${siteUrl.replace(/\\/$/, '')}/${href.replace(/^\\//, '')}`\r\n}\r\n\r\nexport function Breadcrumbs({\r\n  items,\r\n  label = 'Navegação estrutural',\r\n  variant = 'default',\r\n  separator,\r\n  tone = 'default',\r\n  size = 'sm',\r\n  mobile = 'truncate',\r\n  showHomeIcon = false,\r\n  collapseAfter,\r\n  structuredData,\r\n  className,\r\n  ...props\r\n}: BreadcrumbsProps) {\r\n  const trailingItems = Math.max(1, collapseAfter ?? items.length)\r\n  const shouldCollapse = collapseAfter !== undefined && items.length > trailingItems + 1\r\n  const visibleItems = shouldCollapse\r\n    ? [items[0], { label: '…' } satisfies BreadcrumbItem, ...items.slice(-trailingItems)]\r\n    : items\r\n  const parent = [...items.slice(0, -1)].reverse().find((item) => item.href)\r\n  const inverted = tone === 'inverted'\r\n  const showSeparator = variant !== 'steps'\r\n  const separatorNode = resolveSeparator(separator)\r\n\r\n  const jsonLd = structuredData\r\n    ? {\r\n        '@context': 'https://schema.org',\r\n        '@type': 'BreadcrumbList',\r\n        itemListElement: items.map((item, index) => ({\r\n          '@type': 'ListItem',\r\n          position: index + 1,\r\n          name: item.label,\r\n          ...(item.href ? { item: toAbsolute(structuredData, item.href) } : {}),\r\n        })),\r\n      }\r\n    : null\r\n\r\n  const itemClass = (current: boolean, linked: boolean) => {\r\n    switch (variant) {\r\n      case 'pills':\r\n        return cn(\r\n          'rounded-full px-3 py-1',\r\n          current\r\n            ? 'bg-primary font-medium text-primary-foreground'\r\n            : inverted\r\n              ? 'bg-white/10'\r\n              : 'bg-muted',\r\n          linked && (inverted ? 'hover:bg-white/20' : 'hover:bg-primary/10 hover:text-primary'),\r\n        )\r\n      case 'steps':\r\n        return cn(\r\n          'px-5 py-1.5',\r\n          current\r\n            ? 'bg-primary font-medium text-primary-foreground'\r\n            : inverted\r\n              ? 'bg-white/10'\r\n              : 'bg-muted',\r\n          linked && (inverted ? 'hover:bg-white/20' : 'hover:bg-primary/10 hover:text-primary'),\r\n        )\r\n      case 'underline':\r\n        return cn(\r\n          'border-b-2 py-1',\r\n          current\r\n            ? cn('border-primary font-medium', inverted ? 'text-white' : 'text-foreground')\r\n            : 'border-transparent',\r\n          linked &&\r\n            (inverted ? 'hover:text-white' : 'hover:border-primary/40 hover:text-foreground'),\r\n        )\r\n      default:\r\n        return cn(\r\n          current && cn('font-medium', inverted ? 'text-white' : 'text-foreground'),\r\n          linked && (inverted ? 'hover:text-white' : 'hover:text-primary'),\r\n        )\r\n    }\r\n  }\r\n\r\n  return (\r\n    <nav\r\n      aria-label={label}\r\n      className={cn(\r\n        'min-w-0',\r\n        variant === 'contained' &&\r\n          cn(\r\n            'inline-flex max-w-full rounded-full border px-4 py-2 shadow-sm',\r\n            inverted ? 'border-white/20 bg-white/10 backdrop-blur' : 'bg-card',\r\n          ),\r\n        className,\r\n      )}\r\n      {...props}\r\n    >\r\n      {mobile === 'back' && parent ? (\r\n        <a\r\n          href={parent.href}\r\n          className={cn(\r\n            'inline-flex items-center gap-1.5 font-medium transition-colors sm:hidden',\r\n            size === 'md' ? 'text-base' : 'text-sm',\r\n            inverted\r\n              ? 'text-white/80 hover:text-white'\r\n              : 'text-muted-foreground hover:text-primary',\r\n          )}\r\n        >\r\n          <ArrowLeft className=\"h-4 w-4\" aria-hidden=\"true\" />\r\n          {parent.label}\r\n        </a>\r\n      ) : null}\r\n      <ol\r\n        className={cn(\r\n          'flex min-w-0 items-center',\r\n          variant === 'steps' ? 'gap-0.5' : 'gap-1.5',\r\n          size === 'md' ? 'text-base' : 'text-sm',\r\n          inverted ? 'text-white/70' : 'text-muted-foreground',\r\n          mobile === 'scroll' &&\r\n            'overflow-x-auto whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',\r\n          mobile === 'back' && parent && 'max-sm:hidden',\r\n        )}\r\n      >\r\n        {visibleItems.map((item, index) => {\r\n          const current = index === visibleItems.length - 1\r\n          const linked = Boolean(item.href) && !current\r\n          const icon =\r\n            index === 0 && showHomeIcon ? (\r\n              <Home className=\"h-4 w-4 shrink-0\" aria-hidden=\"true\" />\r\n            ) : (\r\n              item.icon\r\n            )\r\n          const content = (\r\n            <>\r\n              {icon}\r\n              <span className={cn(mobile !== 'scroll' && 'truncate')}>{item.label}</span>\r\n            </>\r\n          )\r\n          const segmentClass = cn(\r\n            'flex min-w-0 items-center gap-1.5 rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',\r\n            itemClass(current, linked),\r\n          )\r\n\r\n          return (\r\n            <li\r\n              key={`${item.label}-${index}`}\r\n              className={cn('flex min-w-0 items-center gap-1.5', mobile === 'scroll' && 'shrink-0')}\r\n            >\r\n              {index > 0 && showSeparator ? (\r\n                <span\r\n                  className={cn(\r\n                    'shrink-0',\r\n                    inverted ? 'text-white/40' : 'text-muted-foreground/60',\r\n                  )}\r\n                  aria-hidden=\"true\"\r\n                >\r\n                  {separatorNode}\r\n                </span>\r\n              ) : null}\r\n              {linked ? (\r\n                <a\r\n                  href={item.href}\r\n                  className={segmentClass}\r\n                  style={variant === 'steps' ? stepShape(index === 0, current) : undefined}\r\n                >\r\n                  {content}\r\n                </a>\r\n              ) : (\r\n                <span\r\n                  className={segmentClass}\r\n                  aria-current={current ? 'page' : undefined}\r\n                  style={variant === 'steps' ? stepShape(index === 0, current) : undefined}\r\n                >\r\n                  {content}\r\n                </span>\r\n              )}\r\n            </li>\r\n          )\r\n        })}\r\n      </ol>\r\n      {jsonLd ? (\r\n        <script\r\n          type=\"application/ld+json\"\r\n          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\\\u003c') }}\r\n        />\r\n      ) : null}\r\n    </nav>\r\n  )\r\n}\r\n\r\ntype BreadcrumbPresetProps = Omit<\r\n  BreadcrumbsProps,\r\n  'variant' | 'separator' | 'tone' | 'size' | 'mobile' | 'showHomeIcon' | 'collapseAfter'\r\n>\r\n\r\n/** Default com chevron, ícone de início e colapso. */\r\nexport function BreadcrumbsChevron({\r\n  collapseAfter = 2,\r\n  ...props\r\n}: BreadcrumbPresetProps & Pick<BreadcrumbsProps, 'collapseAfter'>) {\r\n  return <Breadcrumbs showHomeIcon collapseAfter={collapseAfter} separator=\"chevron\" {...props} />\r\n}\r\n\r\n/** Separador em barra. */\r\nexport function BreadcrumbsSlash(props: BreadcrumbPresetProps) {\r\n  return <Breadcrumbs separator=\"slash\" {...props} />\r\n}\r\n\r\n/** Contido em cápsula com separador em ponto. */\r\nexport function BreadcrumbsContained(props: BreadcrumbPresetProps) {\r\n  return <Breadcrumbs variant=\"contained\" separator=\"dot\" showHomeIcon {...props} />\r\n}\r\n\r\n/** Itens em pílulas com seta. */\r\nexport function BreadcrumbsPills(props: BreadcrumbPresetProps) {\r\n  return <Breadcrumbs variant=\"pills\" separator=\"arrow\" {...props} />\r\n}\r\n\r\n/** Estilo em degraus (wizard). */\r\nexport function BreadcrumbsSteps(props: BreadcrumbPresetProps) {\r\n  return <Breadcrumbs variant=\"steps\" showHomeIcon {...props} />\r\n}\r\n\r\n/** Item atual com sublinhado. */\r\nexport function BreadcrumbsUnderline(props: BreadcrumbPresetProps) {\r\n  return <Breadcrumbs variant=\"underline\" size=\"md\" separator=\"slash\" {...props} />\r\n}\r\n\r\n/** No mobile, mostra só “voltar à página anterior”. */\r\nexport function BreadcrumbsMobileBack(props: BreadcrumbPresetProps) {\r\n  return <Breadcrumbs mobile=\"back\" {...props} />\r\n}\r\n\r\n/** No mobile, rola na horizontal (útil com muitos níveis). */\r\nexport function BreadcrumbsMobileScroll(props: BreadcrumbPresetProps) {\r\n  return <Breadcrumbs variant=\"pills\" mobile=\"scroll\" {...props} />\r\n}\r\n\r\n/** Para fundos escuros ou na cor da marca. */\r\nexport function BreadcrumbsInverted(props: BreadcrumbPresetProps) {\r\n  return <Breadcrumbs tone=\"inverted\" showHomeIcon {...props} />\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

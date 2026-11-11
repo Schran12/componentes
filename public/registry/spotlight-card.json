@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "spotlight-card",
+  "kind": "component",
+  "title": "SpotlightCard",
+  "description": "Iluminação radial que acompanha o ponteiro sobre o card.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": "cards",
+    "topics": [
+      "cards"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/SpotlightCard",
+    "tags": [
+      "spotlight",
+      "cursor",
+      "card",
+      "framer-motion"
+    ],
+    "variants": [
+      "cor customizada",
+      "tamanho customizado",
+      "reduced-motion"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Conteúdo do card.",
+        "required": true
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "description": "Cor CSS do spotlight.",
+        "required": false,
+        "default": "'hsl(var(--primary) / 0.18)'"
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "description": "Raio do efeito.",
+        "required": false,
+        "default": "280"
+      }
+    ],
+    "example": "<SpotlightCard className=\"p-8\"><h3>Conteúdo iluminado</h3></SpotlightCard>"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/SpotlightCard.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/SpotlightCard.tsx",
+      "content": "'use client'\r\n\r\nimport type { MouseEvent, ReactNode } from 'react'\r\nimport { motion, useMotionTemplate, useMotionValue, useReducedMotion } from 'framer-motion'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type SpotlightCardProps = {\r\n  children: ReactNode\r\n  color?: string\r\n  size?: number\r\n  className?: string\r\n}\r\n\r\nexport function SpotlightCard({\r\n  children,\r\n  color = 'hsl(var(--primary) / 0.18)',\r\n  size = 280,\r\n  className,\r\n}: SpotlightCardProps) {\r\n  const pointerX = useMotionValue(-size)\r\n  const pointerY = useMotionValue(-size)\r\n  const reduceMotion = useReducedMotion()\r\n  const background = useMotionTemplate`radial-gradient(${size}px circle at ${pointerX}px ${pointerY}px, ${color}, transparent 70%)`\r\n\r\n  function updateSpotlight(event: MouseEvent<HTMLDivElement>) {\r\n    const bounds = event.currentTarget.getBoundingClientRect()\r\n    pointerX.set(event.clientX - bounds.left)\r\n    pointerY.set(event.clientY - bounds.top)\r\n  }\r\n\r\n  return (\r\n    <div\r\n      className={cn('group relative overflow-hidden rounded-2xl border bg-card', className)}\r\n      onMouseMove={reduceMotion ? undefined : updateSpotlight}\r\n      onMouseLeave={\r\n        reduceMotion\r\n          ? undefined\r\n          : () => {\r\n              pointerX.set(-size)\r\n              pointerY.set(-size)\r\n            }\r\n      }\r\n    >\r\n      {!reduceMotion ? (\r\n        <motion.div\r\n          aria-hidden=\"true\"\r\n          className=\"pointer-events-none absolute inset-0\"\r\n          style={{ background }}\r\n        />\r\n      ) : null}\r\n      <div className=\"relative\">{children}</div>\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

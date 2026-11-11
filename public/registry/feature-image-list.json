@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "feature-image-list",
+  "kind": "component",
+  "title": "FeatureImageList",
+  "description": "Três colunas: título em caixa alta com botão, imagem central e lista de diferenciais com ícones em blocos.",
+  "meta": {
+    "category": "content",
+    "role": "section.content",
+    "placement": "inside-main",
+    "stage": "diferenciais",
+    "topics": [
+      "differentials"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/content/FeatureImageList",
+    "tags": [
+      "diferenciais",
+      "benefícios",
+      "qualidade",
+      "imagem",
+      "lista"
+    ],
+    "variants": [
+      "três colunas",
+      "com botão",
+      "ícones em bloco"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título da seção.",
+        "required": true
+      },
+      {
+        "name": "image",
+        "type": "{ src: string; alt: string }",
+        "description": "Imagem central.",
+        "required": true
+      },
+      {
+        "name": "items",
+        "type": "readonly FeatureImageListItem[]",
+        "description": "Diferenciais com icon, title e description.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Texto de apoio.",
+        "required": false
+      },
+      {
+        "name": "action",
+        "type": "{ label: string; href: string }",
+        "description": "Botão contornado abaixo do texto.",
+        "required": false
+      }
+    ],
+    "example": "<FeatureImageList title=\"Qualidade em cada detalhe\" image={{ src: '/foto.jpg', alt: '' }} items={items} action={{ label: 'Saiba mais', href: '/sobre' }} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/FeatureImageList.tsx",
+      "type": "component",
+      "target": "src/components/library/content/FeatureImageList.tsx",
+      "content": "import Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport type { ReactNode } from 'react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type FeatureImageListItem = {\r\n  icon: ReactNode\r\n  title: string\r\n  description: string\r\n}\r\n\r\nexport type FeatureImageListProps = {\r\n  title: string\r\n  image: { src: string; alt: string }\r\n  items: readonly FeatureImageListItem[]\r\n  description?: string\r\n  action?: { label: string; href: string }\r\n  className?: string\r\n}\r\n\r\n/** Três colunas: título com ação, imagem central e lista de diferenciais com ícones. */\r\nexport function FeatureImageList({\r\n  title,\r\n  image,\r\n  items,\r\n  description,\r\n  action,\r\n  className,\r\n}: FeatureImageListProps) {\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)}>\r\n      <div className=\"container grid gap-10 md:grid-cols-2 lg:grid-cols-[1fr_1fr_1.15fr] lg:gap-12\">\r\n        <div>\r\n          <h2 className=\"text-3xl font-light uppercase leading-tight tracking-tight md:text-4xl\">\r\n            {title}\r\n          </h2>\r\n          {description ? (\r\n            <p className=\"mt-4 leading-7 text-muted-foreground\">{description}</p>\r\n          ) : null}\r\n          {action ? (\r\n            <Link\r\n              href={action.href}\r\n              className=\"mt-8 inline-flex h-12 items-center rounded-md border border-foreground/30 px-8 text-sm font-medium transition hover:border-primary hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2\"\r\n            >\r\n              {action.label}\r\n            </Link>\r\n          ) : null}\r\n        </div>\r\n\r\n        <div className=\"relative aspect-[4/5] overflow-hidden rounded-lg bg-muted\">\r\n          <Image\r\n            src={image.src}\r\n            alt={image.alt}\r\n            fill\r\n            sizes=\"(min-width: 1024px) 30vw, (min-width: 768px) 50vw, 100vw\"\r\n            className=\"object-cover\"\r\n          />\r\n        </div>\r\n\r\n        <ul className=\"grid content-start gap-7 md:col-span-2 md:grid-cols-2 lg:col-span-1 lg:grid-cols-1\">\r\n          {items.map((item) => (\r\n            <li key={item.title} className=\"flex gap-4\">\r\n              <span\r\n                className=\"flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary [&_svg]:h-6 [&_svg]:w-6\"\r\n                aria-hidden=\"true\"\r\n              >\r\n                {item.icon}\r\n              </span>\r\n              <div>\r\n                <h3 className=\"font-semibold\">{item.title}</h3>\r\n                <p className=\"mt-1 text-sm leading-6 text-muted-foreground\">{item.description}</p>\r\n              </div>\r\n            </li>\r\n          ))}\r\n        </ul>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

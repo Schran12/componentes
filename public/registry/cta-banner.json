@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "cta-banner",
+  "kind": "component",
+  "title": "CTABanner",
+  "description": "Chamada ampla de alto contraste com imagem e duas ações.",
+  "meta": {
+    "category": "feedback",
+    "role": "section.conversion",
+    "placement": "end-of-main",
+    "stage": "cta",
+    "topics": [
+      "cta"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/feedback/CTABanner",
+    "tags": [
+      "cta",
+      "banner",
+      "conversão"
+    ],
+    "variants": [
+      "com imagem",
+      "sem imagem",
+      "duas ações"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "primaryAction",
+        "type": "{ label: string; href: string }",
+        "description": "Ação principal.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "secondaryAction",
+        "type": "{ label: string; href: string }",
+        "description": "Ação secundária.",
+        "required": false
+      },
+      {
+        "name": "backgroundImage",
+        "type": "{ src: string; alt?: string }",
+        "description": "Imagem de fundo.",
+        "required": false
+      }
+    ],
+    "example": "<CTABanner title=\"Pronto para avançar?\" primaryAction={{ label: 'Conversar', href: '/contato' }} />"
+  },
+  "dependencies": [
+    "@radix-ui/react-slot@^1.0.2",
+    "class-variance-authority@^0.7.0",
+    "clsx@^2.0.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/feedback/CTABanner.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/CTABanner.tsx",
+      "content": "import Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { Button } from '@/components/ui/button'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type CTABannerProps = {\r\n  title: string\r\n  description?: string\r\n  primaryAction: { label: string; href: string }\r\n  secondaryAction?: { label: string; href: string }\r\n  backgroundImage?: { src: string; alt?: string }\r\n  className?: string\r\n}\r\n\r\nexport function CTABanner({\r\n  title,\r\n  description,\r\n  primaryAction,\r\n  secondaryAction,\r\n  backgroundImage,\r\n  className,\r\n}: CTABannerProps) {\r\n  return (\r\n    <section\r\n      className={cn(\r\n        'relative isolate overflow-hidden bg-primary py-16 text-primary-foreground md:py-20',\r\n        className,\r\n      )}\r\n      aria-labelledby=\"cta-banner-title\"\r\n    >\r\n      {backgroundImage ? (\r\n        <Image\r\n          src={backgroundImage.src}\r\n          alt={backgroundImage.alt ?? ''}\r\n          fill\r\n          className=\"-z-20 object-cover opacity-25\"\r\n          sizes=\"100vw\"\r\n        />\r\n      ) : null}\r\n      {backgroundImage ? <div className=\"absolute inset-0 -z-10 bg-primary/80\" /> : null}\r\n      <div className=\"container text-center\">\r\n        <h2\r\n          id=\"cta-banner-title\"\r\n          className=\"mx-auto max-w-3xl text-3xl font-bold tracking-tight md:text-5xl\"\r\n        >\r\n          {title}\r\n        </h2>\r\n        {description ? (\r\n          <p className=\"mx-auto mt-5 max-w-2xl text-lg opacity-85\">{description}</p>\r\n        ) : null}\r\n        <div className=\"mt-8 flex flex-wrap justify-center gap-3\">\r\n          <Button asChild size=\"lg\" variant=\"secondary\">\r\n            <Link href={primaryAction.href}>{primaryAction.label}</Link>\r\n          </Button>\r\n          {secondaryAction ? (\r\n            <Button\r\n              asChild\r\n              size=\"lg\"\r\n              variant=\"outline\"\r\n              className=\"border-current bg-transparent text-current hover:bg-white/10 hover:text-current\"\r\n            >\r\n              <Link href={secondaryAction.href}>{secondaryAction.label}</Link>\r\n            </Button>\r\n          ) : null}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "type": "ui",
+      "target": "src/components/ui/button.tsx",
+      "content": "import * as React from 'react'\r\nimport { Slot } from '@radix-ui/react-slot'\r\nimport { cva, type VariantProps } from 'class-variance-authority'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nconst buttonVariants = cva(\r\n  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',\r\n  {\r\n    variants: {\r\n      variant: {\r\n        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',\r\n        destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',\r\n        outline:\r\n          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',\r\n        secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',\r\n        ghost: 'hover:bg-accent hover:text-accent-foreground',\r\n        link: 'text-primary underline-offset-4 hover:underline',\r\n      },\r\n      size: {\r\n        default: 'h-9 px-4 py-2',\r\n        sm: 'h-8 rounded-md px-3 text-xs',\r\n        lg: 'h-10 rounded-md px-8',\r\n        icon: 'h-9 w-9',\r\n      },\r\n    },\r\n    defaultVariants: {\r\n      variant: 'default',\r\n      size: 'default',\r\n    },\r\n  },\r\n)\r\n\r\nexport interface ButtonProps\r\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {\r\n  asChild?: boolean\r\n}\r\n\r\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\r\n  ({ className, variant, size, asChild = false, ...props }, ref) => {\r\n    const Comp = asChild ? Slot : 'button'\r\n    return (\r\n      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />\r\n    )\r\n  },\r\n)\r\nButton.displayName = 'Button'\r\n\r\nexport { Button, buttonVariants }\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

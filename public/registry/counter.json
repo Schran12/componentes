@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "counter",
+  "kind": "component",
+  "title": "Counter",
+  "description": "Contador numérico animado e localizado com redução de movimento.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/Counter",
+    "tags": [
+      "animação",
+      "número",
+      "gsap",
+      "acessível"
+    ],
+    "variants": [
+      "mount",
+      "scroll",
+      "formatter",
+      "locale"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "description": "Valor final.",
+        "required": true
+      },
+      {
+        "name": "from",
+        "type": "number",
+        "description": "Valor inicial.",
+        "required": false,
+        "default": "0"
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "description": "Duração em segundos.",
+        "required": false,
+        "default": "1.5"
+      },
+      {
+        "name": "decimals",
+        "type": "number",
+        "description": "Casas decimais.",
+        "required": false,
+        "default": "0"
+      },
+      {
+        "name": "prefix",
+        "type": "string",
+        "description": "Prefixo.",
+        "required": false
+      },
+      {
+        "name": "suffix",
+        "type": "string",
+        "description": "Sufixo.",
+        "required": false
+      },
+      {
+        "name": "trigger",
+        "type": "'mount' | 'scroll'",
+        "description": "Gatilho.",
+        "required": false,
+        "default": "'scroll'"
+      },
+      {
+        "name": "formatter",
+        "type": "(value: number) => string",
+        "description": "Formatação customizada.",
+        "required": false
+      }
+    ],
+    "example": "<Counter value={98.7} decimals={1} suffix=\"%\" trigger=\"mount\" />"
+  },
+  "dependencies": [
+    "gsap@^3.12.2"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/Counter.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/Counter.tsx",
+      "content": "'use client'\r\n\r\nimport { useRef } from 'react'\r\nimport { useGSAP } from '@/lib/hooks/useGSAP'\r\nimport { prefersReducedMotion, useReducedMotion } from './useReducedMotion'\r\n\r\nexport type CounterProps = {\r\n  value: number\r\n  from?: number\r\n  duration?: number\r\n  delay?: number\r\n  decimals?: number\r\n  locale?: string\r\n  prefix?: string\r\n  suffix?: string\r\n  className?: string\r\n  trigger?: 'mount' | 'scroll'\r\n  formatter?: (value: number) => string\r\n}\r\n\r\nexport function Counter({\r\n  value,\r\n  from = 0,\r\n  duration = 1.5,\r\n  delay = 0,\r\n  decimals = 0,\r\n  locale = 'pt-BR',\r\n  prefix = '',\r\n  suffix = '',\r\n  className,\r\n  trigger = 'scroll',\r\n  formatter,\r\n}: CounterProps) {\r\n  const root = useRef<HTMLSpanElement>(null)\r\n  const output = useRef<HTMLSpanElement>(null)\r\n  const reduced = useReducedMotion()\r\n  const safeValue = Number.isFinite(value) ? value : 0\r\n  const safeFrom = Number.isFinite(from) ? from : 0\r\n  const precision = Math.min(20, Math.max(0, Math.trunc(decimals)))\r\n  const numberFormat = new Intl.NumberFormat(locale, {\r\n    minimumFractionDigits: precision,\r\n    maximumFractionDigits: precision,\r\n  })\r\n  const format = (current: number): string =>\r\n    `${prefix}${formatter ? formatter(current) : numberFormat.format(current)}${suffix}`\r\n  const finalText = format(safeValue)\r\n\r\n  useGSAP(\r\n    ({ gsap }) => {\r\n      const element = root.current\r\n      const text = output.current\r\n      if (!element || !text) return\r\n\r\n      if (reduced || prefersReducedMotion()) {\r\n        text.textContent = finalText\r\n        return\r\n      }\r\n\r\n      const state = { value: safeFrom }\r\n      gsap.to(state, {\r\n        value: safeValue,\r\n        duration,\r\n        delay,\r\n        ease: 'power2.out',\r\n        onStart: () => {\r\n          text.textContent = format(safeFrom)\r\n        },\r\n        onUpdate: () => {\r\n          text.textContent = format(state.value)\r\n        },\r\n        onComplete: () => {\r\n          text.textContent = finalText\r\n        },\r\n        scrollTrigger:\r\n          trigger === 'scroll'\r\n            ? {\r\n                trigger: element,\r\n                start: 'top 90%',\r\n                once: true,\r\n              }\r\n            : undefined,\r\n      })\r\n\r\n      return () => {\r\n        text.textContent = finalText\r\n      }\r\n    },\r\n    [\r\n      delay,\r\n      duration,\r\n      finalText,\r\n      formatter,\r\n      locale,\r\n      precision,\r\n      prefix,\r\n      reduced,\r\n      safeFrom,\r\n      safeValue,\r\n      suffix,\r\n      trigger,\r\n    ],\r\n    root,\r\n  )\r\n\r\n  return (\r\n    <span ref={root} className={className} aria-label={finalText}>\r\n      <span ref={output} aria-hidden=\"true\">\r\n        {finalText}\r\n      </span>\r\n    </span>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/motion/useReducedMotion.ts",
+      "type": "component",
+      "target": "src/components/library/motion/useReducedMotion.ts",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\nconst QUERY = '(prefers-reduced-motion: reduce)'\r\n\r\nexport function prefersReducedMotion(): boolean {\r\n  return typeof window !== 'undefined' && window.matchMedia(QUERY).matches\r\n}\r\n\r\nexport function useReducedMotion(): boolean {\r\n  const [reduced, setReduced] = useState(false)\r\n\r\n  useEffect(() => {\r\n    const media = window.matchMedia(QUERY)\r\n    const update = (): void => setReduced(media.matches)\r\n\r\n    update()\r\n    media.addEventListener('change', update)\r\n    return () => media.removeEventListener('change', update)\r\n  }, [])\r\n\r\n  return reduced\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/hooks/useGSAP.ts",
+      "type": "hook",
+      "target": "src/lib/hooks/useGSAP.ts",
+      "content": "'use client'\r\n\r\nimport gsap from 'gsap'\r\nimport { ScrollTrigger } from 'gsap/ScrollTrigger'\r\nimport { useEffect, type DependencyList, type RefObject } from 'react'\r\n\r\nlet registered = false\r\n\r\nfunction ensureGsapPlugins(): void {\r\n  if (typeof window === 'undefined' || registered) return\r\n  gsap.registerPlugin(ScrollTrigger)\r\n  registered = true\r\n}\r\n\r\nexport type GSAPTools = {\r\n  gsap: typeof gsap\r\n  ScrollTrigger: typeof ScrollTrigger\r\n}\r\n\r\nexport type GSAPCallback = (tools: GSAPTools) => void | (() => void)\r\n\r\nexport function useGSAP(\r\n  callback: GSAPCallback,\r\n  deps: DependencyList = [],\r\n  scope?: RefObject<Element | null>,\r\n): void {\r\n  useEffect(() => {\r\n    if (typeof window === 'undefined') return\r\n\r\n    ensureGsapPlugins()\r\n\r\n    let dispose: void | (() => void)\r\n    const context = gsap.context(() => {\r\n      dispose = callback({ gsap, ScrollTrigger })\r\n    }, scope?.current ?? undefined)\r\n\r\n    return () => {\r\n      dispose?.()\r\n      context.revert()\r\n    }\r\n\r\n    // Dependencies are deliberately controlled by each animation consumer.\r\n    // eslint-disable-next-line react-hooks/exhaustive-deps\r\n  }, deps)\r\n}\r\n"
+    }
+  ]
+}

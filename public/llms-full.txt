@@ -1,0 +1,2707 @@
+# Componentes Bloomin — referência completa
+
+## Convenções
+
+- Use apenas componentes listados neste arquivo.
+- Forneça textos, imagens, links, callbacks e configuração exclusivamente por props.
+- Prefira imports diretos informados em importPath.
+- Respeite a ordem navigation, hero, conteúdo, prova social, conversão e footer.
+- Não invente props: consulte a lista props do componente.
+- Componentes com clientComponent=true exigem uma fronteira client no Next.js.
+- Preserve foco visível, semântica e prefers-reduced-motion.
+
+## Receitas de layout
+
+### Institucional (`recipe:institutional`)
+Site equilibrado para empresas e serviços profissionais.
+Público: Escritórios, clínicas, consultorias e marcas corporativas.
+Ordem: navbar-simple → banner-image → about-values-section → differentials-section → stats-grid → testimonials-spotlight → contact-split-section → footer-columns
+
+### Institucional corporativo (`recipe:institutional-corporate`)
+Narrativa completa com credibilidade, equipe, processo e contato.
+Público: Empresas médias/grandes e grupos empresariais.
+Ordem: navbar-accent → banner-split → credibility-section → about-metrics-section → process-steps → team-section → logo-carousel-band → testimonials-columns → faq-bordered → cta-banner → contact-channels-section → footer-contact-columns → scroll-to-top-button
+
+### Consultoria (`recipe:consulting`)
+Autoridade, método, casos e conversão para serviços B2B.
+Público: Consultorias, assessorias e profissionais liberais.
+Ordem: navbar-simple → banner-split → credibility-section → process-steps → icon-feature-cards → testimonials-quote-slider → faq-centered → cta-split-panel → contact-form → footer-columns
+
+### Industrial (`recipe:industrial`)
+Presença B2B para indústria, manufatura e operação técnica.
+Público: Fábricas, indústrias e fornecedores técnicos.
+Ordem: navbar-accent → image-overlay-hero → credibility-section → about-metrics-section → hover-reveal-services → process-steps → service-area-cards → logo-carousel-band → testimonials-grid → multi-step-quote-form → footer-contact-columns → floating-whatsapp-button
+
+### Tratamento de superfície (`recipe:industrial-services`)
+Home B2B no modelo Axis Industrial: hero com pilares, tratamentos, problema→solução, processo, credibilidade, cobertura e orçamento via WhatsApp.
+Público: Galvanização, zincagem, fosfatização e prestadores de tratamento metálico industrial.
+Ordem: navbar-accent → pillars-hero → about-metrics-section → hover-reveal-services → problem-solution-cards → logo-carousel-band → process-steps → credibility-section → coverage-callout → faq-help-card → whatsapp-quote-form → footer-contact-columns → floating-whatsapp-button → scroll-to-top-button
+
+### Produto SaaS (`recipe:saas`)
+Página orientada a produto, benefícios, prova e conversão.
+Público: Software, plataformas e produtos digitais.
+Ordem: navbar-floating → banner-split → product-feature-tabs → interactive-feature-showcase → pricing-cards → faq-centered → cta-banner → footer-columns
+
+### Fintech (`recipe:fintech`)
+Hero forte, confiança, produto e planos para serviços financeiros.
+Público: Fintechs, bancos digitais e plataformas de pagamento.
+Ordem: navbar-floating → fintech-hero-section → logo-carousel-band → feature-grid → comparison-table → pricing-cards → testimonials-spotlight → faq-search → cta-banner → footer-compact
+
+### E-commerce (`recipe:ecommerce`)
+Vitrine com categorias, produtos, confiança e conversão.
+Público: Lojas e catálogos online.
+Ordem: announcement-bar → navbar-mega → banner-carousel → category-mosaic → product-carousel → product-grid → testimonials-grid → newsletter-form → footer-columns
+
+### Hueline Saturation SS27 (`recipe:hueline-saturation-ss27`)
+Lookbook e shop fashion feminino — loader, hero film, wardrobe, lookbook, colour story e shop com Flip.
+Público: Marcas de moda, lookbooks e drops sazonais.
+Ordem: hueline-navbar → hueline-hero → hueline-style-arches → hueline-product-rails → hueline-lookbook → hueline-colour-story → hueline-shop-grid → hueline-atelier → hueline-footer
+
+### Veloria Yacht Charter (`recipe:veloria-yacht-charter`)
+Landing cinematográfica com vídeo de iate em tela cheia, seções transparentes sobre o casco e reserva no painel sólido.
+Público: Charters privados, luxury travel e marcas náuticas.
+Ordem: veloria-navbar → veloria-hero → veloria-onboard → veloria-voyage → veloria-destinations → veloria-reserve
+
+### Nimbus AI (`recipe:nimbus-ai`)
+Landing cinematográfica dark para API de documentos: aurora hero, demo chat, capabilities, code tabs, pricing usage-based.
+Público: APIs de IA, developer tools e SaaS B2B.
+Ordem: nimbus-navbar → nimbus-hero → nimbus-demo → nimbus-capabilities → nimbus-developer → nimbus-use-cases → nimbus-pricing → nimbus-cta → nimbus-footer
+
+### Aviamentos atacado (`recipe:aviamentos-atacado`)
+Home estilo Mix Metais: navbar com logo central, hero, coleções, carrossel de peças, diferenciais e cotação comercial.
+Público: Lojas de aviamentos, metais e acessórios para confecção no atacado.
+Ordem: navbar-split-logo → banner-immersive → category-mosaic → product-carousel → differentials-section → stats-grid → contact-split-section → footer-contact-columns → floating-whatsapp-button → scroll-to-top-button
+
+### Imobiliária (`recipe:real-estate`)
+Vitrine de imóveis, credibilidade local e captura de leads.
+Público: Imobiliárias, corretores e lançamentos.
+Ordem: navbar-accent → banner-immersive → stats-grid → filterable-card-grid → location-showcase → testimonials-columns → faq-bordered → multi-step-quote-form → map-embed-section → footer-contact-columns → floating-whatsapp-button
+
+### Agência ou portfólio (`recipe:agency`)
+Narrativa visual para serviços, projetos e contato.
+Público: Agências, estúdios e freelancers.
+Ordem: navbar-minimal → banner-editorial → services-carousel-section → about-gallery → gallery-grid → process-steps → testimonials-carousel → contact-split-section → footer-compact
+
+### Landing page (`recipe:landing-page`)
+Fluxo curto focado em uma oferta e uma ação principal.
+Público: Campanhas, lançamentos e captura de leads.
+Ordem: navbar-pill → banner-immersive → feature-grid → comparison-table → testimonials-spotlight → faq-search → cta-inline → footer-compact
+
+### Evento (`recipe:event`)
+Divulgação de evento com agenda, prova social e inscrição.
+Público: Congressos, workshops e lançamentos presenciais.
+Ordem: announcement-bar → navbar-pill → banner-video → timeline → team-section → ticket-pricing-cards → testimonials-marquee → faq-cards → cta-centered-card → footer-compact
+
+### Clínica ou saúde (`recipe:clinic`)
+Confiança, especialidades, equipe e agendamento.
+Público: Clínicas, consultórios e centros médicos.
+Ordem: contact-info-bar → navbar-simple → banner-image → about-values-section → icon-feature-cards → team-grid → testimonials-spotlight → faq-help-card → contact-split-section → footer-columns → floating-whatsapp-button
+
+### Restaurante (`recipe:restaurant`)
+Atmosfera, cardápio visual, localização e reserva.
+Público: Restaurantes, cafés e food service.
+Ordem: navbar-minimal → banner-immersive → about-gallery → category-mosaic → gallery-grid → testimonials-carousel → map-embed-section → newsletter-form → footer-compact → floating-whatsapp-button
+
+### Educação / curso (`recipe:education`)
+Oferta educacional com módulos, prova social e matrícula.
+Público: Escolas, cursos online e instituições de ensino.
+Ordem: navbar-centered → banner-split → process-steps → feature-grid → pricing-cards → testimonials-columns → faq-centered → cta-banner → footer-columns
+
+### Blog / conteúdo (`recipe:blog`)
+Home editorial com destaques, listagem e newsletter.
+Público: Marcas de conteúdo, publishers e portais.
+Ordem: navbar-simple → page-header → blog-featured-listing → blog-grid → newsletter-form → footer-columns
+
+### ONG / causa (`recipe:nonprofit`)
+Impacto, histórias, transparência e chamado à doação.
+Público: ONGs, projetos sociais e institutos.
+Ordem: navbar-simple → banner-editorial → stats-grid → about-values-section → gallery-grid → testimonials-quote-slider → cta-split-panel → contact-channels-section → footer-columns
+
+## Componentes
+
+### ActionGroup (action-group)
+Categoria: primitives
+Papel: section.primitives
+Posição: inside-main
+Descrição: Agrupa links de ação com alinhamento e empilhamento responsivo.
+Import: @/components/library/primitives/ActionGroup
+Client: não
+Props: actions: readonly ActionItem[]; align: 'left' | 'center' | 'right' = 'left'; mobileStack: boolean = false; children: ReactNode
+Variantes: left, center, right, mobileStack
+Exemplo: <ActionGroup actions={[{ label: 'Começar', href: '/contato' }, { label: 'Saiba mais', href: '/sobre', variant: 'outline' }]} />
+
+### MediaFrame (media-frame)
+Categoria: primitives
+Papel: section.primitives
+Posição: inside-main
+Descrição: Moldura semântica para mídia com proporção, raio, elevação e legenda.
+Import: @/components/library/primitives/MediaFrame
+Client: não
+Props: children: ReactNode; caption: ReactNode; ratio: 'auto' | 'square' | 'video' | 'portrait' | 'landscape' | 'wide' = 'video'; radius: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md'; elevation: 'none' | 'sm' | 'md' | 'lg' = 'none'
+Variantes: 6 proporções, 5 raios, 4 elevações
+Exemplo: <MediaFrame ratio="video" radius="lg" elevation="md" caption="Linha de produção"><img src="/imagem.jpg" alt="Linha de produção" /></MediaFrame>
+
+### SectionHeading (section-heading)
+Categoria: primitives
+Papel: section.primitives
+Posição: inside-main
+Descrição: Cabeçalho de seção tipado com eyebrow, descrição e alinhamento.
+Import: @/components/library/primitives/SectionHeading
+Client: não
+Props: title: ReactNode (obrigatória); eyebrow: ReactNode; description: ReactNode; align: 'left' | 'center' | 'right' = 'left'; titleAs: 'h1' | 'h2' | 'h3' = 'h2'; size: 'sm' | 'md' | 'lg' = 'md'
+Variantes: sm, md, lg, left, center, right
+Exemplo: <SectionHeading eyebrow="Biblioteca" title="Blocos prontos" description="Componha páginas consistentes." align="center" />
+
+### SectionShell (section-shell)
+Categoria: primitives
+Papel: section.primitives
+Posição: inside-main
+Descrição: Contêiner de seção com largura, espaçamento e tom configuráveis.
+Import: @/components/library/primitives/SectionShell
+Client: não
+Props: children: ReactNode; spacing: 'none' | 'sm' | 'md' | 'lg' | 'xl' = 'lg'; tone: 'default' | 'muted' | 'primary' | 'transparent' = 'default'; containerSize: 'sm' | 'md' | 'lg' | 'full' = 'lg'; containerClassName: string
+Variantes: 5 espaçamentos, 4 tons, 4 larguras
+Exemplo: <SectionShell spacing="md" tone="muted" containerSize="md">Conteúdo</SectionShell>
+
+### HoverButton (hover-button)
+Categoria: primitives
+Papel: section.primitives
+Posição: inside-main
+Descrição: Botão de ação com seis efeitos de hover, link opcional e ícone configurável.
+Import: @/components/library/primitives/HoverButton
+Client: não
+Props: children: ReactNode (obrigatória); href: string; effect: 'lift' | 'shine' | 'slide' | 'glow' | 'underline' | 'expand-icon' = 'lift'; variant: ButtonProps["variant"]; icon: ReactNode
+Variantes: lift, shine, slide, glow, underline, expand-icon
+Exemplo: <HoverButton effect="shine" href="/contato">Começar agora</HoverButton>
+
+### AccentButton (accent-button)
+Categoria: primitives
+Papel: section.primitives
+Posição: inside-main
+Descrição: Botão/link temático: pílula com borda em gradiente (glow) ou botão com ícone deslizante (industrial).
+Import: @/components/library/primitives/AccentButton
+Client: não
+Props: children: ReactNode (obrigatória); href: string; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'; size: 'md' | 'lg' = 'md'; icon: ReactNode = <ArrowUpRight />; external: boolean; type: 'button' | 'submit' = 'button'; disabled: boolean; onClick: MouseEventHandler<HTMLElement>
+Variantes: glow, industrial, industrial-dark, md, lg
+Exemplo: <AccentButton href="/contato" tone="industrial">Solicitar orçamento</AccentButton>
+
+### EyebrowHeading (eyebrow-heading)
+Categoria: primitives
+Papel: section.primitives
+Posição: inside-main
+Descrição: Cabeçalho de seção com eyebrow e linha de destaque, título temático, descrição e ação opcional.
+Import: @/components/library/primitives/EyebrowHeading
+Client: não
+Props: title: ReactNode (obrigatória); eyebrow: ReactNode; description: ReactNode; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'; align: 'left' | 'center' = 'left'; layout: 'stacked' | 'split' = 'stacked'; size: 'md' | 'lg' = 'md'; titleAs: 'h1' | 'h2' | 'h3' = 'h2'; action: ReactNode
+Variantes: stacked, split, center, glow, industrial
+Exemplo: <EyebrowHeading eyebrow="Sobre" title="Tecnologia que move negócios" tone="industrial" layout="split" description="Lorem ipsum." />
+
+### PillButton (pill-button)
+Categoria: primitives
+Papel: section.primitives
+Posição: inside-main
+Descrição: Botão pílula com variantes sólida, contorno e vidro (glass).
+Import: @/components/library/primitives/PillButton
+Client: não
+Props: children: ReactNode (obrigatória); href: string; variant: 'solid' | 'outline' | 'glass' = 'solid'; icon: ReactNode; type: 'button' | 'submit'; disabled: boolean; onClick: MouseEventHandler<HTMLElement>
+Variantes: solid, outline, glass
+Exemplo: <PillButton href="/produtos" variant="outline">Ver produtos</PillButton>
+
+### BadgeSectionHeader (badge-section-header)
+Categoria: primitives
+Papel: section.primitives
+Posição: inside-main
+Descrição: Cabeçalho de seção com selo (badge), título e subtítulo em tema claro ou escuro.
+Import: @/components/library/primitives/BadgeSectionHeader
+Client: não
+Props: badge: string (obrigatória); title: string (obrigatória); subtitle: string; tone: 'light' | 'dark' = 'light'; align: 'center' | 'left' = 'center'; titleAs: 'h1' | 'h2' | 'h3' = 'h2'
+Variantes: light, dark, center, left
+Exemplo: <BadgeSectionHeader badge="Serviços" title="O que fazemos" subtitle="Lorem ipsum." />
+
+### AnnouncementBar (announcement-bar)
+Categoria: navigation
+Papel: page.navigation
+Posição: before-main
+Descrição: Faixa de anúncio com ação, variações de contraste e fechamento opcional.
+Import: @/components/library/navigation/AnnouncementBar
+Client: sim
+Props: message: ReactNode (obrigatória); action: { label: string; href: string; external?: boolean }; variant: 'default' | 'accent' | 'dark' = 'default'; dismissible: boolean = false; dismissLabel: string = 'Fechar aviso'; onDismiss: () => void
+Variantes: default, accent, dark, dismissible
+Exemplo: <AnnouncementBar message="Novidade: biblioteca 2.0" action={{ label: 'Conheça', href: '/componentes' }} variant="accent" />
+
+### TopBar (top-bar)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Faixa superior escura para telefone, e-mail e horário, com ícones em destaque e alinhamento esquerda/direita.
+Import: @/components/library/navigation/TopBar
+Client: não
+Props: items: readonly TopBarItem[] (obrigatória); variant: 'dark' | 'slate' | 'primary' = 'dark'
+Variantes: dark, slate, primary, TopBarContacts
+Exemplo: <TopBarContacts phone="(11) 4000-0000" email="contato@norte.com" hours="Seg a sex, 8h às 18h" />
+
+### BreadcrumbsChevron (breadcrumbs-chevron)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Breadcrumb padrão com chevron, ícone de início e colapso dos níveis do meio.
+Import: @/components/library/navigation/Breadcrumbs
+Client: não
+Props: items: readonly BreadcrumbItem[] (obrigatória); collapseAfter: number = 2; structuredData: string
+Variantes: chevron, colapsado, ícone home
+Exemplo: <BreadcrumbsChevron items={[{ label: 'Início', href: '/' }, { label: 'Produtos', href: '/produtos' }, { label: 'Linha Essencial', href: '/linha' }, { label: 'Modelo Compacto' }]} />
+
+### BreadcrumbsSlash (breadcrumbs-slash)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Breadcrumb textual com separador em barra (/).
+Import: @/components/library/navigation/Breadcrumbs
+Client: não
+Props: items: readonly BreadcrumbItem[] (obrigatória); structuredData: string
+Variantes: slash
+Exemplo: <BreadcrumbsSlash items={[{ label: 'Início', href: '/' }, { label: 'Produtos', href: '/produtos' }, { label: 'Modelo Compacto' }]} />
+
+### BreadcrumbsContained (breadcrumbs-contained)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Breadcrumb em cápsula com borda e separador em ponto.
+Import: @/components/library/navigation/Breadcrumbs
+Client: não
+Props: items: readonly BreadcrumbItem[] (obrigatória); structuredData: string
+Variantes: contained, dot
+Exemplo: <BreadcrumbsContained items={[{ label: 'Início', href: '/' }, { label: 'Produtos', href: '/produtos' }, { label: 'Modelo Compacto' }]} />
+
+### BreadcrumbsPills (breadcrumbs-pills)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Cada nível em pílula; o atual destaca na cor da marca.
+Import: @/components/library/navigation/Breadcrumbs
+Client: não
+Props: items: readonly BreadcrumbItem[] (obrigatória); structuredData: string
+Variantes: pills, arrow
+Exemplo: <BreadcrumbsPills items={[{ label: 'Início', href: '/' }, { label: 'Produtos', href: '/produtos' }, { label: 'Modelo Compacto' }]} />
+
+### BreadcrumbsSteps (breadcrumbs-steps)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Breadcrumb em degraus (estilo wizard / chevron ribbon).
+Import: @/components/library/navigation/Breadcrumbs
+Client: não
+Props: items: readonly BreadcrumbItem[] (obrigatória); structuredData: string
+Variantes: steps
+Exemplo: <BreadcrumbsSteps items={[{ label: 'Início', href: '/' }, { label: 'Produtos', href: '/produtos' }, { label: 'Modelo Compacto' }]} />
+
+### BreadcrumbsUnderline (breadcrumbs-underline)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Breadcrumb com o item atual sublinhado na cor da marca.
+Import: @/components/library/navigation/Breadcrumbs
+Client: não
+Props: items: readonly BreadcrumbItem[] (obrigatória); structuredData: string
+Variantes: underline, md
+Exemplo: <BreadcrumbsUnderline items={[{ label: 'Início', href: '/' }, { label: 'Produtos', href: '/produtos' }, { label: 'Modelo Compacto' }]} />
+
+### BreadcrumbsMobileBack (breadcrumbs-mobile-back)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: No celular mostra só “← página anterior”; no desktop mantém a trilha completa.
+Import: @/components/library/navigation/Breadcrumbs
+Client: não
+Props: items: readonly BreadcrumbItem[] (obrigatória); structuredData: string
+Variantes: mobile back
+Exemplo: <BreadcrumbsMobileBack items={[{ label: 'Início', href: '/' }, { label: 'Produtos', href: '/produtos' }, { label: 'Modelo Compacto' }]} />
+
+### BreadcrumbsMobileScroll (breadcrumbs-mobile-scroll)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Trilha em pílulas com rolagem horizontal no mobile.
+Import: @/components/library/navigation/Breadcrumbs
+Client: não
+Props: items: readonly BreadcrumbItem[] (obrigatória); structuredData: string
+Variantes: mobile scroll, pills
+Exemplo: <BreadcrumbsMobileScroll items={[{ label: 'Início', href: '/' }, { label: 'Produtos', href: '/produtos' }, { label: 'Linha Essencial', href: '/linha' }, { label: 'Modelo Compacto' }]} />
+
+### BreadcrumbsInverted (breadcrumbs-inverted)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Breadcrumb em tom claro para fundos escuros ou na cor da marca.
+Import: @/components/library/navigation/Breadcrumbs
+Client: não
+Props: items: readonly BreadcrumbItem[] (obrigatória); structuredData: string
+Variantes: inverted
+Exemplo: <BreadcrumbsInverted items={[{ label: 'Início', href: '/' }, { label: 'Produtos', href: '/produtos' }, { label: 'Modelo Compacto' }]} />
+
+### MobileDrawer (mobile-drawer)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Menu móvel acessível em dialog lateral com itens aninhados e ações.
+Import: @/components/library/navigation/MobileDrawer
+Client: sim
+Props: brand: NavigationBrand (obrigatória); items: readonly NavigationItem[] (obrigatória); actions: readonly NavigationAction[]; trigger: ReactNode; triggerLabel: string = 'Abrir menu'
+Variantes: trigger padrão, trigger customizado
+Exemplo: <MobileDrawer brand={{ label: 'Acme' }} items={[{ label: 'Início', href: '/' }]} />
+
+### NavbarSimple (navbar-simple)
+Categoria: navigation
+Papel: page.navigation
+Posição: before-main
+Descrição: Barra de navegação direta com ações e drawer responsivo.
+Import: @/components/library/navigation/NavbarSimple
+Client: não
+Props: brand: NavigationBrand (obrigatória); items: readonly NavigationItem[] (obrigatória); actions: readonly NavigationAction[]; sticky: boolean = false; navigationLabel: string
+Variantes: static, sticky, desktop, mobile
+Exemplo: <NavbarSimple brand={{ label: 'Acme' }} items={items} actions={[{ label: 'Contato', href: '/contato' }]} />
+
+### NavbarCentered (navbar-centered)
+Categoria: navigation
+Papel: page.navigation
+Posição: before-main
+Descrição: Navbar com marca central e links distribuídos nos dois lados.
+Import: @/components/library/navigation/NavbarCentered
+Client: não
+Props: brand: NavigationBrand (obrigatória); items: readonly NavigationItem[] (obrigatória); actions: readonly NavigationAction[]; sticky: boolean = false
+Variantes: static, sticky, centralizada
+Exemplo: <NavbarCentered brand={{ label: 'Acme' }} items={items} actions={actions} />
+
+### NavbarMega (navbar-mega)
+Categoria: navigation
+Papel: page.navigation
+Posição: before-main
+Descrição: Navegação ampla com mega menu animado (hover com atraso, fecha ao clicar fora/Esc/navegar) e fallback móvel.
+Import: @/components/library/navigation/NavbarMega
+Client: sim
+Props: brand: NavigationBrand (obrigatória); items: readonly NavigationItem[] (obrigatória); actions: readonly NavigationAction[]; sticky: boolean = false; panelLayout: 'list' | 'cards' = 'list'; hideBrandLabel: boolean = false
+Variantes: mega menu, cards, link simples, sticky
+Exemplo: <NavbarMega brand={{ label: 'Acme' }} items={[{ label: 'Soluções', href: '#', children: solutionLinks }]} />
+
+### FooterColumns (footer-columns)
+Categoria: navigation
+Papel: page.footer
+Posição: after-main
+Descrição: Rodapé institucional completo com colunas, redes e links legais.
+Import: @/components/library/navigation/FooterColumns
+Client: não
+Props: brand: NavigationBrand (obrigatória); columns: readonly FooterColumn[] (obrigatória); description: ReactNode; socialLinks: readonly SocialLink[]; legalLinks: readonly NavigationLink[]; copyright: ReactNode; hideBrandLabel: boolean = false; showDevelopedBy: boolean = true
+Variantes: com redes, com links legais, copyright automático, crédito Bloomin
+Exemplo: <FooterColumns brand={{ label: 'Acme' }} columns={[{ title: 'Empresa', links: [{ label: 'Sobre', href: '/sobre' }] }]} />
+
+### FooterCompact (footer-compact)
+Categoria: navigation
+Papel: page.footer
+Posição: after-main
+Descrição: Rodapé compacto com marca, links e redes sociais.
+Import: @/components/library/navigation/FooterCompact
+Client: não
+Props: brand: NavigationBrand (obrigatória); links: readonly NavigationLink[]; socialLinks: readonly SocialLink[]; copyright: ReactNode; showDevelopedBy: boolean = true
+Variantes: com links, com redes, mínimo, crédito Bloomin
+Exemplo: <FooterCompact brand={{ label: 'Acme' }} links={[{ label: 'Privacidade', href: '/privacidade' }]} />
+
+### NavbarFloating (navbar-floating)
+Categoria: navigation
+Papel: page.navigation
+Posição: before-main
+Descrição: Navegação flutuante em vidro com links agrupados, ações e drawer móvel.
+Import: @/components/library/navigation/NavbarFloating
+Client: não
+Props: brand: NavigationBrand (obrigatória); items: readonly NavigationItem[] (obrigatória); actions: readonly NavigationAction[]; position: 'inline' | 'sticky' | 'fixed' = 'inline'
+Variantes: inline, sticky, fixed, drawer móvel
+Exemplo: <NavbarFloating brand={{ label: 'Norte' }} items={[{ label: 'Início', href: '/' }]} actions={[{ label: 'Começar', href: '/contato' }]} />
+
+### NavigationDropdown (navigation-dropdown)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Dropdown Radix para links ou ações, com ícones, descrições e atalhos.
+Import: @/components/library/navigation/NavigationDropdown
+Client: sim
+Props: label: string (obrigatória); items: readonly NavigationDropdownItem[] (obrigatória); heading: string; variant: 'compact' | 'rich' | 'icons' = 'compact'; align: 'start' | 'center' | 'end' = 'start'; trigger: ReactNode
+Variantes: compact, rich, icons, trigger customizado
+Exemplo: <NavigationDropdown label="Soluções" variant="rich" items={[{ label: 'Produto', href: '/produto', description: 'Lorem ipsum.' }]} />
+
+### NavbarPill (navbar-pill)
+Categoria: navigation
+Papel: page.navigation
+Posição: before-main
+Descrição: Navbar flutuante em cápsula com temas, ação e alternador opcional.
+Import: @/components/library/navigation/NavbarPill
+Client: sim
+Props: brand: NavigationBrand (obrigatória); items: readonly NavigationItem[] (obrigatória); action: NavigationAction; theme: 'dark' | 'light' = 'dark'; floating: boolean = true; showThemeToggle: boolean = false
+Variantes: dark, light, floating, inline
+Exemplo: <NavbarPill brand={brand} items={links} theme="dark" action={{ label: 'Começar', href: '/contato' }} />
+
+### NavbarMinimal (navbar-minimal)
+Categoria: navigation
+Papel: page.navigation
+Posição: before-main
+Descrição: Navbar de alto contraste com links centralizados, marca lateral e ação arredondada.
+Import: @/components/library/navigation/NavbarMinimal
+Client: não
+Props: brand: NavigationBrand (obrigatória); items: readonly NavigationItem[] (obrigatória); action: NavigationAction; theme: 'dark' | 'light' = 'dark'; accent: boolean = true; hideBrandLabel: boolean = true
+Variantes: dark, light, com ou sem accent
+Exemplo: <NavbarMinimal brand={brand} items={links} action={{ label: 'Download', href: '/download' }} />
+
+### ContactInfoBar (contact-info-bar)
+Categoria: navigation
+Papel: section.contact
+Posição: end-of-main
+Descrição: Barra superior compacta para endereço, e-mail, horário e outros contatos.
+Import: @/components/library/navigation/ContactInfoBar
+Client: não
+Props: items: readonly ContactInfoBarItem[] (obrigatória); variant: 'primary' | 'dark' | 'light' = 'primary'
+Variantes: primary, dark, light
+Exemplo: <ContactInfoBar items={[{ label: 'E-mail', value: 'contato@empresa.com', href: 'mailto:contato@empresa.com' }]} />
+
+### NavbarAccent (navbar-accent)
+Categoria: navigation
+Papel: page.navigation
+Posição: before-main
+Descrição: Cabeçalho com dropdowns, sublinhado ativo, CTA, topbar de contatos opcional e drawer mobile.
+Import: @/components/library/navigation/NavbarAccent
+Client: sim
+Props: logo: ReactNode (obrigatória); items: readonly { label; href; children? }[] (obrigatória); logoHref: string = '/'; cta: { label; href; icon? }; topbar: { phone?; phoneHref?; email?; hours? }; socialLinks: readonly { label; href; icon }[]; position: 'static' | 'sticky' = 'sticky'; tone: 'glow' | 'industrial' | 'industrial-dark' = 'industrial'
+Variantes: topbar, sticky, static, glow, industrial, industrial-dark
+Exemplo: <NavbarAccent logo={<span>Logo</span>} items={[{ label: 'Início', href: '/' }, { label: 'Produtos', href: '/produtos', children: [{ label: 'Linha A', href: '/produtos/a' }] }]} cta={{ label: 'Orçamento', href: '/contato' }} />
+
+### FooterAccent (footer-accent)
+Categoria: navigation
+Papel: page.footer
+Posição: after-main
+Descrição: Rodapé com marca, redes sociais, colunas de links com divisórias e barra legal.
+Import: @/components/library/navigation/FooterAccent
+Client: não
+Props: logo: ReactNode (obrigatória); columns: readonly { title; links: { label; href }[] }[] (obrigatória); description: string; logoHref: string = '/'; socialLinks: readonly { label; href; icon }[]; legalLinks: readonly { label; href }[]; copyright: ReactNode; credit: ReactNode; showDevelopedBy: boolean = true; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: glow, industrial, industrial-dark, crédito Bloomin
+Exemplo: <FooterAccent logo={<span>Logo</span>} columns={[{ title: 'Navegação', links: [{ label: 'Início', href: '/' }] }]} />
+
+### ScrollToTopButton (scroll-to-top-button)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Botão flutuante de voltar ao topo com anel de progresso da rolagem.
+Import: @/components/library/navigation/ScrollToTopButton
+Client: sim
+Props: threshold: number = 300; label: string = 'Voltar ao topo'; position: 'fixed' | 'static' = 'fixed'
+Variantes: flutuante, progresso, static (preview)
+Exemplo: <ScrollToTopButton />
+
+### FloatingWhatsAppButton (floating-whatsapp-button)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Botão flutuante de WhatsApp com mensagem pronta, empilhável acima do ScrollToTopButton.
+Import: @/components/library/navigation/FloatingWhatsAppButton
+Client: não
+Props: phone: string (obrigatória); message: string; label: string = 'Fale conosco pelo WhatsApp'; stacked: boolean = false
+Variantes: sozinho, empilhado
+Exemplo: <FloatingWhatsAppButton phone="5511999999999" message="Olá!" stacked />
+
+### FloatingInstagramButton (floating-instagram-button)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Botão flutuante do Instagram no canto inferior direito.
+Import: @/components/library/navigation/FloatingSocialButton
+Client: não
+Props: href: string (obrigatória); label: string = 'Seguir no Instagram'; stackIndex: number = 0; position: 'fixed' | 'static' = 'fixed'
+Variantes: gradiente, empilhado
+Exemplo: <FloatingInstagramButton href="https://instagram.com/suaempresa" />
+
+### FloatingFacebookButton (floating-facebook-button)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Botão flutuante do Facebook no canto inferior direito.
+Import: @/components/library/navigation/FloatingSocialButton
+Client: não
+Props: href: string (obrigatória); label: string = 'Seguir no Facebook'; stackIndex: number = 0; position: 'fixed' | 'static' = 'fixed'
+Variantes: azul, empilhado
+Exemplo: <FloatingFacebookButton href="https://facebook.com/suaempresa" />
+
+### FloatingLinkedInButton (floating-linkedin-button)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Botão flutuante do LinkedIn no canto inferior direito.
+Import: @/components/library/navigation/FloatingSocialButton
+Client: não
+Props: href: string (obrigatória); label: string = 'Seguir no LinkedIn'; stackIndex: number = 0; position: 'fixed' | 'static' = 'fixed'
+Variantes: azul, empilhado
+Exemplo: <FloatingLinkedInButton href="https://linkedin.com/company/suaempresa" />
+
+### FloatingYouTubeButton (floating-youtube-button)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Botão flutuante do YouTube no canto inferior direito.
+Import: @/components/library/navigation/FloatingSocialButton
+Client: não
+Props: href: string (obrigatória); label: string = 'Seguir no YouTube'; stackIndex: number = 0; position: 'fixed' | 'static' = 'fixed'
+Variantes: vermelho, empilhado
+Exemplo: <FloatingYouTubeButton href="https://youtube.com/@suaempresa" />
+
+### FloatingTikTokButton (floating-tiktok-button)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Botão flutuante do TikTok no canto inferior direito.
+Import: @/components/library/navigation/FloatingSocialButton
+Client: não
+Props: href: string (obrigatória); label: string = 'Seguir no TikTok'; stackIndex: number = 0; position: 'fixed' | 'static' = 'fixed'
+Variantes: preto, empilhado
+Exemplo: <FloatingTikTokButton href="https://tiktok.com/@suaempresa" />
+
+### FloatingXButton (floating-x-button)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Botão flutuante do X (Twitter) no canto inferior direito.
+Import: @/components/library/navigation/FloatingSocialButton
+Client: não
+Props: href: string (obrigatória); label: string = 'Seguir no X'; stackIndex: number = 0; position: 'fixed' | 'static' = 'fixed'
+Variantes: preto, empilhado
+Exemplo: <FloatingXButton href="https://x.com/suaempresa" />
+
+### FloatingSocialStack (floating-social-stack)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Pilha vertical de botões flutuantes de redes sociais (Instagram, Facebook, LinkedIn etc.).
+Import: @/components/library/navigation/FloatingSocialButton
+Client: não
+Props: items: readonly { network; href; label? }[] (obrigatória); aboveScrollTop: boolean = false; position: 'fixed' | 'static' = 'fixed'
+Variantes: instagram+facebook+linkedin, acima do scroll
+Exemplo: <FloatingSocialStack items={[{ network: 'instagram', href: 'https://instagram.com/suaempresa' }, { network: 'facebook', href: 'https://facebook.com/suaempresa' }]} />
+
+### NavbarSplitLogo (navbar-split-logo)
+Categoria: navigation
+Papel: page.navigation
+Posição: before-main
+Descrição: Navbar com menu hambúrguer e links à esquerda, logo centralizado, redes sociais com divisórias e CTA à direita; drawer lateral.
+Import: @/components/library/navigation/NavbarSplitLogo
+Client: sim
+Props: logo: ReactNode (obrigatória); items: readonly NavbarSplitLogoItem[] (obrigatória); logoHref: string = '/'; socialLinks: readonly { label: string; href: string; icon: ReactNode }[]; cta: { label: string; href: string }; position: 'static' | 'sticky' = 'sticky'
+Variantes: logo central, dropdown, redes sociais, drawer lateral
+Exemplo: <NavbarSplitLogo logo={<Logo />} items={items} socialLinks={socials} cta={{ label: 'Orçamento', href: '/contato' }} />
+
+### FooterContactColumns (footer-contact-columns)
+Categoria: navigation
+Papel: page.footer
+Posição: after-main
+Descrição: Rodapé escuro com logo e descrição, colunas de links com título sublinhado, contatos com ícones em círculo e barra de copyright com crédito.
+Import: @/components/library/navigation/FooterContactColumns
+Client: não
+Props: logo: ReactNode (obrigatória); columns: ReadonlyArray<{ title: string; links: { label: string; href: string }[] }> (obrigatória); description: string; contact: { title?: string; items: { icon: ReactNode; label: string; href?: string }[] }; brandName: string; copyright: ReactNode; credit: { label?: string; content: ReactNode; href?: string }; showDevelopedBy: boolean = true
+Variantes: colunas com divisórias, contatos com ícones, barra na cor da marca, crédito Bloomin
+Exemplo: <FooterContactColumns logo={<Logo />} brandName="Norte" columns={columns} contact={{ items: contacts }} />
+
+### PillNav (pill-nav)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Navegação em pílula com destaque deslizante que acompanha o item ativo e o hover.
+Import: @/components/library/navigation/PillNav
+Client: sim
+Props: items: PillNavItem[] (obrigatória); activeHref: string; logo: ReactNode; logoHref: string = '/'; ariaLabel: string = 'Navegação principal'; className: string
+Variantes: com logo, sem logo, rota ativa
+Exemplo: <PillNav
+  logo={<span className="font-black">B</span>}
+  items={[
+    { label: 'Início', href: '/' },
+    { label: 'Sobre', href: '/sobre' },
+    { label: 'Serviços', href: '/servicos' },
+    { label: 'Contato', href: '/contato' },
+  ]}
+/>
+
+### HuelineNavbar (hueline-navbar)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Navbar fashion HUE/line: wordmark Archivo + Bodoni, links mono Wardrobe·Lookbook·Colour·Shop e ações Search/Saved/Bag com contadores.
+Import: @/components/library/hueline/HuelineNavbar
+Client: sim
+Props: scrolled: boolean; overDark: boolean = true; fixed: boolean = true; savedCount: number = 0; bagCount: number = 0; onSearch: () => void; onSaved: () => void; onBag: () => void; className: string
+Variantes: transparente, solid, contadores
+Exemplo: <HuelineNavbar savedCount={2} bagCount={1} />
+
+### HuelineFooter (hueline-footer)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Rodapé Hueline com wordmark condensado, colunas de links, newsletter e copyright mono.
+Import: @/components/library/hueline/HuelineFooter
+Client: sim
+Props: onNewsletterSubmit: (email: string) => void; className: string
+Variantes: newsletter, colunas
+Exemplo: <HuelineFooter onNewsletterSubmit={(email) => console.log(email)} />
+
+### KresnaFooter (kresna-footer)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Rodapé Kresna em dois cards: vídeo + logo/social à esquerda; nav, badge Feeling lucky? e subscribe à direita, com watermark.
+Import: @/components/library/navigation/KresnaFooter
+Client: sim
+Props: src: string = '/kresna-footer/index.html'; height: number | string = 640; title: string = 'Kresna Footer'; className: string
+Variantes: video card, newsletter, lucky badge, watermark
+Exemplo: <KresnaFooter height={640} />
+
+### VeloriaNavbar (veloria-navbar)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Navbar frosted glass VELORIA serif, links Onboard·The voyage·Destinations·Reserve e pill Book a charter dourado.
+Import: @/components/library/veloria/VeloriaNavbar
+Client: sim
+Props: fixed: boolean = true; logoHref: string = '#hero'; ctaHref: string = '#reserve'; ctaLabel: string = 'Book a charter'; className: string
+Variantes: glass, fixed, charter
+Exemplo: <VeloriaNavbar fixed />
+
+### NimbusNavbar (nimbus-navbar)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Navbar transparente Nimbus que ganha blur ao rolar; links Docs·Pricing·Blog e CTA Get API key; menu mobile.
+Import: @/components/library/nimbus/NimbusNavbar
+Client: sim
+Props: logoHref: string = '#hero'; ctaHref: string = '#pricing'; ctaLabel: string = 'Get API key'; className: string
+Variantes: scroll blur, mobile menu, dark
+Exemplo: <NimbusNavbar />
+
+### NimbusFooter (nimbus-footer)
+Categoria: navigation
+Papel: element.navigation
+Posição: inside-main
+Descrição: Rodapé mínimo dark Nimbus com marca, links Docs·Pricing·Status·Privacy·Terms e copyright.
+Import: @/components/library/nimbus/NimbusFooter
+Client: não
+Props: className: string
+Variantes: minimal, dark
+Exemplo: <NimbusFooter />
+
+### BannerImage (banner-image)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Banner imersivo com imagem de fundo, overlay e duas ações.
+Import: @/components/library/marketing/BannerImage
+Client: não
+Props: title: string (obrigatória); image: { src: string; alt: string } (obrigatória); description: string; eyebrow: string; primaryAction: { label: string; href: string }; secondaryAction: { label: string; href: string }; align: 'left' | 'center' = 'left'
+Variantes: left, center, uma ou duas ações
+Exemplo: <BannerImage title="Engenharia que transforma" image={{ src: '/banner.jpg', alt: 'Fábrica' }} primaryAction={{ label: 'Conheça', href: '/sobre' }} />
+
+### BannerSplit (banner-split)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Banner em duas colunas com mídia alternável e chamada principal.
+Import: @/components/library/marketing/BannerSplit
+Client: não
+Props: title: string (obrigatória); image: { src: string; alt: string } (obrigatória); description: string; action: { label: string; href: string }; imagePosition: 'left' | 'right' = 'right'
+Variantes: image-left, image-right
+Exemplo: <BannerSplit title="Tecnologia aplicada" description="Soluções sob medida." image={{ src: '/banner.jpg', alt: 'Equipe' }} />
+
+### BannerVideo (banner-video)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Banner cinematográfico com vídeo em loop, poster e ação.
+Import: @/components/library/marketing/BannerVideo
+Client: não
+Props: title: string (obrigatória); videoSrc: string (obrigatória); poster: string; description: string; action: { label: string; href: string }; eyebrow: string
+Variantes: com poster, com ação
+Exemplo: <BannerVideo title="Movimento que inspira" videoSrc="/banner.mp4" poster="/poster.jpg" />
+
+### BannerCarousel (banner-carousel)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Carrossel de destaques acessível com autoplay configurável.
+Import: @/components/library/marketing/BannerCarousel
+Client: sim
+Props: slides: BannerCarouselSlide[] (obrigatória); autoplayDelay: number | false = 6000; label: string = 'Destaques'
+Variantes: autoplay, manual, navigation, pagination
+Exemplo: <BannerCarousel slides={slides} autoplayDelay={false} />
+
+### PageHeader (page-header)
+Categoria: marketing
+Papel: section.marketing
+Posição: inside-main
+Descrição: Cabeçalho interno com breadcrumb, eyebrow e alinhamento.
+Import: @/components/library/marketing/PageHeader
+Client: não
+Props: title: string (obrigatória); description: string; eyebrow: string; breadcrumbs: Array<{ label: string; href?: string }>; align: 'left' | 'center' = 'left'; size: 'default' | 'compact' = 'default'; variant: 'muted' | 'primary' = 'muted'
+Variantes: left, center, com breadcrumb, compact, primary
+Exemplo: <PageHeader title="Componentes" eyebrow="Biblioteca" breadcrumbs={[{ label: 'Início', href: '/' }, { label: 'Componentes' }]} />
+
+### BannerImmersive (banner-immersive)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Banner fotográfico de alto impacto com overlay, título e ações — sem navbar embutida (use um componente de Navbars).
+Import: @/components/library/marketing/BannerImmersive
+Client: não
+Props: image: { src: string; alt: string } (obrigatória); title: string (obrigatória); eyebrow: string; symbol: ReactNode; description: string; actions: readonly BannerAction[]; align: 'left' | 'center' = 'center'; height: 'screen' | 'large' = 'large'; overlay: 'light' | 'medium' | 'strong' = 'medium'; className: string
+Variantes: screen, large, alinhamento central ou lateral, três overlays
+Exemplo: <BannerImmersive image={{ src: '/ambiente.jpg', alt: 'Ambiente' }} title="Experiências memoráveis" />
+
+### BannerEditorial (banner-editorial)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Banner assimétrico com tipografia expressiva e composições de mídia sobrepostas.
+Import: @/components/library/marketing/BannerEditorial
+Client: não
+Props: title: ReactNode (obrigatória); images: readonly { src: string; alt: string }[] (obrigatória); description: string; mediaVariant: 'device' | 'stack' | 'poster' = 'device'; tone: 'light' | 'dark' | 'warm' = 'light'; primaryAction: { label: string; href: string }; secondaryAction: { label: string; href: string; icon?: ReactNode }
+Variantes: device, stack, poster, light, dark, warm
+Exemplo: <BannerEditorial title="Descubra novos caminhos" images={images} mediaVariant="device" primaryAction={{ label: 'Começar', href: '/destinos' }} />
+
+### AgencyHeroSection (agency-hero-section)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Hero editorial para agências com destaque cromático, mídia e argumentos rápidos.
+Import: @/components/library/marketing/AgencyHeroSection
+Client: não
+Props: title: string (obrigatória); highlightedText: string; description: string (obrigatória); primaryAction: { label: string; href: string } (obrigatória); secondaryAction: { label: string; href: string }; image: { src: string; alt: string }; highlights: readonly string[]
+Variantes: com imagem, abstrato, uma ou duas ações
+Exemplo: <AgencyHeroSection title="Sua marca mais visível," highlightedText="desejada e pronta para crescer." description="Lorem ipsum." primaryAction={{ label: 'Começar', href: '/contato' }} />
+
+### FintechHeroSection (fintech-hero-section)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Hero de alta densidade para produtos digitais, com gradiente, métricas e painel de dados.
+Import: @/components/library/marketing/FintechHeroSection
+Client: não
+Props: title: string (obrigatória); highlightedText: string; description: string (obrigatória); primaryAction: { label: string; href: string } (obrigatória); metrics: readonly { value: string; label: string }[]; panelContent: ReactNode
+Variantes: painel padrão, painel customizado, uma ou duas ações
+Exemplo: <FintechHeroSection title="Tecnologia para" highlightedText="novos modelos de receita." description="Lorem ipsum." primaryAction={{ label: 'Começar', href: '/contato' }} />
+
+### InvestmentHeroCarousel (investment-hero-carousel)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Hero editorial de tela ampla com imagens, transição em fade e navegação acessível.
+Import: @/components/library/marketing/InvestmentHeroCarousel
+Client: sim
+Props: slides: readonly InvestmentHeroSlide[] (obrigatória); autoplayDelay: number | false = 6500; scrollLabel: string | null; aspectRatio: number; overlay: boolean = true; arrows: { previous: string; next: string }
+Variantes: manual, autoplay, reduced-motion, com setas, proporção fixa, subtítulo
+Exemplo: <InvestmentHeroCarousel slides={[{ id: 'valor', title: 'Valor sustentável.', image: { src: '/paisagem.jpg', alt: 'Paisagem' } }]} />
+
+### SocialWorkspaceHero (social-workspace-hero)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Hero de SaaS social com captura de e-mail, canais compatíveis e visual de calendário.
+Import: @/components/library/marketing/SocialWorkspaceHero
+Client: sim
+Props: title: string (obrigatória); description: string (obrigatória); channels: readonly string[]; onSubmit: (email: string) => void; secondaryAction: { label: string; href: string }
+Variantes: com formulário, canais, ação secundária
+Exemplo: <SocialWorkspaceHero title="Seu workspace social" description="Lorem ipsum." channels={['Instagram', 'LinkedIn']} />
+
+### CommandLauncherHero (command-launcher-hero)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Hero escuro com launcher pesquisável, comandos, atalhos e ações de conversão.
+Import: @/components/library/marketing/CommandLauncherHero
+Client: sim
+Props: title: string (obrigatória); description: string (obrigatória); commands: readonly LauncherCommand[] (obrigatória); primaryAction: { label: string; href: string }
+Variantes: pesquisa, atalhos, uma ou duas ações
+Exemplo: <CommandLauncherHero title="Seu atalho para tudo" description="Lorem ipsum." commands={[{ id: 'agenda', label: 'Abrir agenda' }]} />
+
+### ProgressBannerCarousel (progress-banner-carousel)
+Categoria: marketing
+Papel: section.marketing
+Posição: inside-main
+Descrição: Banner full-width com fade, bullets que mostram o progresso do autoplay, setas e redes sociais laterais.
+Import: @/components/library/marketing/ProgressBannerCarousel
+Client: sim
+Props: slides: readonly ProgressBannerSlide[] (obrigatória); tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'; autoplayDelay: number = 6000; showArrows: boolean = true; socialLinks: readonly { label; href; icon: ReactNode }[]
+Variantes: glow, industrial, industrial-dark, imagem mobile, redes sociais
+Exemplo: <ProgressBannerCarousel slides={[{ id: '1', title: 'Infraestrutura de alto desempenho', image: { src: '/images/banner.webp', alt: '' }, action: { label: 'Saiba mais', href: '/sobre' } }]} />
+
+### FloatingIllustrationHero (floating-illustration-hero)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Hero com título em gradiente animado e ilustração flutuante (framer-motion).
+Import: @/components/library/marketing/FloatingIllustrationHero
+Client: sim
+Props: title: string (obrigatória); description: string; illustration: { src; alt; width?; height? } (obrigatória); actions: readonly { label: string; href: string }[]; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: glow, industrial, industrial-dark
+Exemplo: <FloatingIllustrationHero title="Hospedagem rápida e segura" illustration={{ src: '/images/hero.svg', alt: '' }} actions={[{ label: 'Começar', href: '/contato' }]} />
+
+### ImageOverlayHero (image-overlay-hero)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Cabeçalho de página com imagem de fundo, overlay em gradiente, breadcrumbs e ações.
+Import: @/components/library/marketing/ImageOverlayHero
+Client: não
+Props: title: string (obrigatória); image: { src: string; alt: string } (obrigatória); eyebrow: string; description: string; breadcrumbs: readonly { label: string; href?: string }[]; actions: readonly { label: string; href: string }[]; align: 'center' | 'left' = 'center'; height: 'md' | 'lg' = 'md'; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: center, left, md, lg, glow, industrial
+Exemplo: <ImageOverlayHero title="Fale conosco" eyebrow="Contato" image={{ src: '/images/banner.webp', alt: '' }} breadcrumbs={[{ label: 'Início', href: '/' }, { label: 'Contato' }]} />
+
+### PillarsHero (pillars-hero)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Hero em duas colunas com eyebrow técnico, chips, card de estatística flutuante e faixa de pilares com reveal.
+Import: @/components/library/marketing/PillarsHero
+Client: sim
+Props: title: string (obrigatória); image: { src: string; alt: string } (obrigatória); description: string; eyebrow: string; primaryAction: { label: string; href: string }; secondaryAction: { label: string; href: string }; chips: string[]; pillars: Array<{ title; description; icon? }>; stat: { value: string; label: string }
+Variantes: com pilares, com estatística, sem chips
+Exemplo: <PillarsHero title="Soluções que duram mais" eyebrow="Serviços" image={{ src: '/hero.jpg', alt: '' }} stat={{ value: '30+', label: 'Anos de experiência' }} />
+
+### PromoCouponCarousel (promo-coupon-carousel)
+Categoria: marketing
+Papel: section.marketing
+Posição: inside-main
+Descrição: Carrossel de promoções com autoplay, barra de progresso, contador 01/04 e cupom copiável.
+Import: @/components/library/marketing/PromoCouponCarousel
+Client: sim
+Props: slides: PromoSlide[] (obrigatória); interval: number = 6000; couponLabel: string = 'Cupom'
+Variantes: autoplay, com cupom, pausa no hover
+Exemplo: <PromoCouponCarousel slides={[{ id: '1', title: 'Leve 2, pague 1', coupon: 'DOBRO10', image: { src: '/promo.jpg', alt: '' } }]} />
+
+### HuelineHero (hueline-hero)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Hero 100svh com vídeo/poster, headline WEAR THE / colour / OUT LOUD, eyebrow SS27, CTA Shop e scroll cue.
+Import: @/components/library/hueline/HuelineHero
+Client: sim
+Props: eyebrow: string = 'SS27 · Collection 04 · Saturation'; shopHref: string = '#shop-grid'; posterAsset: string = 'hero-poster'; videoSrc: string; className: string
+Variantes: vídeo, poster, SS27
+Exemplo: <HuelineHero />
+
+### HuelinePageDemo (hueline-page-demo)
+Categoria: marketing
+Papel: section.marketing
+Posição: inside-main
+Descrição: Iframe em altura total apontando para o site estático /hueline/index.html — preview completo Saturation SS27.
+Import: @/components/library/hueline/HuelinePageDemo
+Client: não
+Props: src: string = '/hueline/index.html'; title: string = 'Hueline Saturation SS27'; className: string
+Variantes: iframe, demo estático
+Exemplo: <HuelinePageDemo />
+
+### VeloriaHero (veloria-hero)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Hero cinematográfico com vídeo de iate, headline The open sea reserved, CTAs, card glass Aurelle com [PRICE] e scroll cue.
+Import: @/components/library/veloria/VeloriaHero
+Client: sim
+Props: videoPoster: string; showVideo: boolean = true; className: string
+Variantes: vídeo, poster, featured charter
+Exemplo: <VeloriaHero />
+
+### VeloriaPageDemo (veloria-page-demo)
+Categoria: marketing
+Papel: section.marketing
+Posição: inside-main
+Descrição: Iframe em altura total apontando para /veloria/index.html — landing cinematográfica completa.
+Import: @/components/library/veloria/VeloriaPageDemo
+Client: não
+Props: src: string = '/veloria/index.html'; title: string = 'Veloria — Private Yacht Charters'; className: string
+Variantes: iframe, demo estático
+Exemplo: <VeloriaPageDemo />
+
+### NimbusHero (nimbus-hero)
+Categoria: marketing
+Papel: page.hero
+Posição: start-of-main
+Descrição: Hero dark cinematográfico com aurora blobs, spotlight no cursor, pill public beta, headline com gradiente violeta→cyan e CTAs Get API key / View docs.
+Import: @/components/library/nimbus/NimbusHero
+Client: sim
+Props: className: string
+Variantes: aurora, spotlight, gradient headline
+Exemplo: <NimbusHero />
+
+### NimbusPageDemo (nimbus-page-demo)
+Categoria: marketing
+Papel: section.marketing
+Posição: inside-main
+Descrição: Iframe em altura total apontando para /nimbus/index.html — landing dark completa da API Nimbus AI.
+Import: @/components/library/nimbus/NimbusPageDemo
+Client: não
+Props: src: string = '/nimbus/index.html'; title: string = 'Nimbus AI — Document Q&A API'; className: string
+Variantes: iframe, demo estático
+Exemplo: <NimbusPageDemo />
+
+### NimbusCta (nimbus-cta)
+Categoria: marketing
+Papel: section.marketing
+Posição: inside-main
+Descrição: Faixa CTA “Start building in 5 minutes” com fundo glow violeta/cyan e botão Get API key.
+Import: @/components/library/nimbus/NimbusCta
+Client: não
+Props: href: string = '#pricing'; label: string = 'Get API key'; className: string
+Variantes: glow band, dark
+Exemplo: <NimbusCta />
+
+### BentoGrid (bento-grid)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Grade editorial bento com tamanhos, mídia, ícones e ações por item.
+Import: @/components/library/content/BentoGrid
+Client: não
+Props: items: readonly BentoGridItem[] (obrigatória); title: string; description: string; variant: 'cards' | 'subtle' = 'cards'; emptyMessage: string
+Variantes: cards, subtle, small, wide, tall, large
+Exemplo: <BentoGrid title="Capacidades" items={[{ title: 'Estratégia', description: 'Decisões com clareza.', size: 'wide' }]} />
+
+### ComparisonTable (comparison-table)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Tabela comparativa responsiva com coluna destacada e valores semânticos.
+Import: @/components/library/content/ComparisonTable
+Client: não
+Props: caption: string (obrigatória); columns: readonly ComparisonColumn[] (obrigatória); rows: readonly ComparisonRow[] (obrigatória); description: string; firstColumnLabel: string = 'Recurso'; emptyMessage: string
+Variantes: coluna destacada, booleanos, conteúdo customizado
+Exemplo: <ComparisonTable caption="Compare os planos" columns={columns} rows={rows} />
+
+### GalleryGrid (gallery-grid)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Galeria responsiva em grade ou masonry, com legendas e links opcionais.
+Import: @/components/library/content/GalleryGrid
+Client: não
+Props: items: readonly GalleryGridItem[] (obrigatória); columns: 2 | 3 | 4 = 3; aspect: 'square' | 'video' | 'portrait' = 'square'; variant: 'grid' | 'masonry' = 'grid'; emptyMessage: string
+Variantes: grid, masonry, 2–4 colunas, 3 proporções
+Exemplo: <GalleryGrid columns={3} aspect="video" items={[{ src: '/foto.jpg', alt: 'Projeto', title: 'Projeto' }]} />
+
+### MediaSplit (media-split)
+Categoria: content
+Papel: section.about
+Posição: inside-main
+Descrição: Seção editorial em duas colunas com imagem, conteúdo livre e ação.
+Import: @/components/library/content/MediaSplit
+Client: não
+Props: title: string (obrigatória); description: string (obrigatória); image: { src: string; alt: string } (obrigatória); mediaPosition: 'left' | 'right' = 'left'; children: ReactNode; action: { label: string; href: string }
+Variantes: media-left, media-right
+Exemplo: <MediaSplit title="Nossa história" description="Uma trajetória de evolução." image={{ src: '/historia.jpg', alt: 'Equipe' }} />
+
+### MetricsBand (metrics-band)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Faixa de métricas para destacar indicadores em três tratamentos visuais.
+Import: @/components/library/content/MetricsBand
+Client: não
+Props: metrics: readonly MetricItem[] (obrigatória); variant: 'default' | 'primary' | 'dark' = 'default'; align: 'left' | 'center' = 'center'; emptyMessage: string
+Variantes: default, primary, dark, left, center
+Exemplo: <MetricsBand variant="primary" metrics={[{ value: '98%', label: 'Satisfação' }]} />
+
+### ProcessSteps (process-steps)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Processo numerado em cards com estado final destacado.
+Import: @/components/library/content/ProcessSteps
+Client: não
+Props: title: string (obrigatória); steps: Array<{ title: string; description: string }> (obrigatória); description: string
+Variantes: 2 colunas, 4 colunas
+Exemplo: <ProcessSteps title="Como trabalhamos" steps={[{ title: 'Descoberta', description: 'Entendemos o cenário.' }]} />
+
+### StatsGrid (stats-grid)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Grade de indicadores com rótulo, valor e detalhe opcional.
+Import: @/components/library/content/StatsGrid
+Client: não
+Props: stats: Array<{ value: string; label: string; detail?: string }> (obrigatória); title: string; description: string; columns: 2 | 3 | 4 = 4
+Variantes: 2 colunas, 3 colunas, 4 colunas
+Exemplo: <StatsGrid columns={3} stats={[{ value: '25+', label: 'Anos de mercado' }]} />
+
+### Timeline (timeline)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Linha do tempo vertical semântica para marcos e histórico.
+Import: @/components/library/content/Timeline
+Client: não
+Props: items: Array<{ date: string; title: string; description?: string }> (obrigatória); title: string
+Variantes: com título, sem título
+Exemplo: <Timeline title="Nossa evolução" items={[{ date: '2024', title: 'Expansão', description: 'Nova unidade.' }]} />
+
+### InteractiveFeatureShowcase (interactive-feature-showcase)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Showcase estruturado por abas com mídia, conteúdo e transições contextuais.
+Import: @/components/library/content/InteractiveFeatureShowcase
+Client: sim
+Props: features: InteractiveFeature[] (obrigatória); title: string; description: string; defaultValue: string
+Variantes: abas verticais, mídia, ação, reduced-motion
+Exemplo: <InteractiveFeatureShowcase title="Soluções" features={[{ id: 'design', title: 'Design', description: 'Experiência clara.', image: { src: '/design.jpg', alt: 'Projeto' } }]} />
+
+### AboutGallery (about-gallery)
+Categoria: content
+Papel: section.about
+Posição: inside-main
+Descrição: Seção sobre com galeria, mosaico ou composição editorial e indicadores.
+Import: @/components/library/content/AboutGallery
+Client: não
+Props: title: string (obrigatória); description: string (obrigatória); images: readonly AboutGalleryImage[] (obrigatória); variant: 'mosaic' | 'gallery' | 'editorial' = 'mosaic'; stats: readonly { value: string; label: string }[]; mediaPosition: 'left' | 'right' = 'left'
+Variantes: mosaic, gallery, editorial, mídia à esquerda ou direita
+Exemplo: <AboutGallery title="Sobre nós" description="Lorem ipsum." variant="mosaic" images={images} />
+
+### AboutValuesSection (about-values-section)
+Categoria: content
+Papel: section.about
+Posição: inside-main
+Descrição: Seção institucional editorial com narrativa, manifesto e cards de valores.
+Import: @/components/library/content/AboutValuesSection
+Client: não
+Props: title: string (obrigatória); description: string (obrigatória); values: AboutValue[] (obrigatória); statement: string; eyebrow: string
+Variantes: editorial, cards assimétricos, com manifesto
+Exemplo: <AboutValuesSection title="Construímos com propósito" description="Lorem ipsum." values={[{ title: 'Clareza', description: 'Decisões simples e transparentes.' }]} />
+
+### CategoryMosaic (category-mosaic)
+Categoria: content
+Papel: section.products
+Posição: inside-main
+Descrição: Mosaico responsivo de categorias com cartões altos, largos e rótulos sobre mídia.
+Import: @/components/library/content/CategoryMosaic
+Client: não
+Props: items: readonly CategoryMosaicItem[] (obrigatória); title: string; description: string; labelStyle: 'card' | 'glass' | 'plain' = 'card'; rounded: boolean = true
+Variantes: card, glass, plain, standard, tall, wide
+Exemplo: <CategoryMosaic labelStyle="card" items={[{ id: 'cafe', label: 'Café', href: '/cafe', image: { src: '/cafe.jpg', alt: 'Café' }, size: 'tall' }]} />
+
+### DifferentialsSection (differentials-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Seção de diferenciais com quatro composições, ícones, listas e ação opcional.
+Import: @/components/library/content/DifferentialsSection
+Client: não
+Props: title: string (obrigatória); items: readonly DifferentialsSectionItem[] (obrigatória); description: string; variant: 'cards' | 'numbered' | 'split' | 'spotlight' = 'cards'; columns: 2 | 3 | 4 = 3; action: { label: string; href: string }
+Variantes: cards, numbered, split, spotlight, 2, 3 ou 4 colunas
+Exemplo: <DifferentialsSection title="Por que escolher nossa equipe" variant="cards" items={[{ title: 'Precisão', description: 'Lorem ipsum.' }]} />
+
+### AboutMetricsSection (about-metrics-section)
+Categoria: content
+Papel: section.about
+Posição: inside-main
+Descrição: Seção institucional com narrativa longa, mídia e métricas de trajetória.
+Import: @/components/library/content/AboutMetricsSection
+Client: não
+Props: title: string (obrigatória); paragraphs: readonly string[] (obrigatória); metrics: readonly { value: string; label: string }[] (obrigatória); image: { src: string; alt: string }; mediaPosition: 'left' | 'right' = 'right'; action: { label: string; href: string }
+Variantes: mídia à esquerda, mídia à direita, visual abstrato
+Exemplo: <AboutMetricsSection title="Nossa história" paragraphs={['Lorem ipsum.']} metrics={[{ value: '20+', label: 'Anos' }]} />
+
+### GlobalMetricsSection (global-metrics-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Faixa editorial de métricas para comunicar escala, cobertura e confiabilidade.
+Import: @/components/library/content/GlobalMetricsSection
+Client: não
+Props: title: string (obrigatória); description: string; metrics: readonly GlobalMetric[] (obrigatória); variant: 'light' | 'dark' | 'gradient' = 'dark'
+Variantes: light, dark, gradient
+Exemplo: <GlobalMetricsSection title="Operação em escala" metrics={[{ value: '99,99%', label: 'Disponibilidade' }]} />
+
+### AudienceSpotlightSection (audience-spotlight-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Apresentação interativa de soluções por público, com benefícios, prova social e visual.
+Import: @/components/library/content/AudienceSpotlightSection
+Client: sim
+Props: title: string (obrigatória); description: string; items: readonly AudienceSpotlightItem[] (obrigatória); initialItemId: string
+Variantes: com depoimento, com métricas, visual customizado
+Exemplo: <AudienceSpotlightSection title="Soluções por perfil" items={[{ id: 'startups', label: 'Startups', title: 'Pronta para crescer', description: 'Lorem ipsum.', benefits: [] }]} />
+
+### IntegrationStackSection (integration-stack-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Seção técnica em alto contraste com snippet, métricas e caminhos de integração.
+Import: @/components/library/content/IntegrationStackSection
+Client: não
+Props: title: string (obrigatória); description: string; capabilities: readonly string[]; metrics: readonly { value: string; label: string }[]; options: readonly IntegrationOption[] (obrigatória); code: string
+Variantes: sem código, pré-integrada, API customizada
+Exemplo: <IntegrationStackSection title="Infraestrutura extensível" options={[{ title: 'APIs', description: 'Lorem ipsum.' }]} />
+
+### InvestmentPlatformSection (investment-platform-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Narrativa institucional com métricas amplas para ativos, estratégias e portfólio.
+Import: @/components/library/content/InvestmentPlatformSection
+Client: não
+Props: title: string (obrigatória); description: string (obrigatória); metrics: readonly InvestmentMetric[] (obrigatória); action: { label: string; href: string }; footnote: string
+Variantes: com ação, com notas, três métricas
+Exemplo: <InvestmentPlatformSection title="A força da plataforma" description="Lorem ipsum." metrics={[{ value: '€24+', label: 'Ativos' }]} />
+
+### ResponsibilityFeatureSection (responsibility-feature-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Seção imersiva para responsabilidade, impacto e compromissos institucionais.
+Import: @/components/library/content/ResponsibilityFeatureSection
+Client: não
+Props: title: string (obrigatória); description: string (obrigatória); image: { src: string; alt: string } (obrigatória); pillars: readonly string[]; mediaPosition: 'left' | 'right' = 'left'; tone: 'forest' | 'sand' = 'forest'
+Variantes: forest, sand, imagem à esquerda, imagem à direita
+Exemplo: <ResponsibilityFeatureSection title="Valor duradouro" description="Lorem ipsum." image={{ src: '/natureza.jpg', alt: 'Natureza' }} />
+
+### OfficeNetworkSection (office-network-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Rede responsiva de escritórios com endereço, telefone, e-mail e localização.
+Import: @/components/library/content/OfficeNetworkSection
+Client: não
+Props: title: string (obrigatória); description: string; offices: readonly OfficeLocation[] (obrigatória)
+Variantes: endereço, telefone, e-mail, mapa externo
+Exemplo: <OfficeNetworkSection title="Presença global" offices={[{ city: 'São Paulo', address: 'Avenida Lorem, 100' }]} />
+
+### WorkspaceFeatureShowcase (workspace-feature-showcase)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Showcase em abas para recursos de criação, publicação, comunidade e análises.
+Import: @/components/library/content/WorkspaceFeatureShowcase
+Client: sim
+Props: title: string (obrigatória); features: readonly WorkspaceFeature[] (obrigatória); initialFeatureId: string
+Variantes: blue, yellow, green, pink, visual customizado
+Exemplo: <WorkspaceFeatureShowcase title="Recursos principais" features={[{ id: 'publish', label: 'Publicar', title: 'Organize sua fila', description: 'Lorem ipsum.' }]} />
+
+### ConversationalWorkflowSection (conversational-workflow-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Fluxo de trabalho com IA apresentado como conversa, etapas e ideias acionáveis.
+Import: @/components/library/content/ConversationalWorkflowSection
+Client: não
+Props: title: string (obrigatória); description: string (obrigatória); prompt: string; response: string; steps: readonly WorkflowStep[]
+Variantes: com etapas, uma ou duas ações, conversa customizada
+Exemplo: <ConversationalWorkflowSection title="Planeje por conversa" description="Lorem ipsum." />
+
+### TransparencyMetricsSection (transparency-metrics-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Painel editorial colorido para métricas abertas de produto, equipe e receita.
+Import: @/components/library/content/TransparencyMetricsSection
+Client: não
+Props: title: string (obrigatória); description: string; metrics: readonly TransparencyMetric[] (obrigatória); action: { label: string; href: string }
+Variantes: métrica, tendência, detalhe, ação
+Exemplo: <TransparencyMetricsSection title="Empresa aberta" metrics={[{ value: '280 mil', label: 'Pessoas ativas' }]} />
+
+### KeyboardPerformanceSection (keyboard-performance-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Composição visual keyboard-first com teclado e princípios de produto.
+Import: @/components/library/content/KeyboardPerformanceSection
+Client: não
+Props: title: string (obrigatória); description: string; principles: readonly KeyboardPrinciple[] (obrigatória); keys: readonly string[]
+Variantes: teclado padrão, teclas customizadas, quatro princípios
+Exemplo: <KeyboardPerformanceSection title="Keyboard-first" principles={[{ title: 'Rápido', description: 'Lorem ipsum.', key: '⌘ K' }]} />
+
+### AIAgentWorkspaceSection (ai-agent-workspace-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Workspace de agente de IA com ferramentas executadas, resultado e capacidades.
+Import: @/components/library/content/AIAgentWorkspaceSection
+Client: não
+Props: title: string (obrigatória); description: string (obrigatória); prompt: string; result: string; capabilities: readonly AgentCapability[]; tools: readonly string[]
+Variantes: ferramentas, capacidades, prompt customizado
+Exemplo: <AIAgentWorkspaceSection title="Assistente integrado" description="Lorem ipsum." tools={['Buscar tarefas', 'Atualizar agenda']} />
+
+### AutomationToolkitSection (automation-toolkit-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Grade visual de automações pessoais, snippets, links e atalhos.
+Import: @/components/library/content/AutomationToolkitSection
+Client: não
+Props: title: string (obrigatória); description: string; tools: readonly AutomationTool[] (obrigatória)
+Variantes: red, purple, blue, green, atalhos
+Exemplo: <AutomationToolkitSection title="Não se repita" tools={[{ title: 'Snippets', description: 'Lorem ipsum.', shortcut: ';email' }]} />
+
+### AboutStatsSplit (about-stats-split)
+Categoria: content
+Papel: section.about
+Posição: inside-main
+Descrição: Seção "sobre" com imagem, texto, contadores animados, pilares e ação.
+Import: @/components/library/content/AboutStatsSplit
+Client: não
+Props: title: string (obrigatória); image: { src: string; alt: string } (obrigatória); eyebrow: string; description: string; paragraphs: readonly string[]; stats: readonly { value: number | string; label; prefix?; suffix? }[]; pillars: readonly { title: string; description: string }[]; action: { label: string; href: string }; reverse: boolean = false; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: reverse, stats, pilares, glow, industrial
+Exemplo: <AboutStatsSplit title="Sobre a empresa" image={{ src: '/images/about.webp', alt: '' }} stats={[{ value: 15, suffix: '+', label: 'Anos' }]} />
+
+### NumberedCardGrid (numbered-card-grid)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Grade numerada (01, 02...) em cartões ou faixa com divisórias, com preenchimento no hover.
+Import: @/components/library/content/NumberedCardGrid
+Client: não
+Props: items: readonly { title; description; icon? }[] (obrigatória); title: string; eyebrow: string; description: string; variant: 'cards' | 'band' = 'cards'; columns: 2 | 3 | 4 = 3; hoverFill: boolean; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: cards, band, hoverFill, glow, industrial
+Exemplo: <NumberedCardGrid title="Diferenciais" items={[{ title: 'Suporte 24/7', description: 'Lorem ipsum.' }]} />
+
+### IconFeatureCards (icon-feature-cards)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Cartões com ícone, título, descrição e ação opcional por item.
+Import: @/components/library/content/IconFeatureCards
+Client: não
+Props: title: string (obrigatória); items: readonly { title; description; icon?; action? }[] (obrigatória); eyebrow: string; description: string; columns: 2 | 3 | 4 = 3; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: 2 colunas, 3 colunas, 4 colunas, glow, industrial
+Exemplo: <IconFeatureCards title="Por que nós" items={[{ title: 'Segurança', description: 'Lorem ipsum.', icon: <Shield /> }]} />
+
+### LightboxGallery (lightbox-gallery)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Galeria em mosaico (tamanhos default/wide/large) com lightbox em tela cheia e navegação por teclado.
+Import: @/components/library/content/LightboxGallery
+Client: sim
+Props: title: string (obrigatória); items: readonly { id; title; image; category?; size?: 'default' | 'wide' | 'large' }[] (obrigatória); eyebrow: string; description: string; action: { label: string; href: string }; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: mosaico, lightbox, glow, industrial
+Exemplo: <LightboxGallery title="Galeria" items={[{ id: '1', title: 'Projeto', image: { src: '/images/g1.webp', alt: '' }, size: 'large' }]} />
+
+### FloatingMediaArticle (floating-media-article)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Artigo com imagem flutuante (texto contorna) e trecho expansível "ler mais".
+Import: @/components/library/content/FloatingMediaArticle
+Client: não
+Props: title: string (obrigatória); image: { src: string; alt: string } (obrigatória); paragraphs: readonly string[] (obrigatória); eyebrow: string; caption: string; imagePosition: 'left' | 'right' = 'right'; more: { paragraphs; collapsedLabel?; expandedLabel? }; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: left, right, ler mais, glow, industrial
+Exemplo: <FloatingMediaArticle title="Sobre o produto" image={{ src: '/images/p.webp', alt: '' }} paragraphs={['Lorem ipsum.']} />
+
+### LogoCarouselBand (logo-carousel-band)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Faixa de logos de clientes em carrossel contínuo (swiper), com modo monocromático.
+Import: @/components/library/content/LogoCarouselBand
+Client: sim
+Props: logos: readonly { name; src; href? }[] (obrigatória); title: string; eyebrow: string; description: string; monochrome: boolean; autoplayDelay: number = 2200; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: monochrome, glow, industrial
+Exemplo: <LogoCarouselBand title="Clientes" logos={[{ name: 'Cliente', src: '/images/logo.svg' }]} />
+
+### MarqueeGallery (marquee-gallery)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Galeria em faixa(s) contínua(s) com uma ou duas linhas em direções opostas.
+Import: @/components/library/content/MarqueeGallery
+Client: não
+Props: items: readonly { src; alt; caption? }[] (obrigatória); title: string; eyebrow: string; description: string; rows: 1 | 2 = 2; speed: number = 40; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: 1 linha, 2 linhas, glow, industrial
+Exemplo: <MarqueeGallery title="Nossos projetos" items={[{ src: '/images/g1.webp', alt: '' }]} />
+
+### LocationShowcase (location-showcase)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Lista de unidades/locais que troca a imagem em destaque no hover, foco ou clique, com crossfade e zoom.
+Import: @/components/library/content/LocationShowcase
+Client: sim
+Props: title: string (obrigatória); locations: ShowcaseLocation[] (obrigatória); description: string; action: { label: string; href: string }; linkLabel: string = 'Saiba mais'
+Variantes: hover, clique, com link
+Exemplo: <LocationShowcase title="Nossas unidades" locations={[{ id: 'sp', name: 'São Paulo', image: { src: '/sp.jpg', alt: '' } }]} />
+
+### ServiceAreaCards (service-area-cards)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Cards de regiões atendidas com imagem, zoom no hover, overlay roxo e descrição revelada.
+Import: @/components/library/content/ServiceAreaCards
+Client: sim
+Props: title: string (obrigatória); areas: ServiceArea[] (obrigatória); description: string
+Variantes: 3 colunas, reveal em cascata
+Exemplo: <ServiceAreaCards title="Onde atendemos" areas={[{ id: 'sp', name: 'São Paulo', region: 'SP', image: { src: '/sp.jpg', alt: '' } }]} />
+
+### ProblemSolutionCards (problem-solution-cards)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Sequência problema → impacto → solução em cards numerados, com destaque roxo no último.
+Import: @/components/library/content/ProblemSolutionCards
+Client: sim
+Props: title: string (obrigatória); items: Array<{ label; title; description }> (obrigatória); description: string; eyebrow: string; highlightLast: boolean = true
+Variantes: com destaque, sem destaque
+Exemplo: <ProblemSolutionCards title="O custo de não agir" items={[{ label: 'Problema', title: 'Falhas', description: '...' }]} />
+
+### CredibilitySection (credibility-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Seção de credibilidade com contadores animados, imagem fixa com legenda e lista numerada de motivos.
+Import: @/components/library/content/CredibilitySection
+Client: sim
+Props: title: string (obrigatória); reasons: Array<{ title; description }> (obrigatória); description: string; stats: Array<{ value: number; suffix?; label }>; image: { src: string; alt: string }; caption: string
+Variantes: com imagem, sem imagem, contadores
+Exemplo: <CredibilitySection title="Por que nos escolher" stats={[{ value: 30, suffix: '+', label: 'Anos' }]} reasons={[{ title: 'Experiência', description: '...' }]} />
+
+### CoverageCallout (coverage-callout)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Chamada de área de atendimento com card de CTA e selo circular pulsante.
+Import: @/components/library/content/CoverageCallout
+Client: não
+Props: title: string (obrigatória); badge: { value: string; label: string; caption?: string } (obrigatória); description: string; eyebrow: string; cardTitle: string; cardDescription: string; action: { label: string; href: string }
+Variantes: com card, só selo
+Exemplo: <CoverageCallout title="Atendemos todo o estado" badge={{ value: 'SP', label: 'Todo o estado' }} />
+
+### MapEmbedSection (map-embed-section)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Mapa do Google incorporado com barra de endereço e link "Como chegar"; altura menor no celular.
+Import: @/components/library/content/MapEmbedSection
+Client: não
+Props: query: string (obrigatória); title: string; description: string; eyebrow: string; address: string; directionsHref: string; directionsLabel: string = 'Como chegar'; height: number = 450
+Variantes: com endereço, só mapa
+Exemplo: <MapEmbedSection title="Onde estamos" query="Av. Paulista, 1000 - São Paulo" address="Av. Paulista, 1000 - São Paulo/SP" />
+
+### ArticleLayout (article-layout)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Corpo de artigo de blog em três layouts: clássico, com barra lateral (índice e CTA) e revista.
+Import: @/components/library/content/ArticleLayout
+Client: não
+Props: body: Array<{ heading?: string; paragraphs: string[] }> (obrigatória); date: { label: string; dateTime: string } (obrigatória); variant: 'classic' | 'cover' | 'sidebar' | 'magazine' = 'classic'; image: { src: string; alt: string }; author: string; category: string; quote: string; aside: { title; description?; action }; labels: object
+Variantes: classic, cover, sidebar, magazine
+Exemplo: <ArticleLayout variant="sidebar" date={{ label: '10 de março de 2026', dateTime: '2026-03-10' }} body={[{ heading: 'Introdução', paragraphs: ['...'] }]} />
+
+### BlogPostPage (blog-post-page)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Página completa de post do blog: cabeçalho/hero, corpo em 4 modelos (clássico, capa, barra lateral e revista) e "Leia também".
+Import: @/components/library/content/BlogPostPage
+Client: não
+Props: post: BlogPostContent (obrigatória); layout: 'classic' | 'cover' | 'sidebar' | 'magazine' = 'classic'; breadcrumbs: Array<{ label: string; href?: string }>; related: BlogGridProps["posts"]; relatedTitle: string = 'Leia também'; aside: { title; description?; action }; labels: ArticleLayoutProps["labels"]
+Variantes: classic, cover, sidebar, magazine, com relacionados
+Exemplo: <BlogPostPage layout="sidebar" post={{ title: 'Guia', image: { src: '/capa.jpg', alt: '' }, date: { label: '10 mar 2026', dateTime: '2026-03-10' }, body: [{ heading: 'Intro', paragraphs: ['...'] }] }} related={posts} />
+
+### FeatureImageList (feature-image-list)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Três colunas: título em caixa alta com botão, imagem central e lista de diferenciais com ícones em blocos.
+Import: @/components/library/content/FeatureImageList
+Client: não
+Props: title: string (obrigatória); image: { src: string; alt: string } (obrigatória); items: readonly FeatureImageListItem[] (obrigatória); description: string; action: { label: string; href: string }
+Variantes: três colunas, com botão, ícones em bloco
+Exemplo: <FeatureImageList title="Qualidade em cada detalhe" image={{ src: '/foto.jpg', alt: '' }} items={items} action={{ label: 'Saiba mais', href: '/sobre' }} />
+
+### PolaroidLineCarousel (polaroid-line-carousel)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Carrossel de polaroides num varal que cede no meio: arraste, setas, autoplay e balanço nos pregadores. Sem Tailwind; CSS embutido.
+Import: @/components/library/content/PolaroidLineCarousel
+Client: sim
+Props: slides: Slide[]; height: number | string = '100svh'; cardWidth: number = 300; sag: number = 46; swing: number = 1; autoplay: number = 4500; string: string = '#8a7f72'; background: string = 'var(--color-background, #efece6)'; ink: string = 'var(--color-foreground, #161513)'; labels: Partial<PolaroidLineLabels>; onChange: (index: number) => void; className: string; style: React.CSSProperties; ariaLabel: string = 'Carrossel de fotos'
+Variantes: arraste, autoplay, paisagens pintadas, reduced-motion
+Exemplo: <PolaroidLineCarousel slides={fotos} height={560} autoplay={0} background="#ffffff" ariaLabel="Nossos projetos" />
+
+### FlickCards (flick-cards)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Deck 3D em leque (GSAP): arraste/flick das cartas, setas, autoplay 3,2s, glow ambient e prefers-reduced-motion.
+Import: @/components/library/content/FlickCards
+Client: sim
+Props: src: string = '/flick-cards/index.html'; height: number | string = 560; title: string = 'Flick Cards'; className: string
+Variantes: flick, drag, autoplay, reduced-motion
+Exemplo: <FlickCards height={560} />
+
+### LiquidGlassCarousel (liquid-glass-carousel)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Carrossel infinito com faixa de fotos e bend WebGL (cilindro de vidro, aberração cromática, arraste e autoplay).
+Import: @/components/library/content/LiquidGlassCarousel
+Client: sim
+Props: src: string = '/liquid-glass-carousel/index.html'; height: number | string = 520; title: string = 'Liquid Glass Carousel'; className: string
+Variantes: webgl glass bend, drag snap, autoplay, reduced-motion
+Exemplo: <LiquidGlassCarousel height={520} />
+
+### RadialCards (radial-cards)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Dez polaroids no arco de uma roda invisível (GSAP): arraste com snap, autoplay, contador e prefers-reduced-motion.
+Import: @/components/library/content/RadialCards
+Client: sim
+Props: src: string = '/radial-cards/index.html'; height: number | string = 560; title: string = 'Radial Cards'; className: string
+Variantes: radial arc, drag snap, autoplay, reduced-motion
+Exemplo: <RadialCards height={560} />
+
+### HuelineColourStory (hueline-colour-story)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Quatro swatches de tinta Cobalt/Marigold/Orchid/Lagoon com refs HL-04, notas técnicas e fundo da seção seguindo o dye ativo.
+Import: @/components/library/hueline/HuelineColourStory
+Client: sim
+Props: assetBase: string = '/hueline/assets'; className: string
+Variantes: swatches, dye story
+Exemplo: <HuelineColourStory />
+
+### HuelineAtelier (hueline-atelier)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Foto do atelier + três estatísticas 19 / 48 / 6 sobre seda, tiragem e block print.
+Import: @/components/library/hueline/HuelineAtelier
+Client: não
+Props: assetBase: string = '/hueline/assets'; className: string
+Variantes: stats, sobre
+Exemplo: <HuelineAtelier />
+
+### HuelineStyleArches (hueline-style-arches)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Seis arcos altos (border-radius 200px) com look-01..06 e legendas por silhueta Tailoring–Denim.
+Import: @/components/library/hueline/HuelineStyleArches
+Client: não
+Props: assetBase: string = '/hueline/assets'; className: string
+Variantes: arches, galeria
+Exemplo: <HuelineStyleArches />
+
+### HuelineLookbook (hueline-lookbook)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Seis looks em painéis horizontais scrolláveis look-01..06 com título e copy editorial.
+Import: @/components/library/hueline/HuelineLookbook
+Client: sim
+Props: assetBase: string = '/hueline/assets'; className: string
+Variantes: horizontal, scroll
+Exemplo: <HuelineLookbook />
+
+### VeloriaOnboard (veloria-onboard)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Quatro cards de imagem (swim platform, sun deck, silent hull, golden hour) flutuando sobre o casco + headline Made to glide.
+Import: @/components/library/veloria/VeloriaOnboard
+Client: não
+Props: className: string
+Variantes: floating cards, galeria
+Exemplo: <VeloriaOnboard />
+
+### VeloriaVoyage (veloria-voyage)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Headline Charter the coastline nobody else can reach, copy do capitão e link See where we sail.
+Import: @/components/library/veloria/VeloriaVoyage
+Client: não
+Props: destinationsHref: string = '#destinations'; className: string
+Variantes: sobre, voyage
+Exemplo: <VeloriaVoyage />
+
+### VeloriaDestinations (veloria-destinations)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Quatro tiles glass Amalfi, Cyclades, Maldives e Andaman com temporada e descrição editorial.
+Import: @/components/library/veloria/VeloriaDestinations
+Client: não
+Props: className: string
+Variantes: tiles, destinations
+Exemplo: <VeloriaDestinations />
+
+### NimbusDemo (nimbus-demo)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Card glass com mock de chat: pergunta sobre PDF e resposta citada com span de fonte.
+Import: @/components/library/nimbus/NimbusDemo
+Client: não
+Props: className: string
+Variantes: chat mock, glass
+Exemplo: <NimbusDemo />
+
+### NimbusCapabilities (nimbus-capabilities)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Grade 3×2 de capacidades (Summarise, Extract, Classify, Translate, Search, Cite) com ícones SVG e hover de borda.
+Import: @/components/library/nimbus/NimbusCapabilities
+Client: não
+Props: className: string
+Variantes: grid 3x2, icons
+Exemplo: <NimbusCapabilities />
+
+### NimbusDeveloper (nimbus-developer)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Seção developer em duas colunas: copy à esquerda e painel de código com tabs cURL/Python/JS e botão copy.
+Import: @/components/library/nimbus/NimbusDeveloper
+Client: sim
+Props: className: string
+Variantes: code tabs, copy
+Exemplo: <NimbusDeveloper />
+
+### NimbusUseCases (nimbus-use-cases)
+Categoria: content
+Papel: section.content
+Posição: inside-main
+Descrição: Três cards maiores de casos de uso: Support, Research e Legal com copy realista.
+Import: @/components/library/nimbus/NimbusUseCases
+Client: não
+Props: className: string
+Variantes: 3 cards, use cases
+Exemplo: <NimbusUseCases />
+
+### BlogGrid (blog-grid)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Cards editoriais responsivos para artigos e notícias.
+Import: @/components/library/data-display/BlogGrid
+Client: não
+Props: posts: BlogPost[] (obrigatória); title: string
+Variantes: 2 colunas, 3 colunas, com categoria
+Exemplo: <BlogGrid title="Conteúdos" posts={posts} />
+
+### FeatureGrid (feature-grid)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Grade de benefícios com ícones opcionais e cards elevados.
+Import: @/components/library/data-display/FeatureGrid
+Client: não
+Props: features: Array<{ title: string; description: string; icon?: LucideIcon }> (obrigatória); title: string; description: string
+Variantes: 2 colunas, 3 colunas, com ícones
+Exemplo: <FeatureGrid title="Diferenciais" features={[{ title: 'Precisão', description: 'Controle em cada etapa.' }]} />
+
+### PricingCards (pricing-cards)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Comparativo de planos com recursos, preço e destaque.
+Import: @/components/library/data-display/PricingCards
+Client: não
+Props: plans: PricingPlan[] (obrigatória); title: string
+Variantes: padrão, highlighted
+Exemplo: <PricingCards title="Planos" plans={[{ name: 'Pro', price: 'R$ 199', features: ['Suporte'], action: { label: 'Escolher', href: '/contato' }, highlighted: true }]} />
+
+### ProductGrid (product-grid)
+Categoria: data-display
+Papel: section.products
+Posição: inside-main
+Descrição: Grade responsiva de produtos com imagem, badge e link.
+Import: @/components/library/data-display/ProductGrid
+Client: não
+Props: products: Product[] (obrigatória); title: string
+Variantes: com badge, sem badge
+Exemplo: <ProductGrid title="Produtos" products={products} />
+
+### ProductShowcase (product-showcase)
+Categoria: data-display
+Papel: section.products
+Posição: inside-main
+Descrição: Destaque detalhado de produto com benefícios e ação.
+Import: @/components/library/data-display/ProductShowcase
+Client: não
+Props: name: string (obrigatória); description: string (obrigatória); image: { src: string; alt: string } (obrigatória); features: string[]; action: { label: string; href: string }; eyebrow: string
+Variantes: com features, com ação
+Exemplo: <ProductShowcase name="Linha X" description="Alta performance." image={{ src: '/produto.jpg', alt: 'Linha X' }} features={['Durável']} />
+
+### TeamGrid (team-grid)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Grade de equipe com foto, bio e contatos profissionais.
+Import: @/components/library/data-display/TeamGrid
+Client: não
+Props: members: TeamMember[] (obrigatória); title: string
+Variantes: com bio, com contato, 4 colunas
+Exemplo: <TeamGrid title="Liderança" members={members} />
+
+### BeforeAfterSlider (before-after-slider)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Comparador acessível de imagens antes e depois controlado por range.
+Import: @/components/library/data-display/BeforeAfterSlider
+Client: sim
+Props: before: { src: string; alt: string; label?: string } (obrigatória); after: { src: string; alt: string; label?: string } (obrigatória); initialPosition: number = 50; aspect: 'video' | 'square' | 'wide' = 'video'
+Variantes: video, square, wide, teclado
+Exemplo: <BeforeAfterSlider before={{ src: '/antes.jpg', alt: 'Antes' }} after={{ src: '/depois.jpg', alt: 'Depois' }} />
+
+### FilterableCardGrid (filterable-card-grid)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Grade filtrável com transições de layout, mídia e ações opcionais.
+Import: @/components/library/data-display/FilterableCardGrid
+Client: sim
+Props: items: FilterableCard[] (obrigatória); title: string; description: string; allLabel: string = 'Todos'; columns: 2 | 3 | 4 = 3
+Variantes: 2 colunas, 3 colunas, 4 colunas, motion layout
+Exemplo: <FilterableCardGrid title="Projetos" items={[{ id: '1', title: 'Projeto', category: 'Design', image: { src: '/projeto.jpg', alt: 'Projeto' } }]} />
+
+### InteractiveCard (interactive-card)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Card desacoplado com mídia, ícone e cinco tratamentos visuais interativos.
+Import: @/components/library/data-display/InteractiveCard
+Client: não
+Props: title: string (obrigatória); description: string; image: { src: string; alt: string }; icon: ReactNode; href: string; variant: 'bordered' | 'elevated' | 'glass' | 'editorial' | 'spotlight' = 'bordered'
+Variantes: bordered, elevated, glass, editorial, spotlight
+Exemplo: <InteractiveCard variant="elevated" title="Estratégia" description="Lorem ipsum." href="/servicos" />
+
+### ProductCard (product-card)
+Categoria: data-display
+Papel: section.products
+Posição: inside-main
+Descrição: Card de produto com quatro layouts, preço, avaliação, favorito e compra.
+Import: @/components/library/data-display/ProductCard
+Client: sim
+Props: product: ProductCardItem (obrigatória); variant: 'classic' | 'minimal' | 'horizontal' | 'overlay' = 'classic'; showFavorite: boolean = false; onAddToCart: (product: ProductCardItem) => void; onFavorite: (product: ProductCardItem) => void
+Variantes: classic, minimal, horizontal, overlay
+Exemplo: <ProductCard variant="classic" product={{ id: '1', name: 'Produto', href: '/produto', image: { src: '/produto.jpg', alt: 'Produto' }, price: 'R$ 99' }} />
+
+### ProductCarousel (product-carousel)
+Categoria: data-display
+Papel: section.products
+Posição: inside-main
+Descrição: Carrossel Swiper de produtos (ex.: Peças em destaque) com cards, autoplay e navegação acessível.
+Import: @/components/library/data-display/ProductCarousel
+Client: sim
+Props: products: ProductCardItem[] (obrigatória); title: string; description: string; cardVariant: ProductCardVariant = 'classic'; slidesPerView: 2 | 3 | 4 = 4; autoplayDelay: number | false = false; onAddToCart: (product: ProductCardItem) => void
+Variantes: 2, 3 ou 4 itens, 4 estilos de card, autoplay, manual, peças em destaque
+Exemplo: <ProductCarousel title="Peças em destaque" products={products} cardVariant="minimal" slidesPerView={3} />
+
+### ProductFeatureTabs (product-feature-tabs)
+Categoria: data-display
+Papel: section.products
+Posição: inside-main
+Descrição: Apresentação interativa de produtos em abas com mídia, benefícios e ação.
+Import: @/components/library/data-display/ProductFeatureTabs
+Client: sim
+Props: title: string (obrigatória); items: ProductFeatureTab[] (obrigatória); initialId: string; eyebrow: string
+Variantes: abas interativas, lista de benefícios, imagem por produto
+Exemplo: <ProductFeatureTabs title="Uma solução para cada etapa" items={[{ id: 'pro', label: 'Pro', title: 'Produto Pro', description: 'Lorem ipsum.', image: { src: '/pro.jpg', alt: 'Produto Pro' } }]} />
+
+### ServicesCarouselSection (services-carousel-section)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Carrossel editorial numerado para apresentar um catálogo amplo de serviços.
+Import: @/components/library/data-display/ServicesCarouselSection
+Client: sim
+Props: title: string (obrigatória); items: readonly ServiceCarouselItem[] (obrigatória); description: string; action: { label: string; href: string }; autoplayDelay: number | false = false
+Variantes: manual, autoplay, imagem, ícone, reduced-motion
+Exemplo: <ServicesCarouselSection title="Nossas soluções" items={services} />
+
+### ProductSuiteSection (product-suite-section)
+Categoria: data-display
+Papel: section.products
+Posição: inside-main
+Descrição: Suíte de produtos em abas acessíveis com recursos, ação e visual configurável.
+Import: @/components/library/data-display/ProductSuiteSection
+Client: sim
+Props: title: string (obrigatória); description: string; items: readonly ProductSuiteItem[] (obrigatória); initialItemId: string
+Variantes: visual padrão, visual customizado, navegação por teclado
+Exemplo: <ProductSuiteSection title="Produtos conectados" items={[{ id: 'um', label: 'Produto', title: 'Solução completa', description: 'Lorem ipsum.' }]} />
+
+### StrategyPortfolioSection (strategy-portfolio-section)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Grade filtrável de estratégias de investimento por categoria e região.
+Import: @/components/library/data-display/StrategyPortfolioSection
+Client: sim
+Props: title: string (obrigatória); description: string; strategies: readonly InvestmentStrategy[] (obrigatória); allLabel: string = 'Todas'
+Variantes: com filtros, sem filtros, marcas customizadas
+Exemplo: <StrategyPortfolioSection title="Estratégias" strategies={[{ id: 'growth', name: 'Growth', region: 'Global', description: 'Lorem ipsum.', href: '#' }]} />
+
+### ExtensionDirectorySection (extension-directory-section)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Diretório pesquisável e filtrável de extensões, integrações ou aplicativos.
+Import: @/components/library/data-display/ExtensionDirectorySection
+Client: sim
+Props: title: string (obrigatória); items: readonly ExtensionDirectoryItem[] (obrigatória); action: { label: string; href: string }
+Variantes: pesquisa, filtros, ícones, estados vazios
+Exemplo: <ExtensionDirectorySection title="Extensões" items={[{ id: 'tasks', name: 'Tarefas', description: 'Lorem ipsum.', category: 'Produtividade', href: '#' }]} />
+
+### HoverRevealServices (hover-reveal-services)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Painéis de serviços lado a lado que expandem e revelam imagem/descrição no hover.
+Import: @/components/library/data-display/HoverRevealServices
+Client: não
+Props: items: readonly { title; description; href; image; label? }[] (obrigatória); tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: glow, industrial, industrial-dark
+Exemplo: <HoverRevealServices items={[{ title: 'Consultoria', description: 'Lorem ipsum.', href: '/servicos', image: { src: '/images/s1.webp', alt: '' } }]} />
+
+### ProductSpotlightPicker (product-spotlight-picker)
+Categoria: data-display
+Papel: section.products
+Posição: inside-main
+Descrição: Vitrine com produto em destaque e seletor lateral (cards ou painel).
+Import: @/components/library/data-display/ProductSpotlightPicker
+Client: sim
+Props: title: string (obrigatória); products: readonly { id; title; category; description; image; features?; href }[] (obrigatória); eyebrow: string; description: string; variant: 'cards' | 'panel' = 'cards'; actionLabel: string; allAction: { label: string; href: string }; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: cards, panel, glow, industrial
+Exemplo: <ProductSpotlightPicker title="Produtos" products={[{ id: '1', title: 'Produto', category: 'Linha A', description: 'Lorem ipsum.', image: { src: '/images/p.webp', alt: '' }, href: '/produtos/1' }]} />
+
+### ProductCatalogGrid (product-catalog-grid)
+Categoria: data-display
+Papel: section.products
+Posição: inside-main
+Descrição: Grade de catálogo de produtos com categoria, características e link.
+Import: @/components/library/data-display/ProductCatalogGrid
+Client: não
+Props: products: readonly { id; title; category; description; href; image; features? }[] (obrigatória); title: string; eyebrow: string; description: string; actionLabel: string; maxFeatures: number = 3; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: glow, industrial, industrial-dark
+Exemplo: <ProductCatalogGrid title="Catálogo" products={[{ id: '1', title: 'Produto', category: 'Linha A', description: 'Lorem ipsum.', href: '/produtos/1', image: { src: '/images/p.webp', alt: '' } }]} />
+
+### RelatedProducts (related-products)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Lista de produtos relacionados em cartões ou lista compacta.
+Import: @/components/library/data-display/RelatedProducts
+Client: não
+Props: products: readonly { id; title; category; href; image? }[] (obrigatória); title: string; eyebrow: string = 'Continue explorando'; variant: 'cards' | 'list' = 'cards'; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: cards, list, glow, industrial
+Exemplo: <RelatedProducts title="Produtos relacionados" products={[{ id: '2', title: 'Produto B', category: 'Linha A', href: '/produtos/2' }]} />
+
+### ProductInfoTabs (product-info-tabs)
+Categoria: data-display
+Papel: section.products
+Posição: inside-main
+Descrição: Abas acessíveis de descrição e detalhes técnicos do produto, com setas do teclado.
+Import: @/components/library/data-display/ProductInfoTabs
+Client: sim
+Props: paragraphs: readonly string[] (obrigatória); details: readonly { title; description? }[] (obrigatória); descriptionLabel: string; detailsLabel: string; action: { label: string; href: string }; tone: 'glow' | 'industrial' | 'industrial-dark' = 'industrial'
+Variantes: glow, industrial, industrial-dark
+Exemplo: <ProductInfoTabs paragraphs={['Lorem ipsum.']} details={[{ title: 'Potência', description: '5 kW' }]} />
+
+### TicketPricingCards (ticket-pricing-cards)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Cards de preço em formato de ingresso com recortes laterais, preços por período ou destaque percentual.
+Import: @/components/library/data-display/TicketPricingCards
+Client: não
+Props: cards: TicketPricingCard[] (obrigatória); title: string; description: string
+Variantes: preços por período, destaque %, featured
+Exemplo: <TicketPricingCards cards={[{ id: '1h', title: 'Ingresso 1 hora', prices: [{ label: 'Seg a qui', value: 'R$ 80' }] }]} />
+
+### PackageTabsOffer (package-tabs-offer)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Pacotes em abas com indicador animado, preço em destaque, descrição, imagem e CTAs.
+Import: @/components/library/data-display/PackageTabsOffer
+Client: sim
+Props: packages: OfferPackage[] (obrigatória); title: string
+Variantes: com imagem, sem imagem
+Exemplo: <PackageTabsOffer packages={[{ id: 'a', label: 'Básico', headline: 'A partir de', price: 'R$ 165', description: '...' }]} />
+
+### PaginatedProjectGallery (paginated-project-gallery)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Portfólio com filtro por categoria, paginação e overlay roxo com título no hover.
+Import: @/components/library/data-display/PaginatedProjectGallery
+Client: sim
+Props: projects: GalleryProject[] (obrigatória); title: string; description: string; perPage: number = 6; allLabel: string = 'Todos'; previousLabel: string = 'Anterior'; nextLabel: string = 'Próximo'
+Variantes: filtro, paginação, overlay no hover
+Exemplo: <PaginatedProjectGallery title="Projetos" projects={[{ id: '1', title: 'Cozinha', category: 'Reforma', image: { src: '/p1.jpg', alt: '' } }]} />
+
+### BlogSidebarLayout (blog-sidebar-layout)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Listagem de blog com busca sem acento, filtro por categoria com contagem, posts recentes e CTA lateral fixo.
+Import: @/components/library/data-display/BlogSidebarLayout
+Client: sim
+Props: posts: BlogSidebarPost[] (obrigatória); recent: BlogSidebarPost[]; labels: BlogSidebarLabels; cta: { title; description?; action }
+Variantes: busca, categorias, com CTA, vazio
+Exemplo: <BlogSidebarLayout posts={posts} cta={{ title: 'Fale com a gente', action: { label: 'Contato', href: '/contato' } }} />
+
+### TeamSection (team-section)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Seção de equipe com 4 modelos (overlay com revelação no hover, cards, avatares redondos e líder em destaque), redes sociais e CTA.
+Import: @/components/library/data-display/TeamSection
+Client: sim
+Props: title: string (obrigatória); members: TeamSectionMember[] (obrigatória); variant: 'overlay' | 'cards' | 'minimal' | 'featured' = 'overlay'; columns: 3 | 4 = 4; eyebrow: string; description: string; action: { label: string; href: string }
+Variantes: overlay, cards, minimal, featured, 3 ou 4 colunas
+Exemplo: <TeamSection variant="featured" eyebrow="Equipe" title="Quem faz acontecer" members={[{ name: 'Marina Costa', role: 'CEO', image: { src: '/equipe/marina.jpg' }, socials: [{ type: 'linkedin', href: 'https://linkedin.com/in/marina' }] }]} />
+
+### BlogFeaturedListing (blog-featured-listing)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Listagem de blog com hero e breadcrumb, post em destaque, cards com "Ler mais", paginação e barra lateral com busca, posts recentes e categorias.
+Import: @/components/library/data-display/BlogFeaturedListing
+Client: sim
+Props: posts: BlogListingPost[] (obrigatória); hero: { title; description?; image; icon?; breadcrumbs? }; perPage: number = 6; featured: boolean = true; recent: BlogListingPost[] = posts.slice(0, 4); categories: Array<{ label: string; href: string }>; labels: BlogListingLabels
+Variantes: com hero, sem hero, com destaque, paginação, categorias como filtro ou links
+Exemplo: <BlogFeaturedListing hero={{ title: 'Blog', description: 'Nossos artigos mais recentes.', image: { src: '/banner.jpg', alt: '' }, breadcrumbs: [{ label: 'Home', href: '/' }, { label: 'Blog' }] }} posts={posts} perPage={6} />
+
+### ProductOverlayCarousel (product-overlay-carousel)
+Categoria: data-display
+Papel: section.products
+Posição: inside-main
+Descrição: Carrossel de produtos com imagem cheia, título sobreposto e "ver mais", cabeçalho com destaque, setas e botão "Ver todos".
+Import: @/components/library/data-display/ProductOverlayCarousel
+Client: sim
+Props: title: string (obrigatória); items: readonly ProductOverlayItem[] (obrigatória); highlight: string; eyebrow: string; description: string; viewAll: { label: string; href: string }; itemLabel: string = 'ver mais'
+Variantes: com destaque no título, com ver todos, setas
+Exemplo: <ProductOverlayCarousel eyebrow="Produtos" title="Nossos principais" highlight="produtos" items={items} viewAll={{ label: 'Ver todos', href: '/produtos' }} />
+
+### HoloCard (holo-card)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Card de perfil que inclina na direção do cursor com reflexo holográfico em padrão.
+Import: @/components/library/data-display/HoloCard
+Client: sim
+Props: image: { src: string; alt: string } (obrigatória); name: string (obrigatória); role: string (obrigatória); handle: string; status: string; action: { label: string; href: string }; maxTilt: number = 14; className: string
+Variantes: holográfico, inclinação 3D, movimento reduzido
+Exemplo: <HoloCard
+  image={{ src: '/equipe/ana.jpg', alt: 'Ana Souza' }}
+  name="Ana Souza"
+  role="Diretora de criação"
+  handle="@anasouza"
+  status="Disponível"
+  action={{ label: 'Contato', href: '#contato' }}
+/>
+
+### CircularCarousel (circular-carousel)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Carrossel em anel 3D que gira sozinho, por arraste, setas ou teclado.
+Import: @/components/library/data-display/CircularCarousel
+Client: sim
+Props: items: CircularCarouselItem[] (obrigatória); autoplay: boolean = true; interval: number = 3500; cardWidth: number = 200; ariaLabel: string = 'Carrossel circular'; className: string
+Variantes: autoplay, arraste, teclado, movimento reduzido
+Exemplo: <CircularCarousel
+  items={[
+    { image: { src: '/projetos/1.jpg', alt: 'Projeto 1' }, title: 'Projeto 1', description: 'Residencial' },
+    { image: { src: '/projetos/2.jpg', alt: 'Projeto 2' }, title: 'Projeto 2', description: 'Comercial' },
+  ]}
+/>
+
+### HuelineProductRails (hueline-product-rails)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Um trilho horizontal por estilo com cards foto, nome, tecido, preço en-IN ₹ e dot de cor.
+Import: @/components/library/hueline/HuelineProductRails
+Client: sim
+Props: assetBase: string = '/hueline/assets'; className: string
+Variantes: rails, por estilo
+Exemplo: <HuelineProductRails />
+
+### HuelineShopGrid (hueline-shop-grid)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Grade shop com tabs All+estilos, sort, contagem Showing N of M e cards data-product HL-T-01 etc.
+Import: @/components/library/hueline/HuelineShopGrid
+Client: sim
+Props: assetBase: string = '/hueline/assets'; initialLimit: number = 12; className: string
+Variantes: tabs, sort, grid
+Exemplo: <HuelineShopGrid />
+
+### NimbusPricing (nimbus-pricing)
+Categoria: data-display
+Papel: section.data-display
+Posição: inside-main
+Descrição: Três tiers usage-based (Starter, Growth, Scale) com nota clara do que conta como request na API Nimbus.
+Import: @/components/library/nimbus/NimbusPricing
+Client: não
+Props: className: string
+Variantes: 3 tiers, usage-based, highlighted
+Exemplo: <NimbusPricing />
+
+### ContactCard (contact-card)
+Categoria: forms
+Papel: section.contact
+Posição: end-of-main
+Descrição: Card para canal de contato, opcionalmente clicável e com ícone.
+Import: @/components/library/forms/ContactCard
+Client: não
+Props: title: string (obrigatória); value: string (obrigatória); href: string; description: string; icon: LucideIcon
+Variantes: link, informativo, com ícone
+Exemplo: <ContactCard title="E-mail" value="contato@acme.com" href="mailto:contato@acme.com" />
+
+### ContactForm (contact-form)
+Categoria: forms
+Papel: section.contact
+Posição: end-of-main
+Descrição: Formulário completo com envio assíncrono e estados acessíveis.
+Import: @/components/library/forms/ContactForm
+Client: sim
+Props: title: string = 'Fale conosco'; description: string; endpoint: string = '/api/contato'; submitLabel: string = 'Enviar mensagem'; onSubmit: (data: ContactFormData) => Promise<void> | void; onSuccess: (data: ContactFormData) => void
+Variantes: endpoint, onSubmit customizado, success, error
+Exemplo: <ContactForm description="Retornamos em até um dia útil." onSubmit={async (data) => console.log(data)} />
+
+### ContactSplitSection (contact-split-section)
+Categoria: forms
+Papel: section.contact
+Posição: end-of-main
+Descrição: Seção de contato em duas colunas com canais, redes sociais e formulário livre.
+Import: @/components/library/forms/ContactSplitSection
+Client: não
+Props: title: string (obrigatória); methods: ContactMethod[] (obrigatória); form: ReactNode (obrigatória); description: string; socialLinks: Array<{ label: string; href: string }>; formTitle: string
+Variantes: formulário customizado, canais de contato, redes sociais
+Exemplo: <ContactSplitSection title="Vamos criar juntos" methods={[{ label: 'E-mail', value: 'oi@acme.com', href: 'mailto:oi@acme.com' }]} form={<ContactForm />} />
+
+### NewsletterForm (newsletter-form)
+Categoria: forms
+Papel: element.form
+Posição: inside-main
+Descrição: Formulário de newsletter com consentimento e estados de envio acessíveis.
+Import: @/components/library/forms/NewsletterForm
+Client: sim
+Props: onSubmit: (email: string) => Promise<void> | void (obrigatória); title: string; description: string; placeholder: string = 'voce@empresa.com'; submitLabel: string = 'Inscrever-se'; variant: 'inline' | 'card' = 'card'; consentLabel: string
+Variantes: inline, card, loading, success, error
+Exemplo: <NewsletterForm description="Uma curadoria mensal." onSubmit={async (email) => console.log(email)} />
+
+### SearchField (search-field)
+Categoria: forms
+Papel: element.form
+Posição: inside-main
+Descrição: Campo de busca controlado ou não controlado, com limpeza e envio opcionais.
+Import: @/components/library/forms/SearchField
+Client: sim
+Props: onSubmit: (value: string) => void (obrigatória); label: string = 'Buscar'; value: string; defaultValue: string = ''; size: 'sm' | 'md' | 'lg' = 'md'; showSubmitButton: boolean = false; loading: boolean = false; onValueChange: (value: string) => void; onClear: () => void
+Variantes: sm, md, lg, com botão, loading
+Exemplo: <SearchField size="lg" showSubmitButton onSubmit={(value) => console.log(value)} />
+
+### ContactChannelsSection (contact-channels-section)
+Categoria: forms
+Papel: section.contact
+Posição: end-of-main
+Descrição: Seção de contato com formulário validado (react-hook-form + yup), canais, WhatsApp e estado de sucesso.
+Import: @/components/library/forms/ContactChannelsSection
+Client: sim
+Props: title: string (obrigatória); onSubmit: (data: ContactChannelsFormData) => Promise<void> | void (obrigatória); channels: readonly { label; value; icon; href?; external? }[]; eyebrow: string; description: string; formTitle: string; channelsTitle: string = 'Informações de contato'; channelsDescription: string; whatsapp: { href: string; label?: string }; successTitle: string; successDescription: string; layout: 'cards' | 'joined' = 'cards'; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: cards, joined, glow, industrial
+Exemplo: <ContactChannelsSection title="Fale conosco" onSubmit={async (data) => { await fetch('/api/contato', { method: 'POST', body: JSON.stringify(data) }) }} />
+
+### MultiStepQuoteForm (multi-step-quote-form)
+Categoria: forms
+Papel: element.form
+Posição: inside-main
+Descrição: Formulário de orçamento em etapas com indicador de progresso, validação por etapa e estado de sucesso.
+Import: @/components/library/forms/MultiStepQuoteForm
+Client: sim
+Props: steps: QuoteStep[] (obrigatória); onSubmit: (data: Record<string, string>) => Promise<void> | void (obrigatória); title: string; previousLabel: string = 'Anterior'; nextLabel: string = 'Próximo'; submitLabel: string = 'Enviar'; successTitle: string; successDescription: string; errorMessage: string
+Variantes: 3 etapas, loading, success, error
+Exemplo: <MultiStepQuoteForm steps={[{ title: 'Projeto', fields: [{ name: 'servico', label: 'Serviço', required: true }] }]} onSubmit={async (data) => console.log(data)} />
+
+### WhatsAppQuoteForm (whatsapp-quote-form)
+Categoria: forms
+Papel: element.form
+Posição: inside-main
+Descrição: Seção escura com canais de contato e formulário que monta a mensagem e abre o WhatsApp.
+Import: @/components/library/forms/WhatsAppQuoteForm
+Client: sim
+Props: title: string (obrigatória); phone: string (obrigatória); description: string; eyebrow: string; contacts: Array<{ label; href?; icon? }>; submitLabel: string = 'Enviar no WhatsApp'; disclaimer: string
+Variantes: com canais, sem canais
+Exemplo: <WhatsAppQuoteForm title="Envie sua demanda" phone="5511999999999" />
+
+### VeloriaReserve (veloria-reserve)
+Categoria: forms
+Papel: element.form
+Posição: inside-main
+Descrição: Painel sólido #0B121A com citação, formulário de cotação charter (destino, iate, datas, hóspedes, e-mail), footer e wordmark VELORIA.
+Import: @/components/library/veloria/VeloriaReserve
+Client: sim
+Props: onQuoteSubmit: (form: HTMLFormElement) => void; className: string
+Variantes: quote form, footer, demo
+Exemplo: <VeloriaReserve />
+
+### CTABanner (cta-banner)
+Categoria: feedback
+Papel: section.conversion
+Posição: end-of-main
+Descrição: Chamada ampla de alto contraste com imagem e duas ações.
+Import: @/components/library/feedback/CTABanner
+Client: não
+Props: title: string (obrigatória); primaryAction: { label: string; href: string } (obrigatória); description: string; secondaryAction: { label: string; href: string }; backgroundImage: { src: string; alt?: string }
+Variantes: com imagem, sem imagem, duas ações
+Exemplo: <CTABanner title="Pronto para avançar?" primaryAction={{ label: 'Conversar', href: '/contato' }} />
+
+### CookieBanner (cookie-banner)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Banner de consentimento com posições, rejeição e personalização opcionais.
+Import: @/components/library/feedback/CookieBanner
+Client: sim
+Props: description: ReactNode (obrigatória); onConsent: (consent: CookieConsent) => void (obrigatória); title: ReactNode; privacyLink: { label: string; href: string }; position: 'bottom' | 'bottom-left' | 'bottom-right' = 'bottom'; defaultVisible: boolean = true; dismissible: boolean = false; customizeAction: { label: string; onClick: () => void }
+Variantes: bottom, bottom-left, bottom-right, dismissible
+Exemplo: <CookieBanner description="Usamos cookies para melhorar sua experiência." onConsent={(value) => console.log(value)} />
+
+### CTAInline (cta-inline)
+Categoria: feedback
+Papel: section.conversion
+Posição: end-of-main
+Descrição: Chamada compacta para inserir entre blocos de conteúdo.
+Import: @/components/library/feedback/CTAInline
+Client: não
+Props: title: string (obrigatória); action: { label: string; href: string } (obrigatória); description: string
+Variantes: com descrição, compacta
+Exemplo: <CTAInline title="Precisa de ajuda?" description="Fale com um especialista." action={{ label: 'Contato', href: '/contato' }} />
+
+### DialogShowcase (dialog-showcase)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Dialog acessível com gatilho, conteúdo livre e confirmação opcional.
+Import: @/components/library/feedback/DialogShowcase
+Client: sim
+Props: triggerLabel: string (obrigatória); title: string (obrigatória); description: string; children: ReactNode; confirmLabel: string = 'Continuar'; onConfirm: () => void
+Variantes: informativo, com confirmação
+Exemplo: <DialogShowcase triggerLabel="Ver detalhes" title="Detalhes" description="Informações adicionais." />
+
+### DropdownActions (dropdown-actions)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Menu contextual de ações com ícones, estados e opção destrutiva.
+Import: @/components/library/feedback/DropdownActions
+Client: sim
+Props: actions: DropdownAction[] (obrigatória); label: string = 'Abrir ações'; menuLabel: string = 'Ações disponíveis'
+Variantes: default, disabled, destructive, com ícone
+Exemplo: <DropdownActions actions={[{ label: 'Duplicar', onSelect: () => undefined }, { label: 'Excluir', destructive: true, onSelect: () => undefined }]} />
+
+### EmptyState (empty-state)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Estado vazio com ícone, orientação e até duas ações.
+Import: @/components/library/feedback/EmptyState
+Client: sim
+Props: title: ReactNode (obrigatória); description: ReactNode; icon: ReactNode; primaryAction: EmptyStateAction; secondaryAction: EmptyStateAction; variant: 'default' | 'compact' | 'bordered' = 'default'
+Variantes: default, compact, bordered
+Exemplo: <EmptyState title="Nenhum projeto" description="Crie seu primeiro projeto." primaryAction={{ label: 'Criar', onClick: () => undefined }} />
+
+### FAQAccordion (faq-accordion)
+Categoria: feedback
+Papel: section.faq
+Posição: inside-main
+Descrição: Perguntas frequentes em accordion acessível, simples ou múltiplo.
+Import: @/components/library/feedback/FAQAccordion
+Client: sim
+Props: items: Array<{ question: string; answer: ReactNode }> (obrigatória); title: string; description: string; allowMultiple: boolean = false
+Variantes: single, multiple
+Exemplo: <FAQAccordion title="Dúvidas" items={[{ question: 'Como funciona?', answer: 'Nós cuidamos de cada etapa.' }]} />
+
+### FAQCards (faq-cards)
+Categoria: feedback
+Papel: section.faq
+Posição: inside-main
+Descrição: FAQ em cards responsivos, ideal para respostas curtas e escaneáveis.
+Import: @/components/library/feedback/FAQCards
+Client: não
+Props: items: Array<{ question: string; answer: ReactNode }> (obrigatória); title: string; description: string; columns: 2 | 3 = 3
+Variantes: duas colunas, três colunas
+Exemplo: <FAQCards title="Dúvidas comuns" columns={3} items={[{ question: 'Posso personalizar?', answer: 'Sim, todas as opções são configuradas por props.' }]} />
+
+### FAQCentered (faq-centered)
+Categoria: feedback
+Papel: section.faq
+Posição: inside-main
+Descrição: Accordion centralizado em cards, com cabeçalho editorial e destaque visual.
+Import: @/components/library/feedback/FAQCentered
+Client: sim
+Props: title: string (obrigatória); items: Array<{ question: string; answer: ReactNode }> (obrigatória); eyebrow: string = 'Central de ajuda'; description: string
+Variantes: centralizado, cards expansíveis
+Exemplo: <FAQCentered title="Como podemos ajudar?" items={[{ question: 'Como instalar?', answer: 'Use o CLI Componentes Bloomin.' }]} />
+
+### FAQSearch (faq-search)
+Categoria: feedback
+Papel: section.faq
+Posição: inside-main
+Descrição: Base de perguntas pesquisável com categorias, estado vazio e accordion.
+Import: @/components/library/feedback/FAQSearch
+Client: sim
+Props: title: string (obrigatória); items: FAQSearchItem[] (obrigatória); description: string; placeholder: string; emptyMessage: string
+Variantes: com categorias, busca instantânea, estado vazio
+Exemplo: <FAQSearch title="Encontre sua resposta" items={[{ category: 'Instalação', question: 'Como começar?', answer: 'Inicialize o Componentes Bloomin e instale o componente.' }]} />
+
+### LoadingSkeleton (loading-skeleton)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Skeleton acessível para textos, cards, listas e avatares.
+Import: @/components/library/feedback/LoadingSkeleton
+Client: não
+Props: variant: 'text' | 'card' | 'list' | 'avatar' = 'card'; count: number = 1; lines: number = 3; label: string = 'Carregando conteúdo'
+Variantes: text, card, list, avatar
+Exemplo: <LoadingSkeleton variant="list" count={3} label="Carregando resultados" />
+
+### ProgressSteps (progress-steps)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Indicador semântico de progresso horizontal ou vertical.
+Import: @/components/library/feedback/ProgressSteps
+Client: não
+Props: steps: readonly ProgressStep[] (obrigatória); currentStep: number (obrigatória); orientation: 'horizontal' | 'vertical' = 'horizontal'; variant: 'numbered' | 'compact' = 'numbered'; label: string = 'Progresso'
+Variantes: horizontal, vertical, numbered, compact
+Exemplo: <ProgressSteps currentStep={2} steps={[{ label: 'Dados' }, { label: 'Revisão' }, { label: 'Concluído' }]} />
+
+### SheetPanel (sheet-panel)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Painel lateral controlado com foco, Escape e backdrop.
+Import: @/components/library/feedback/SheetPanel
+Client: sim
+Props: open: boolean (obrigatória); onOpenChange: (open: boolean) => void (obrigatória); title: string (obrigatória); children: ReactNode (obrigatória); description: string; side: 'left' | 'right' = 'right'
+Variantes: left, right
+Exemplo: <SheetPanel open={open} onOpenChange={setOpen} title="Filtros">Conteúdo</SheetPanel>
+
+### TabsShowcase (tabs-showcase)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Abas acessíveis com navegação completa por teclado.
+Import: @/components/library/feedback/TabsShowcase
+Client: sim
+Props: tabs: Array<{ id: string; label: string; content: ReactNode }> (obrigatória); defaultTab: string
+Variantes: aba inicial, scroll horizontal
+Exemplo: <TabsShowcase tabs={[{ id: 'visao', label: 'Visão geral', content: <p>Conteúdo</p> }]} />
+
+### TestimonialsCarousel (testimonials-carousel)
+Categoria: feedback
+Papel: section.social-proof
+Posição: inside-main
+Descrição: Carrossel acessível de depoimentos com teclado e paginação.
+Import: @/components/library/feedback/TestimonialsCarousel
+Client: sim
+Props: testimonials: Testimonial[] (obrigatória); title: string; label: string = 'Depoimentos de clientes'
+Variantes: navigation, pagination, keyboard
+Exemplo: <TestimonialsCarousel title="Clientes" testimonials={[{ quote: 'Excelente parceria.', name: 'Ana' }]} />
+
+### TestimonialsGrid (testimonials-grid)
+Categoria: feedback
+Papel: section.social-proof
+Posição: inside-main
+Descrição: Grade de depoimentos em cards com autoria e avatar opcionais.
+Import: @/components/library/feedback/TestimonialsGrid
+Client: não
+Props: testimonials: Testimonial[] (obrigatória); title: string
+Variantes: 2 colunas, 3 colunas, com avatar
+Exemplo: <TestimonialsGrid title="O que dizem" testimonials={[{ quote: 'Resultado acima do esperado.', name: 'Carlos', company: 'Acme' }]} />
+
+### TestimonialsSpotlight (testimonials-spotlight)
+Categoria: feedback
+Papel: section.social-proof
+Posição: inside-main
+Descrição: Depoimento principal em destaque acompanhado por relatos complementares.
+Import: @/components/library/feedback/TestimonialsSpotlight
+Client: não
+Props: featured: SpotlightTestimonial (obrigatória); items: SpotlightTestimonial[]; title: string; eyebrow: string
+Variantes: destaque editorial, com avaliação, com avatar
+Exemplo: <TestimonialsSpotlight featured={{ quote: 'Uma parceria decisiva.', name: 'Ana', company: 'Acme' }} items={depoimentos} />
+
+### ToastProvider (toast-provider)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Provider e hook para notificações temporárias com três estados.
+Import: @/components/library/feedback/ToastProvider
+Client: sim
+Props: children: ReactNode (obrigatória); defaultDuration: number = 5000
+Variantes: default, success, destructive
+Exemplo: <ToastProvider><App /></ToastProvider> // useToast().toast({ title: 'Salvo', variant: 'success' })
+
+### InteractiveSteps (interactive-steps)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Stepper navegável com progresso, conteúdo animado e conclusão opcional.
+Import: @/components/library/feedback/InteractiveSteps
+Client: sim
+Props: steps: InteractiveStep[] (obrigatória); title: string; description: string; nextLabel: string = 'Continuar'; previousLabel: string = 'Voltar'; onComplete: () => void
+Variantes: navegação direta, anterior/próximo, conteúdo customizado
+Exemplo: <InteractiveSteps title="Como funciona" steps={[{ title: 'Descoberta', description: 'Lorem ipsum.' }, { title: 'Entrega', description: 'Dolor sit amet.' }]} />
+
+### ExpandableCards (expandable-cards)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Cards de mídia que expandem para revelar narrativa e ação.
+Import: @/components/library/feedback/ExpandableCards
+Client: sim
+Props: items: ExpandableCardItem[] (obrigatória); title: string; description: string; defaultValue: string
+Variantes: imagem, ação, ícone, reduced-motion
+Exemplo: <ExpandableCards title="Explore" items={[{ id: 'design', title: 'Design', description: 'Lorem ipsum.', image: { src: '/design.jpg', alt: 'Design' } }]} />
+
+### ExpandableTextBox (expandable-text-box)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Bloco de texto com expansão "ler mais / mostrar menos" acessível.
+Import: @/components/library/feedback/ExpandableTextBox
+Client: sim
+Props: paragraphs: readonly string[] (obrigatória); collapsedLabel: string = 'Ler mais'; expandedLabel: string = 'Mostrar menos'; defaultOpen: boolean = false; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: glow, industrial, defaultOpen
+Exemplo: <ExpandableTextBox paragraphs={['Lorem ipsum dolor sit amet.']} />
+
+### NumberedAccordion (numbered-accordion)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Acordeão numerado (01, 02...) para características ou etapas.
+Import: @/components/library/feedback/NumberedAccordion
+Client: sim
+Props: items: readonly { title: string; description: string }[] (obrigatória); defaultOpenIndex: number | null = 0; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: glow, industrial, industrial-dark
+Exemplo: <NumberedAccordion items={[{ title: 'Instalação', description: 'Lorem ipsum.' }]} />
+
+### FAQBordered (faq-bordered)
+Categoria: feedback
+Papel: section.faq
+Posição: inside-main
+Descrição: FAQ com bordas, cabeçalho opcional e modo embutido para páginas de produto.
+Import: @/components/library/feedback/FAQBordered
+Client: sim
+Props: items: readonly { question: string; answer: string }[] (obrigatória); title: string; eyebrow: string = 'FAQ'; description: string; embedded: boolean; defaultOpenIndex: number | null = 0; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: seção, embedded, glow, industrial
+Exemplo: <FAQBordered title="Dúvidas frequentes" items={[{ question: 'Qual o prazo?', answer: 'Lorem ipsum.' }]} />
+
+### TestimonialsMarquee (testimonials-marquee)
+Categoria: feedback
+Papel: section.social-proof
+Posição: inside-main
+Descrição: Depoimentos em faixa horizontal contínua com pausa no hover.
+Import: @/components/library/feedback/TestimonialsMarquee
+Client: não
+Props: title: string (obrigatória); testimonials: readonly { name; content; role?; avatar?; rating? }[] (obrigatória); eyebrow: string; description: string; speed: number = 45; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: glow, industrial, industrial-dark
+Exemplo: <TestimonialsMarquee title="O que dizem" testimonials={[{ name: 'Ana Souza', role: 'CEO', content: 'Lorem ipsum.' }]} />
+
+### TestimonialsQuoteSlider (testimonials-quote-slider)
+Categoria: feedback
+Papel: section.social-proof
+Posição: inside-main
+Descrição: Slider de depoimentos com aspas, estrelas, paginação em linhas e setas.
+Import: @/components/library/feedback/TestimonialsQuoteSlider
+Client: sim
+Props: title: string (obrigatória); testimonials: readonly { name; content; role?; avatar?; rating? }[] (obrigatória); eyebrow: string; description: string; autoplayDelay: number = 5500; tone: 'glow' | 'industrial' | 'industrial-dark' = 'industrial'
+Variantes: glow, industrial, industrial-dark, estrelas
+Exemplo: <TestimonialsQuoteSlider title="Clientes" testimonials={[{ name: 'Ana Souza', role: 'CEO', content: 'Lorem ipsum.', rating: 5 }]} />
+
+### TestimonialsColumns (testimonials-columns)
+Categoria: feedback
+Papel: section.social-proof
+Posição: inside-main
+Descrição: Depoimentos em colunas verticais infinitas com velocidades diferentes e pausa no hover.
+Import: @/components/library/feedback/TestimonialsColumns
+Client: não
+Props: title: string (obrigatória); testimonials: readonly { name; content; role?; avatar? }[] (obrigatória); eyebrow: string; description: string; columns: 2 | 3 = 3; duration: number = 20; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: 2 colunas, 3 colunas, glow, industrial
+Exemplo: <TestimonialsColumns title="Quem confia" testimonials={[{ name: 'Ana Souza', role: 'CEO', content: 'Lorem ipsum.' }]} />
+
+### CTACenteredCard (cta-centered-card)
+Categoria: feedback
+Papel: section.conversion
+Posição: end-of-main
+Descrição: Chamada para ação centralizada em cartão com sombra de brilho em gradiente.
+Import: @/components/library/feedback/CTACenteredCard
+Client: não
+Props: title: string (obrigatória); description: string; eyebrow: string; actions: ReactNode; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'; variant: 'accent' | 'primary' = 'accent'
+Variantes: glow, industrial, industrial-dark, primary
+Exemplo: <CTACenteredCard title="Pronto para começar?" actions={<AccentButton href="/contato">Fale conosco</AccentButton>} />
+
+### CTASplitPanel (cta-split-panel)
+Categoria: feedback
+Papel: section.conversion
+Posição: end-of-main
+Descrição: Painel CTA com texto à esquerda e ações à direita.
+Import: @/components/library/feedback/CTASplitPanel
+Client: não
+Props: title: string (obrigatória); description: string; eyebrow: string; actions: ReactNode; tone: 'glow' | 'industrial' | 'industrial-dark' = 'industrial'
+Variantes: glow, industrial, industrial-dark
+Exemplo: <CTASplitPanel title="Precisa de um orçamento?" actions={<AccentButton href="/contato" tone="industrial">Solicitar</AccentButton>} />
+
+### SuccessStateCard (success-state-card)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Estado de confirmação (página "obrigado") com próximos passos numerados e ações.
+Import: @/components/library/feedback/SuccessStateCard
+Client: não
+Props: title: string (obrigatória); description: string; icon: ReactNode = <CheckCircle2 />; steps: readonly { title; description? }[]; stepsTitle: string = 'Próximos passos'; helper: ReactNode; actions: ReactNode; tone: 'glow' | 'industrial' | 'industrial-dark' = 'glow'
+Variantes: glow, industrial, com passos
+Exemplo: <SuccessStateCard title="Mensagem enviada!" steps={[{ title: 'Analisamos sua solicitação' }]} />
+
+### FAQSplitCTA (faq-split-cta)
+Categoria: feedback
+Papel: section.faq
+Posição: inside-main
+Descrição: FAQ em duas colunas com chamada fixa ao lado e perguntas numeradas em cards.
+Import: @/components/library/feedback/FAQSplitCTA
+Client: não
+Props: title: string (obrigatória); items: Array<{ question: string; answer: string }> (obrigatória); description: string; eyebrow: string; action: { label: string; href: string }
+Variantes: com CTA, sticky
+Exemplo: <FAQSplitCTA title="Perguntas frequentes" items={[{ question: 'Como funciona?', answer: '...' }]} />
+
+### NotFoundSection (not-found-section)
+Categoria: feedback
+Papel: section.feedback
+Posição: inside-main
+Descrição: Página 404 com código em degradê, ações e cards de sugestões de navegação.
+Import: @/components/library/feedback/NotFoundSection
+Client: não
+Props: title: string (obrigatória); primaryAction: { label: string; href: string } (obrigatória); description: string; eyebrow: string; code: string = '404'; secondaryAction: { label: string; href: string }; suggestionsTitle: string; suggestions: NotFoundSuggestion[]
+Variantes: com sugestões, simples
+Exemplo: <NotFoundSection title="Página não encontrada" primaryAction={{ label: 'Voltar ao início', href: '/' }} />
+
+### FAQHelpCard (faq-help-card)
+Categoria: feedback
+Papel: section.faq
+Posição: inside-main
+Descrição: FAQ em duas colunas: título e card "ainda ficou com dúvida?" com botão à esquerda, acordeão com ícones +/× à direita.
+Import: @/components/library/feedback/FAQHelpCard
+Client: sim
+Props: title: string (obrigatória); items: ReadonlyArray<{ question: string; answer: string }> (obrigatória); eyebrow: string; description: string; help: { title: string; description?: string; icon?: ReactNode; action?: { label: string; href: string } }; defaultOpen: number | null = 0
+Variantes: com card de ajuda, sem card, tudo fechado
+Exemplo: <FAQHelpCard eyebrow="Dúvidas frequentes" title="Perguntas frequentes" items={items} help={{ title: 'Ainda ficou alguma dúvida?', action: { label: 'Falar no WhatsApp', href: 'https://wa.me/5511999999999' } }} />
+
+### TestimonialsAvatarSwitcher (testimonials-avatar-switcher)
+Categoria: feedback
+Papel: section.social-proof
+Posição: inside-main
+Descrição: Depoimento em card escuro com estrelas e aspas, autor abaixo e coluna de avatares para alternar entre clientes.
+Import: @/components/library/feedback/TestimonialsAvatarSwitcher
+Client: sim
+Props: title: string (obrigatória); items: readonly TestimonialsAvatarSwitcherItem[] (obrigatória); eyebrow: string; description: string
+Variantes: avatares laterais, estrelas, autor em destaque
+Exemplo: <TestimonialsAvatarSwitcher eyebrow="Avaliações Google" title="O que dizem nossos clientes" items={items} />
+
+### Counter (counter)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Contador numérico animado e localizado com redução de movimento.
+Import: @/components/library/motion/Counter
+Client: sim
+Props: value: number (obrigatória); from: number = 0; duration: number = 1.5; decimals: number = 0; prefix: string; suffix: string; trigger: 'mount' | 'scroll' = 'scroll'; formatter: (value: number) => string
+Variantes: mount, scroll, formatter, locale
+Exemplo: <Counter value={98.7} decimals={1} suffix="%" trigger="mount" />
+
+### MagneticHover (magnetic-hover)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Interação magnética sutil para ponteiros precisos.
+Import: @/components/library/motion/MagneticHover
+Client: sim
+Props: children: ReactNode (obrigatória); strength: number = 0.25; duration: number = 0.35; disabled: boolean = false
+Variantes: ativo, disabled, reduced-motion
+Exemplo: <MagneticHover><button>Explorar</button></MagneticHover>
+
+### Marquee (marquee)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Faixa contínua responsiva com direção, velocidade e pausa.
+Import: @/components/library/motion/Marquee
+Client: sim
+Props: children: ReactNode (obrigatória); speed: number = 60; direction: 'left' | 'right' = 'left'; gap: number = 32; pauseOnHover: boolean = true; ariaLabel: string
+Variantes: left, right, pause-on-hover
+Exemplo: <Marquee ariaLabel="Parceiros">{logos}</Marquee>
+
+### ParallaxMedia (parallax-media)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Parallax de mídia vinculado ao scroll e sensível a preferências.
+Import: @/components/library/motion/ParallaxMedia
+Client: sim
+Props: children: ReactNode (obrigatória); amount: number = 10; scrub: boolean | number = 0.6; mediaClassName: string
+Variantes: scrub boolean, scrub numérico, reduced-motion
+Exemplo: <ParallaxMedia amount={8}><img src="/capa.jpg" alt="Capa" /></ParallaxMedia>
+
+### Reveal (reveal)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Entrada animada por montagem ou scroll em cinco direções.
+Import: @/components/library/motion/Reveal
+Client: sim
+Props: children: ReactNode (obrigatória); trigger: 'mount' | 'scroll' = 'scroll'; direction: 'up' | 'down' | 'left' | 'right' | 'none' = 'up'; distance: number = 32; duration: number = 0.7; once: boolean = true; threshold: number = 0.15
+Variantes: 5 direções, mount, scroll, once
+Exemplo: <Reveal direction="up" trigger="mount"><article>Conteúdo</article></Reveal>
+
+### Stagger (stagger)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Anima os filhos em sequência por montagem ou scroll.
+Import: @/components/library/motion/Stagger
+Client: sim
+Props: children: ReactNode (obrigatória); selector: string; trigger: 'mount' | 'scroll' = 'scroll'; stagger: number = 0.1; distance: number = 24; duration: number = 0.6; once: boolean = true
+Variantes: filhos diretos, selector, mount, scroll
+Exemplo: <Stagger trigger="mount" className="grid gap-4"><Card /><Card /><Card /></Stagger>
+
+### AnimatedList (animated-list)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Lista editável com transições automáticas ao adicionar e remover itens.
+Import: @/components/library/motion/AnimatedList
+Client: sim
+Props: initialItems: AnimatedListItem[] (obrigatória); allowAdd: boolean = true; allowRemove: boolean = true; addLabel: string = 'Adicionar item'; onChange: (items: AnimatedListItem[]) => void
+Variantes: adicionar, remover, somente leitura
+Exemplo: <AnimatedList initialItems={[{ id: '1', title: 'Estratégia' }, { id: '2', title: 'Design' }]} />
+
+### HoverTiltCard (hover-tilt-card)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Card 3D orientado pelo ponteiro com spring e reflexo luminoso.
+Import: @/components/library/motion/HoverTiltCard
+Client: sim
+Props: children: ReactNode (obrigatória); intensity: number = 10; scale: number = 1.02; glare: boolean = true
+Variantes: 3D, glare, reduced-motion
+Exemplo: <HoverTiltCard intensity={8} glare className="rounded-3xl"><article>Conteúdo</article></HoverTiltCard>
+
+### MorphingTabs (morphing-tabs)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Abas acessíveis com indicador compartilhado e transição de conteúdo.
+Import: @/components/library/motion/MorphingTabs
+Client: sim
+Props: items: MorphingTab[] (obrigatória); defaultValue: string
+Variantes: layout animation, presença, reduced-motion
+Exemplo: <MorphingTabs items={[{ id: 'design', label: 'Design', content: <p>Conteúdo</p> }, { id: 'motion', label: 'Motion', content: <p>Animação</p> }]} />
+
+### MotionReveal (motion-reveal)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Revelação declarativa pela viewport com direção e timing configuráveis.
+Import: @/components/library/motion/MotionReveal
+Client: sim
+Props: children: ReactNode (obrigatória); direction: 'up' | 'down' | 'left' | 'right' | 'none' = 'up'; distance: number = 32; delay: number = 0; duration: number = 0.55; once: boolean = true
+Variantes: 5 direções, once, repetição, reduced-motion
+Exemplo: <MotionReveal direction="up"><article>Conteúdo</article></MotionReveal>
+
+### NumberTicker (number-ticker)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Contador numérico declarativo acionado pela viewport.
+Import: @/components/library/motion/NumberTicker
+Client: sim
+Props: value: number (obrigatória); from: number = 0; duration: number = 1.5; decimals: number = 0; prefix: string; suffix: string; locale: string = 'pt-BR'
+Variantes: locale, decimais, prefixo, sufixo
+Exemplo: <NumberTicker value={98.7} decimals={1} suffix="%" />
+
+### ScrollProgress (scroll-progress)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Indicador fixo e suave do progresso de leitura da página.
+Import: @/components/library/motion/ScrollProgress
+Client: sim
+Props: position: 'top' | 'bottom' = 'top'; height: number = 3; label: string = 'Progresso de leitura'
+Variantes: top, bottom, altura customizada
+Exemplo: <ScrollProgress position="top" />
+
+### SpotlightCard (spotlight-card)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Iluminação radial que acompanha o ponteiro sobre o card.
+Import: @/components/library/motion/SpotlightCard
+Client: sim
+Props: children: ReactNode (obrigatória); color: string = 'hsl(var(--primary) / 0.18)'; size: number = 280
+Variantes: cor customizada, tamanho customizado, reduced-motion
+Exemplo: <SpotlightCard className="p-8"><h3>Conteúdo iluminado</h3></SpotlightCard>
+
+### TextLoop (text-loop)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Alternância animada de palavras com presença e blur.
+Import: @/components/library/motion/TextLoop
+Client: sim
+Props: words: string[] (obrigatória); interval: number = 2400; prefix: string; wordClassName: string
+Variantes: prefixo, intervalo, reduced-motion
+Exemplo: <TextLoop prefix="Experiências" words={['modernas', 'rápidas', 'memoráveis']} />
+
+### ParallaxStorySection (parallax-story-section)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Narrativa editorial com imagens em profundidades opostas controladas pelo scroll.
+Import: @/components/library/motion/ParallaxStorySection
+Client: sim
+Props: title: string (obrigatória); description: string (obrigatória); primaryImage: { src: string; alt: string } (obrigatória); secondaryImage: { src: string; alt: string }; depth: 'subtle' | 'medium' | 'strong' = 'medium'; tone: 'light' | 'dark' = 'light'
+Variantes: subtle, medium, strong, light, dark, reduced-motion
+Exemplo: <ParallaxStorySection title="Histórias em movimento" description="Lorem ipsum." primaryImage={{ src: '/principal.jpg', alt: 'Projeto' }} secondaryImage={{ src: '/detalhe.jpg', alt: 'Detalhe' }} />
+
+### GSAPStorySection (gsap-story-section)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Storytelling vertical com cards revelados por GSAP ScrollTrigger e scrub.
+Import: @/components/library/motion/GSAPStorySection
+Client: sim
+Props: title: string (obrigatória); items: readonly GSAPStoryItem[] (obrigatória); description: string; pinHeading: boolean = true
+Variantes: sticky heading, scrub, reveal, reduced-motion
+Exemplo: <GSAPStorySection title="Nossa jornada" items={[{ id: '1', title: 'Descoberta', description: 'Lorem ipsum.', image: { src: '/etapa.jpg', alt: 'Etapa' } }]} />
+
+### SwiperShowcaseSection (swiper-showcase-section)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Showcase editorial com navegação lateral e transição creative do Swiper.
+Import: @/components/library/motion/SwiperShowcaseSection
+Client: sim
+Props: items: readonly SwiperShowcaseItem[] (obrigatória); title: string; description: string; theme: 'light' | 'dark' = 'light'
+Variantes: light, dark, creative effect, teclado, reduced-motion
+Exemplo: <SwiperShowcaseSection title="Projetos" theme="dark" items={projects} />
+
+### AutoAnimateGallerySection (auto-animate-gallery-section)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Galeria filtrável com reorganização automática e acessível via AutoAnimate.
+Import: @/components/library/motion/AutoAnimateGallerySection
+Client: sim
+Props: items: readonly AutoAnimateGalleryItem[] (obrigatória); title: string; description: string; columns: 2 | 3 | 4 = 3; allLabel: string = 'Todos'
+Variantes: 2, 3 ou 4 colunas, filtros, reduced-motion
+Exemplo: <AutoAnimateGallerySection title="Projetos" items={projects} columns={3} />
+
+### SocialChannelMarquee (social-channel-marquee)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Faixa contínua de canais e integrações com pausa e reduced-motion.
+Import: @/components/library/motion/SocialChannelMarquee
+Client: sim
+Props: title: string (obrigatória); channels: readonly SocialChannelItem[] (obrigatória); speed: number = 55
+Variantes: ícone, monograma, velocidade configurável, reduced-motion
+Exemplo: <SocialChannelMarquee title="Conecte seus canais" channels={[{ name: 'Instagram' }, { name: 'LinkedIn' }]} />
+
+### PageReveal (page-reveal)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Wrapper que anima por scroll os descendentes marcados com data-reveal / data-reveal-stagger (GSAP).
+Import: @/components/library/motion/PageReveal
+Client: sim
+Props: children: ReactNode (obrigatória); start: string = 'top 90%'
+Variantes: up, down, left, right, fade, scale, hero, stagger
+Exemplo: <PageReveal><h2 data-reveal="up">Título</h2><ul data-reveal-stagger="up"><li>A</li><li>B</li></ul></PageReveal>
+
+### SmoothScroll (smooth-scroll)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Rolagem suave global com Lenis sincronizada ao GSAP ScrollTrigger; respeita reduced motion.
+Import: @/components/library/motion/SmoothScroll
+Client: sim
+Props: duration: number = 0.95; anchorOffset: number = -100; syncScrollTrigger: boolean = true
+Variantes: lenis, scrolltrigger
+Exemplo: <SmoothScroll />
+
+### FluxLines (flux-lines)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Fundo de linhas luminosas em fluxo contínuo que o cursor atrai e enrola como um ímã.
+Import: @/components/library/motion/FluxLines
+Client: sim
+Props: children: ReactNode; lineCount: number = 26; amplitude: number = 38; speed: number = 1; magnetRadius: number = 170; magnetStrength: number = 1; color: string; className: string
+Variantes: canvas, cursor magnético, movimento reduzido
+Exemplo: <FluxLines className="min-h-[420px]">
+  <div className="container py-24">
+    <h2 className="text-4xl font-bold">Energia em movimento</h2>
+  </div>
+</FluxLines>
+
+### DepthText (depth-text)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Tipografia extrudada em camadas com paralaxe que se desloca contra o ponteiro.
+Import: @/components/library/motion/DepthText
+Client: sim
+Props: text: string (obrigatória); as: 'h1' | 'h2' | 'h3' | 'p' | 'span' = 'h2'; layers: number = 12; depth: number = 1.4; layerClassName: string = 'text-primary'; className: string
+Variantes: extrusão, paralaxe, movimento reduzido
+Exemplo: <DepthText text="BLOOMIN" as="h1" className="text-7xl" />
+
+### SpecularButton (specular-button)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Botão de vidro cuja borda reflete a luz, com um brilho que desliza até o cursor.
+Import: @/components/library/motion/SpecularButton
+Client: sim
+Props: children: ReactNode (obrigatória); href: string; onClick: MouseEventHandler; tone: 'dark' | 'light' = 'dark'; size: 'sm' | 'md' | 'lg' = 'md'; disabled: boolean = false; className: string
+Variantes: dark, light, link, tamanhos
+Exemplo: <SpecularButton href="#contato" size="lg">Fale com a gente</SpecularButton>
+
+### LiquidButtons (liquid-buttons)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Botões de vidro 3D (Three.js) com refração, ripple na base e barrel roll 360° no clique. Demo interativa embutida.
+Import: @/components/library/motion/LiquidButtons
+Client: sim
+Props: src: string = '/liquid-buttons/'; height: number | string = 480; title: string = 'Liquid Buttons'; className: string
+Variantes: Sleep, Do Not Disturb, Personal, dark room
+Exemplo: <LiquidButtons height={520} />
+
+### IridescentRingPill (iridescent-ring-pill)
+Categoria: motion
+Papel: enhancement.motion
+Posição: wrap-or-enhance-content
+Descrição: Pill de nav com anel iridescente no disco: conic-gradient mascarado; órbita e hue separados; no hover a órbita pausa e a cor continua.
+Import: @/components/library/motion/IridescentRingPill
+Client: sim
+Props: label: string = 'Explore the drop'; href: string = '#'; embedDemo: boolean = false; src: string = '/iridescent-ring-pill/index.html'; height: number | string = 220; className: string; onClick: () => void
+Variantes: orbit, hue-rotate, hover pause orbit, reduced-motion
+Exemplo: <IridescentRingPill label="Explore the drop" href="#drop" />

@@ -1,0 +1,21 @@
+# Componentes Bloomin
+
+> Biblioteca React, Next.js, TypeScript e Tailwind com componentes instaláveis por CLI próprio.
+
+## Fontes principais
+
+- [Contexto semântico para IA](https://componentes-indol.vercel.app/registry/ai-context.json): catálogo completo, props, exemplos e receitas.
+- [Catálogo visual](https://componentes-indol.vercel.app/componentes): previews reais e busca.
+- [Como instalar](https://componentes-indol.vercel.app/como-utilizar): instalação individual ou completa.
+- [Documentação completa](https://componentes-indol.vercel.app/llms-full.txt): referência textual de todos os componentes.
+
+## Regras essenciais
+
+- Não invente componentes ou props.
+- Use conteúdo e configuração por props.
+- Importe pelo importPath declarado no contexto semântico.
+- Instale com: npx componentes-bloomin@latest add <id>
+- Instale um template: npx componentes-bloomin@latest add recipe:<id>
+- Ou baixe o ZIP dos arquivos no catálogo (sem CLI)
+- Lista de templates: https://componentes-indol.vercel.app/registry/recipes.json
+- Valide acessibilidade e responsividade.

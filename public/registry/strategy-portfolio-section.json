@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "strategy-portfolio-section",
+  "kind": "component",
+  "title": "StrategyPortfolioSection",
+  "description": "Grade filtrável de estratégias de investimento por categoria e região.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/data-display/StrategyPortfolioSection",
+    "tags": [
+      "investimentos",
+      "estratégias",
+      "portfólio",
+      "filtros"
+    ],
+    "variants": [
+      "com filtros",
+      "sem filtros",
+      "marcas customizadas"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "strategies",
+        "type": "readonly InvestmentStrategy[]",
+        "description": "Estratégias do portfólio.",
+        "required": true
+      },
+      {
+        "name": "allLabel",
+        "type": "string",
+        "description": "Rótulo do filtro geral.",
+        "required": false,
+        "default": "'Todas'"
+      }
+    ],
+    "example": "<StrategyPortfolioSection title=\"Estratégias\" strategies={[{ id: 'growth', name: 'Growth', region: 'Global', description: 'Lorem ipsum.', href: '#' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/StrategyPortfolioSection.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/StrategyPortfolioSection.tsx",
+      "content": "'use client'\r\n\r\nimport type { ReactNode } from 'react'\r\nimport { useMemo, useState } from 'react'\r\nimport Link from 'next/link'\r\nimport { ArrowUpRight } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type InvestmentStrategy = {\r\n  id: string\r\n  name: string\r\n  region: string\r\n  category?: string\r\n  description: string\r\n  href: string\r\n  mark?: ReactNode\r\n}\r\n\r\nexport type StrategyPortfolioSectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description?: string\r\n  strategies: readonly InvestmentStrategy[]\r\n  allLabel?: string\r\n  className?: string\r\n}\r\n\r\nexport function StrategyPortfolioSection({\r\n  eyebrow,\r\n  title,\r\n  description,\r\n  strategies,\r\n  allLabel = 'Todas',\r\n  className,\r\n}: StrategyPortfolioSectionProps) {\r\n  const categories = useMemo(\r\n    () => Array.from(new Set(strategies.map((item) => item.category).filter(Boolean))) as string[],\r\n    [strategies],\r\n  )\r\n  const [filter, setFilter] = useState('all')\r\n  const visible =\r\n    filter === 'all' ? strategies : strategies.filter((strategy) => strategy.category === filter)\r\n\r\n  return (\r\n    <section className={cn('bg-[#17211b] py-20 text-white md:py-28', className)}>\r\n      <div className=\"container\">\r\n        <div className=\"grid gap-8 lg:grid-cols-[.95fr_1.05fr] lg:items-end\">\r\n          <div>\r\n            {eyebrow ? (\r\n              <p className=\"text-xs font-bold uppercase tracking-[0.24em] text-[#a9cbb0]\">\r\n                {eyebrow}\r\n              </p>\r\n            ) : null}\r\n            <h2 className=\"mt-5 font-serif text-4xl tracking-[-0.035em] md:text-6xl\">{title}</h2>\r\n          </div>\r\n          {description ? (\r\n            <p className=\"text-white/58 max-w-2xl text-lg leading-8 lg:justify-self-end\">\r\n              {description}\r\n            </p>\r\n          ) : null}\r\n        </div>\r\n\r\n        {categories.length ? (\r\n          <div className=\"mt-12 flex flex-wrap gap-x-7 gap-y-3 border-b border-white/15\">\r\n            {['all', ...categories].map((category) => {\r\n              const selected = filter === category\r\n              return (\r\n                <button\r\n                  key={category}\r\n                  type=\"button\"\r\n                  aria-pressed={selected}\r\n                  onClick={() => setFilter(category)}\r\n                  className={cn(\r\n                    'relative pb-4 text-xs font-bold uppercase tracking-[0.14em] text-white/50 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a9cbb0]',\r\n                    selected && 'text-white',\r\n                  )}\r\n                >\r\n                  {category === 'all' ? allLabel : category}\r\n                  {selected ? (\r\n                    <span className=\"absolute inset-x-0 bottom-0 h-0.5 bg-[#a9cbb0]\" />\r\n                  ) : null}\r\n                </button>\r\n              )\r\n            })}\r\n          </div>\r\n        ) : null}\r\n\r\n        <div className=\"mt-8 grid gap-px overflow-hidden border border-white/15 bg-white/15 sm:grid-cols-2 lg:grid-cols-3\">\r\n          {visible.map((strategy) => (\r\n            <Link\r\n              key={strategy.id}\r\n              href={strategy.href}\r\n              className=\"group flex min-h-[330px] flex-col bg-[#17211b] p-7 transition hover:bg-[#233229] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#a9cbb0] md:p-9\"\r\n            >\r\n              <div className=\"flex items-start justify-between gap-5\">\r\n                <span className=\"flex h-14 min-w-14 items-center justify-center border border-white/20 px-3 font-serif text-xl text-[#d7e6da]\">\r\n                  {strategy.mark ?? strategy.name.slice(0, 2).toUpperCase()}\r\n                </span>\r\n                <ArrowUpRight\r\n                  className=\"h-5 w-5 text-white/35 transition group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white\"\r\n                  aria-hidden\r\n                />\r\n              </div>\r\n              <div className=\"mt-auto pt-12\">\r\n                <p className=\"text-xs font-bold uppercase tracking-[0.16em] text-[#a9cbb0]\">\r\n                  {strategy.region}\r\n                </p>\r\n                <h3 className=\"mt-3 text-xl font-semibold\">{strategy.name}</h3>\r\n                <p className=\"mt-4 text-sm leading-6 text-white/55\">{strategy.description}</p>\r\n              </div>\r\n            </Link>\r\n          ))}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

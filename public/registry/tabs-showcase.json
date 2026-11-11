@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "tabs-showcase",
+  "kind": "component",
+  "title": "TabsShowcase",
+  "description": "Abas acessíveis com navegação completa por teclado.",
+  "meta": {
+    "category": "feedback",
+    "role": "section.feedback",
+    "placement": "inside-main",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/feedback/TabsShowcase",
+    "tags": [
+      "tabs",
+      "abas",
+      "teclado",
+      "acessível"
+    ],
+    "variants": [
+      "aba inicial",
+      "scroll horizontal"
+    ],
+    "props": [
+      {
+        "name": "tabs",
+        "type": "Array<{ id: string; label: string; content: ReactNode }>",
+        "description": "Abas.",
+        "required": true
+      },
+      {
+        "name": "defaultTab",
+        "type": "string",
+        "description": "Aba inicial.",
+        "required": false
+      }
+    ],
+    "example": "<TabsShowcase tabs={[{ id: 'visao', label: 'Visão geral', content: <p>Conteúdo</p> }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/feedback/TabsShowcase.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/TabsShowcase.tsx",
+      "content": "'use client'\r\n\r\nimport { useId, useState } from 'react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type TabsShowcaseProps = {\r\n  tabs: Array<{ id: string; label: string; content: React.ReactNode }>\r\n  defaultTab?: string\r\n  className?: string\r\n}\r\n\r\nexport function TabsShowcase({ tabs, defaultTab, className }: TabsShowcaseProps) {\r\n  const baseId = useId()\r\n  const [activeTab, setActiveTab] = useState(defaultTab ?? tabs[0]?.id)\r\n  const active = tabs.find((tab) => tab.id === activeTab)\r\n\r\n  function handleKeyDown(event: React.KeyboardEvent<HTMLButtonElement>, index: number) {\r\n    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return\r\n    event.preventDefault()\r\n    const nextIndex =\r\n      event.key === 'Home'\r\n        ? 0\r\n        : event.key === 'End'\r\n          ? tabs.length - 1\r\n          : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length\r\n    setActiveTab(tabs[nextIndex]?.id)\r\n    document.getElementById(`${baseId}-tab-${tabs[nextIndex]?.id}`)?.focus()\r\n  }\r\n\r\n  return (\r\n    <div className={cn('w-full', className)}>\r\n      <div\r\n        role=\"tablist\"\r\n        aria-label=\"Conteúdo em abas\"\r\n        className=\"flex gap-1 overflow-x-auto border-b [scrollbar-width:none] [&::-webkit-scrollbar]:hidden\"\r\n      >\r\n        {tabs.map((tab, index) => (\r\n          <button\r\n            key={tab.id}\r\n            id={`${baseId}-tab-${tab.id}`}\r\n            type=\"button\"\r\n            role=\"tab\"\r\n            aria-selected={activeTab === tab.id}\r\n            aria-controls={`${baseId}-panel-${tab.id}`}\r\n            tabIndex={activeTab === tab.id ? 0 : -1}\r\n            onClick={() => setActiveTab(tab.id)}\r\n            onKeyDown={(event) => handleKeyDown(event, index)}\r\n            className={cn(\r\n              'border-b-2 border-transparent px-2 py-3 text-center text-sm font-medium leading-tight text-muted-foreground outline-none transition hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring max-sm:flex-1 sm:whitespace-nowrap sm:px-4',\r\n              activeTab === tab.id && 'border-primary text-foreground',\r\n            )}\r\n          >\r\n            {tab.label}\r\n          </button>\r\n        ))}\r\n      </div>\r\n      {active ? (\r\n        <div\r\n          id={`${baseId}-panel-${active.id}`}\r\n          role=\"tabpanel\"\r\n          aria-labelledby={`${baseId}-tab-${active.id}`}\r\n          tabIndex={0}\r\n          className=\"py-6 outline-none\"\r\n        >\r\n          {active.content}\r\n        </div>\r\n      ) : null}\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

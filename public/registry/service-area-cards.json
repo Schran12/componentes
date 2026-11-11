@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "service-area-cards",
+  "kind": "component",
+  "title": "ServiceAreaCards",
+  "description": "Cards de regiões atendidas com imagem, zoom no hover, overlay roxo e descrição revelada.",
+  "meta": {
+    "category": "content",
+    "role": "section.content",
+    "placement": "inside-main",
+    "stage": "servicos",
+    "topics": [
+      "about",
+      "cards"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/content/ServiceAreaCards",
+    "tags": [
+      "regiões",
+      "cidades",
+      "atendimento",
+      "cards",
+      "onde atendemos"
+    ],
+    "variants": [
+      "3 colunas",
+      "reveal em cascata"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "areas",
+        "type": "ServiceArea[]",
+        "description": "Regiões com nome, região, imagem e link.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      }
+    ],
+    "example": "<ServiceAreaCards title=\"Onde atendemos\" areas={[{ id: 'sp', name: 'São Paulo', region: 'SP', image: { src: '/sp.jpg', alt: '' } }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/ServiceAreaCards.tsx",
+      "type": "component",
+      "target": "src/components/library/content/ServiceAreaCards.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport { motion, useReducedMotion } from 'framer-motion'\r\nimport { ArrowUpRight } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ServiceArea = {\r\n  id: string\r\n  name: string\r\n  region?: string\r\n  description?: string\r\n  image: { src: string; alt: string }\r\n  href?: string\r\n  actionLabel?: string\r\n}\r\n\r\nexport type ServiceAreaCardsProps = {\r\n  title: string\r\n  description?: string\r\n  areas: ServiceArea[]\r\n  className?: string\r\n}\r\n\r\nexport function ServiceAreaCards({ title, description, areas, className }: ServiceAreaCardsProps) {\r\n  const reduceMotion = useReducedMotion()\r\n\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)}>\r\n      <div className=\"container\">\r\n        <div className=\"mx-auto max-w-2xl text-center\">\r\n          <h2 className=\"text-3xl font-bold tracking-tight md:text-4xl\">{title}</h2>\r\n          {description ? (\r\n            <p className=\"mt-4 text-lg leading-8 text-muted-foreground\">{description}</p>\r\n          ) : null}\r\n        </div>\r\n        <ul className=\"mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3\">\r\n          {areas.map((area, index) => (\r\n            <motion.li\r\n              key={area.id}\r\n              initial={reduceMotion ? false : { opacity: 0, y: 32 }}\r\n              whileInView={{ opacity: 1, y: 0 }}\r\n              viewport={{ once: true, amount: 0.3 }}\r\n              transition={{ duration: 0.5, delay: index * 0.08 }}\r\n            >\r\n              <a\r\n                href={area.href ?? '#'}\r\n                className=\"group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-3xl bg-muted p-6 text-white shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl\"\r\n              >\r\n                <Image\r\n                  src={area.image.src}\r\n                  alt={area.image.alt}\r\n                  fill\r\n                  className=\"-z-0 object-cover transition duration-700 group-hover:scale-110\"\r\n                  sizes=\"(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw\"\r\n                />\r\n                <span className=\"absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent transition group-hover:from-primary/90\" />\r\n                <span className=\"relative\">\r\n                  {area.region ? (\r\n                    <span className=\"text-xs font-bold uppercase tracking-widest text-white/75\">\r\n                      {area.region}\r\n                    </span>\r\n                  ) : null}\r\n                  <span className=\"mt-1 block text-2xl font-bold\">{area.name}</span>\r\n                  {area.description ? (\r\n                    <span className=\"mt-2 block max-h-0 overflow-hidden text-sm leading-6 text-white/85 opacity-0 transition-all duration-500 group-hover:max-h-32 group-hover:opacity-100\">\r\n                      {area.description}\r\n                    </span>\r\n                  ) : null}\r\n                  <span className=\"mt-4 inline-flex items-center gap-1.5 text-sm font-semibold\">\r\n                    {area.actionLabel ?? 'Explorar'}\r\n                    <ArrowUpRight className=\"h-4 w-4 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5\" />\r\n                  </span>\r\n                </span>\r\n              </a>\r\n            </motion.li>\r\n          ))}\r\n        </ul>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

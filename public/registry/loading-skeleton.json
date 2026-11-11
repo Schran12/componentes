@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "loading-skeleton",
+  "kind": "component",
+  "title": "LoadingSkeleton",
+  "description": "Skeleton acessível para textos, cards, listas e avatares.",
+  "meta": {
+    "category": "feedback",
+    "role": "section.feedback",
+    "placement": "inside-main",
+    "stage": null,
+    "topics": [],
+    "clientComponent": false,
+    "importPath": "@/components/library/feedback/LoadingSkeleton",
+    "tags": [
+      "loading",
+      "skeleton",
+      "carregamento",
+      "feedback"
+    ],
+    "variants": [
+      "text",
+      "card",
+      "list",
+      "avatar"
+    ],
+    "props": [
+      {
+        "name": "variant",
+        "type": "'text' | 'card' | 'list' | 'avatar'",
+        "description": "Formato simulado.",
+        "required": false,
+        "default": "'card'"
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "description": "Quantidade de itens.",
+        "required": false,
+        "default": "1"
+      },
+      {
+        "name": "lines",
+        "type": "number",
+        "description": "Linhas no skeleton de texto.",
+        "required": false,
+        "default": "3"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Rótulo anunciado por leitores de tela.",
+        "required": false,
+        "default": "'Carregando conteúdo'"
+      }
+    ],
+    "example": "<LoadingSkeleton variant=\"list\" count={3} label=\"Carregando resultados\" />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/feedback/LoadingSkeleton.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/LoadingSkeleton.tsx",
+      "content": "import type { HTMLAttributes } from 'react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport interface LoadingSkeletonProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {\r\n  variant?: 'text' | 'card' | 'list' | 'avatar'\r\n  count?: number\r\n  lines?: number\r\n  label?: string\r\n}\r\n\r\nconst Pulse = ({ className }: { className?: string }) => (\r\n  <span\r\n    className={cn('block animate-pulse rounded-md bg-muted motion-reduce:animate-none', className)}\r\n  />\r\n)\r\n\r\nexport function LoadingSkeleton({\r\n  variant = 'card',\r\n  count = 1,\r\n  lines = 3,\r\n  label = 'Carregando conteúdo',\r\n  className,\r\n  ...props\r\n}: LoadingSkeletonProps) {\r\n  const safeCount = Math.max(1, count)\r\n  const safeLines = Math.max(1, lines)\r\n\r\n  return (\r\n    <div role=\"status\" aria-label={label} className={cn('w-full', className)} {...props}>\r\n      <span className=\"sr-only\">{label}</span>\r\n      <div\r\n        className={cn(\r\n          variant === 'list' && 'grid gap-3',\r\n          variant === 'card' && safeCount > 1 && 'grid gap-4 md:grid-cols-2 lg:grid-cols-3',\r\n        )}\r\n      >\r\n        {Array.from({ length: safeCount }).map((_, itemIndex) => {\r\n          if (variant === 'avatar') {\r\n            return <Pulse key={itemIndex} className=\"h-12 w-12 rounded-full\" />\r\n          }\r\n          if (variant === 'text') {\r\n            return (\r\n              <div key={itemIndex} className=\"space-y-2\">\r\n                {Array.from({ length: safeLines }).map((__, lineIndex) => (\r\n                  <Pulse\r\n                    key={lineIndex}\r\n                    className={cn('h-4', lineIndex === safeLines - 1 && 'w-2/3')}\r\n                  />\r\n                ))}\r\n              </div>\r\n            )\r\n          }\r\n          if (variant === 'list') {\r\n            return (\r\n              <div key={itemIndex} className=\"flex items-center gap-4 rounded-xl border p-4\">\r\n                <Pulse className=\"h-11 w-11 shrink-0 rounded-full\" />\r\n                <div className=\"flex-1 space-y-2\">\r\n                  <Pulse className=\"h-4 w-1/3\" />\r\n                  <Pulse className=\"h-3 w-2/3\" />\r\n                </div>\r\n              </div>\r\n            )\r\n          }\r\n          return (\r\n            <div key={itemIndex} className=\"overflow-hidden rounded-2xl border p-4\">\r\n              <Pulse className=\"aspect-video w-full rounded-xl\" />\r\n              <div className=\"mt-4 space-y-2\">\r\n                <Pulse className=\"h-5 w-2/3\" />\r\n                <Pulse className=\"h-4 w-full\" />\r\n                <Pulse className=\"h-4 w-4/5\" />\r\n              </div>\r\n            </div>\r\n          )\r\n        })}\r\n      </div>\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

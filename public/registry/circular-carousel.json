@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "circular-carousel",
+  "kind": "component",
+  "title": "CircularCarousel",
+  "description": "Carrossel em anel 3D que gira sozinho, por arraste, setas ou teclado.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": "galeria",
+    "topics": [
+      "galleries"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/data-display/CircularCarousel",
+    "tags": [
+      "carrossel",
+      "galeria",
+      "3d",
+      "slider",
+      "animação"
+    ],
+    "variants": [
+      "autoplay",
+      "arraste",
+      "teclado",
+      "movimento reduzido"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "CircularCarouselItem[]",
+        "description": "Itens com imagem, título e descrição.",
+        "required": true
+      },
+      {
+        "name": "autoplay",
+        "type": "boolean",
+        "description": "Gira automaticamente.",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "interval",
+        "type": "number",
+        "description": "Intervalo do autoplay em ms.",
+        "required": false,
+        "default": "3500"
+      },
+      {
+        "name": "cardWidth",
+        "type": "number",
+        "description": "Largura dos cards em px.",
+        "required": false,
+        "default": "200"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "description": "Rótulo acessível.",
+        "required": false,
+        "default": "'Carrossel circular'"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes extras.",
+        "required": false
+      }
+    ],
+    "example": "<CircularCarousel\n  items={[\n    { image: { src: '/projetos/1.jpg', alt: 'Projeto 1' }, title: 'Projeto 1', description: 'Residencial' },\n    { image: { src: '/projetos/2.jpg', alt: 'Projeto 2' }, title: 'Projeto 2', description: 'Comercial' },\n  ]}\n/>"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/CircularCarousel.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/CircularCarousel.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport { ChevronLeft, ChevronRight } from 'lucide-react'\r\nimport { useEffect, useRef, useState } from 'react'\r\nimport { useReducedMotion } from '@/components/library/motion/useReducedMotion'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type CircularCarouselItem = {\r\n  image: { src: string; alt: string }\r\n  title: string\r\n  description?: string\r\n}\r\n\r\nexport type CircularCarouselProps = {\r\n  items: CircularCarouselItem[]\r\n  autoplay?: boolean\r\n  interval?: number\r\n  cardWidth?: number\r\n  ariaLabel?: string\r\n  className?: string\r\n}\r\n\r\nexport function CircularCarousel({\r\n  items,\r\n  autoplay = true,\r\n  interval = 3500,\r\n  cardWidth = 200,\r\n  ariaLabel = 'Carrossel circular',\r\n  className,\r\n}: CircularCarouselProps) {\r\n  const [step, setStep] = useState(0)\r\n  const [paused, setPaused] = useState(false)\r\n  const reduced = useReducedMotion()\r\n  const dragStart = useRef<number | null>(null)\r\n\r\n  const count = items.length\r\n  const angle = 360 / Math.max(count, 1)\r\n  const radius = Math.round(cardWidth / 2 / Math.tan(Math.PI / Math.max(count, 3)) + 24)\r\n  const active = ((step % count) + count) % count\r\n\r\n  useEffect(() => {\r\n    if (!autoplay || paused || reduced || count < 2) return\r\n    const timer = window.setInterval(() => setStep((value) => value + 1), interval)\r\n    return () => window.clearInterval(timer)\r\n  }, [autoplay, count, interval, paused, reduced])\r\n\r\n  if (!count) return null\r\n\r\n  const go = (delta: number) => setStep((value) => value + delta)\r\n\r\n  return (\r\n    <section\r\n      aria-roledescription=\"carrossel\"\r\n      aria-label={ariaLabel}\r\n      className={cn('relative w-full overflow-hidden py-6', className)}\r\n      onPointerEnter={() => setPaused(true)}\r\n      onPointerLeave={() => {\r\n        setPaused(false)\r\n        dragStart.current = null\r\n      }}\r\n      onFocus={() => setPaused(true)}\r\n      onBlur={() => setPaused(false)}\r\n      onKeyDown={(event) => {\r\n        if (event.key === 'ArrowRight') go(1)\r\n        if (event.key === 'ArrowLeft') go(-1)\r\n      }}\r\n    >\r\n      <div\r\n        className=\"relative mx-auto flex h-[22rem] cursor-grab touch-pan-y select-none items-center justify-center [perspective:1100px] active:cursor-grabbing\"\r\n        onPointerDown={(event) => {\r\n          dragStart.current = event.clientX\r\n        }}\r\n        onPointerUp={(event) => {\r\n          if (dragStart.current === null) return\r\n          const delta = event.clientX - dragStart.current\r\n          if (Math.abs(delta) > 40) go(delta < 0 ? 1 : -1)\r\n          dragStart.current = null\r\n        }}\r\n      >\r\n        <div\r\n          className={cn(\r\n            'relative h-64 [transform-style:preserve-3d]',\r\n            !reduced && 'transition-transform duration-700',\r\n          )}\r\n          style={{\r\n            width: cardWidth,\r\n            transform: `translateZ(${-radius}px) rotateY(${-step * angle}deg)`,\r\n            transitionTimingFunction: 'cubic-bezier(.22,1,.36,1)',\r\n          }}\r\n        >\r\n          {items.map((item, index) => {\r\n            const isActive = index === active\r\n            return (\r\n              <figure\r\n                key={item.title}\r\n                aria-hidden={!isActive}\r\n                className={cn(\r\n                  'absolute inset-0 overflow-hidden rounded-2xl border bg-card shadow-xl transition duration-500 [backface-visibility:hidden]',\r\n                  isActive ? 'opacity-100' : 'opacity-60',\r\n                )}\r\n                style={{ transform: `rotateY(${index * angle}deg) translateZ(${radius}px)` }}\r\n              >\r\n                <Image\r\n                  src={item.image.src}\r\n                  alt={item.image.alt}\r\n                  fill\r\n                  sizes={`${cardWidth}px`}\r\n                  draggable={false}\r\n                  className=\"object-cover\"\r\n                />\r\n                <figcaption className=\"absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-4 pt-10 text-sm font-semibold text-white\">\r\n                  {item.title}\r\n                </figcaption>\r\n              </figure>\r\n            )\r\n          })}\r\n        </div>\r\n      </div>\r\n\r\n      <div className=\"mx-auto mt-2 flex max-w-md flex-col items-center text-center\">\r\n        <div aria-live=\"polite\" className=\"min-h-14\">\r\n          <p className=\"font-semibold\">{items[active].title}</p>\r\n          {items[active].description ? (\r\n            <p className=\"mt-1 text-sm text-muted-foreground\">{items[active].description}</p>\r\n          ) : null}\r\n        </div>\r\n        <div className=\"mt-3 flex items-center gap-3\">\r\n          <button\r\n            type=\"button\"\r\n            onClick={() => go(-1)}\r\n            aria-label=\"Anterior\"\r\n            className=\"flex h-10 w-10 items-center justify-center rounded-full border bg-background transition hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\"\r\n          >\r\n            <ChevronLeft className=\"h-4 w-4\" />\r\n          </button>\r\n          <div className=\"flex gap-1.5\">\r\n            {items.map((item, index) => (\r\n              <button\r\n                type=\"button\"\r\n                key={item.title}\r\n                onClick={() => go(index - active)}\r\n                aria-label={`Ir para ${item.title}`}\r\n                aria-current={index === active}\r\n                className={cn(\r\n                  'h-2 rounded-full transition-all',\r\n                  index === active\r\n                    ? 'w-6 bg-primary'\r\n                    : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/60',\r\n                )}\r\n              />\r\n            ))}\r\n          </div>\r\n          <button\r\n            type=\"button\"\r\n            onClick={() => go(1)}\r\n            aria-label=\"Próximo\"\r\n            className=\"flex h-10 w-10 items-center justify-center rounded-full border bg-background transition hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\"\r\n          >\r\n            <ChevronRight className=\"h-4 w-4\" />\r\n          </button>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/motion/useReducedMotion.ts",
+      "type": "component",
+      "target": "src/components/library/motion/useReducedMotion.ts",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\nconst QUERY = '(prefers-reduced-motion: reduce)'\r\n\r\nexport function prefersReducedMotion(): boolean {\r\n  return typeof window !== 'undefined' && window.matchMedia(QUERY).matches\r\n}\r\n\r\nexport function useReducedMotion(): boolean {\r\n  const [reduced, setReduced] = useState(false)\r\n\r\n  useEffect(() => {\r\n    const media = window.matchMedia(QUERY)\r\n    const update = (): void => setReduced(media.matches)\r\n\r\n    update()\r\n    media.addEventListener('change', update)\r\n    return () => media.removeEventListener('change', update)\r\n  }, [])\r\n\r\n  return reduced\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

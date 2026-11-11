@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "parallax-story-section",
+  "kind": "component",
+  "title": "ParallaxStorySection",
+  "description": "Narrativa editorial com imagens em profundidades opostas controladas pelo scroll.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/ParallaxStorySection",
+    "tags": [
+      "parallax",
+      "scroll",
+      "framer-motion",
+      "storytelling"
+    ],
+    "variants": [
+      "subtle",
+      "medium",
+      "strong",
+      "light",
+      "dark",
+      "reduced-motion"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": true
+      },
+      {
+        "name": "primaryImage",
+        "type": "{ src: string; alt: string }",
+        "description": "Imagem principal.",
+        "required": true
+      },
+      {
+        "name": "secondaryImage",
+        "type": "{ src: string; alt: string }",
+        "description": "Imagem secundária.",
+        "required": false
+      },
+      {
+        "name": "depth",
+        "type": "'subtle' | 'medium' | 'strong'",
+        "description": "Intensidade.",
+        "required": false,
+        "default": "'medium'"
+      },
+      {
+        "name": "tone",
+        "type": "'light' | 'dark'",
+        "description": "Tom visual.",
+        "required": false,
+        "default": "'light'"
+      }
+    ],
+    "example": "<ParallaxStorySection title=\"Histórias em movimento\" description=\"Lorem ipsum.\" primaryImage={{ src: '/principal.jpg', alt: 'Projeto' }} secondaryImage={{ src: '/detalhe.jpg', alt: 'Detalhe' }} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/ParallaxStorySection.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/ParallaxStorySection.tsx",
+      "content": "'use client'\r\n\r\nimport { useRef } from 'react'\r\nimport Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'\r\nimport { ArrowDownRight } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ParallaxStorySectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description: string\r\n  primaryImage: { src: string; alt: string }\r\n  secondaryImage?: { src: string; alt: string }\r\n  action?: { label: string; href: string }\r\n  depth?: 'subtle' | 'medium' | 'strong'\r\n  tone?: 'light' | 'dark'\r\n  className?: string\r\n}\r\n\r\nconst depthValues = {\r\n  subtle: 40,\r\n  medium: 80,\r\n  strong: 130,\r\n}\r\n\r\nexport function ParallaxStorySection({\r\n  eyebrow,\r\n  title,\r\n  description,\r\n  primaryImage,\r\n  secondaryImage,\r\n  action,\r\n  depth = 'medium',\r\n  tone = 'light',\r\n  className,\r\n}: ParallaxStorySectionProps) {\r\n  const root = useRef<HTMLElement>(null)\r\n  const reducedMotion = useReducedMotion()\r\n  const { scrollYProgress } = useScroll({\r\n    target: root,\r\n    offset: ['start end', 'end start'],\r\n  })\r\n  const distance = depthValues[depth]\r\n  const primaryY = useTransform(\r\n    scrollYProgress,\r\n    [0, 1],\r\n    reducedMotion ? [0, 0] : [-distance, distance],\r\n  )\r\n  const secondaryY = useTransform(\r\n    scrollYProgress,\r\n    [0, 1],\r\n    reducedMotion ? [0, 0] : [distance * 0.7, -distance * 0.7],\r\n  )\r\n\r\n  return (\r\n    <section\r\n      ref={root}\r\n      className={cn(\r\n        'relative isolate overflow-hidden py-24 md:py-36',\r\n        tone === 'dark' ? 'bg-slate-950 text-white' : 'bg-background text-foreground',\r\n        className,\r\n      )}\r\n    >\r\n      <div className=\"container grid items-center gap-14 lg:grid-cols-[.9fr_1.1fr]\">\r\n        <div className=\"relative z-10 max-w-xl\">\r\n          {eyebrow ? (\r\n            <p className=\"text-xs font-bold uppercase tracking-[0.24em] text-primary\">{eyebrow}</p>\r\n          ) : null}\r\n          <h2 className=\"mt-5 text-4xl font-bold leading-tight tracking-tight md:text-6xl\">\r\n            {title}\r\n          </h2>\r\n          <p\r\n            className={cn(\r\n              'mt-6 text-lg leading-8',\r\n              tone === 'dark' ? 'text-white/65' : 'text-muted-foreground',\r\n            )}\r\n          >\r\n            {description}\r\n          </p>\r\n          {action ? (\r\n            <Link\r\n              href={action.href}\r\n              className=\"mt-8 inline-flex items-center gap-2 rounded-sm font-semibold text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\"\r\n            >\r\n              {action.label}\r\n              <ArrowDownRight className=\"h-4 w-4\" aria-hidden />\r\n            </Link>\r\n          ) : null}\r\n        </div>\r\n\r\n        <div className=\"relative min-h-[620px]\">\r\n          <motion.figure\r\n            style={{ y: primaryY }}\r\n            className=\"absolute left-0 top-16 h-[480px] w-[78%] overflow-hidden rounded-[2.5rem] bg-muted shadow-2xl\"\r\n          >\r\n            <Image\r\n              src={primaryImage.src}\r\n              alt={primaryImage.alt}\r\n              fill\r\n              className=\"scale-110 object-cover\"\r\n              sizes=\"(min-width: 1024px) 45vw, 80vw\"\r\n            />\r\n          </motion.figure>\r\n\r\n          {secondaryImage ? (\r\n            <motion.figure\r\n              style={{ y: secondaryY }}\r\n              className=\"absolute bottom-8 right-0 h-72 w-[48%] overflow-hidden rounded-3xl border-8 border-background bg-muted shadow-2xl\"\r\n            >\r\n              <Image\r\n                src={secondaryImage.src}\r\n                alt={secondaryImage.alt}\r\n                fill\r\n                className=\"scale-110 object-cover\"\r\n                sizes=\"(min-width: 1024px) 25vw, 50vw\"\r\n              />\r\n            </motion.figure>\r\n          ) : null}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

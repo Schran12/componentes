@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "footer-accent",
+  "kind": "component",
+  "title": "FooterAccent",
+  "description": "Rodapé com marca, redes sociais, colunas de links com divisórias e barra legal.",
+  "meta": {
+    "category": "navigation",
+    "role": "page.footer",
+    "placement": "after-main",
+    "stage": "footer",
+    "topics": [
+      "footer"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/navigation/FooterAccent",
+    "tags": [
+      "footer",
+      "rodapé",
+      "links",
+      "redes sociais",
+      "template-next",
+      "bloomin"
+    ],
+    "variants": [
+      "glow",
+      "industrial",
+      "industrial-dark",
+      "crédito Bloomin"
+    ],
+    "props": [
+      {
+        "name": "logo",
+        "type": "ReactNode",
+        "description": "Logo.",
+        "required": true
+      },
+      {
+        "name": "columns",
+        "type": "readonly { title; links: { label; href }[] }[]",
+        "description": "Colunas.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Texto da marca.",
+        "required": false
+      },
+      {
+        "name": "logoHref",
+        "type": "string",
+        "description": "Link do logo.",
+        "required": false,
+        "default": "'/'"
+      },
+      {
+        "name": "socialLinks",
+        "type": "readonly { label; href; icon }[]",
+        "description": "Redes sociais.",
+        "required": false
+      },
+      {
+        "name": "legalLinks",
+        "type": "readonly { label; href }[]",
+        "description": "Links legais.",
+        "required": false
+      },
+      {
+        "name": "copyright",
+        "type": "ReactNode",
+        "description": "Texto de copyright.",
+        "required": false
+      },
+      {
+        "name": "credit",
+        "type": "ReactNode",
+        "description": "Crédito extra além do da Bloomin.",
+        "required": false
+      },
+      {
+        "name": "showDevelopedBy",
+        "type": "boolean",
+        "description": "Exibe “Desenvolvido por” com o logo da Bloomin.",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "tone",
+        "type": "'glow' | 'industrial' | 'industrial-dark'",
+        "description": "Tema visual: glow (escuro rosa/roxo), industrial (claro âmbar) ou industrial-dark.",
+        "required": false,
+        "default": "'glow'"
+      }
+    ],
+    "example": "<FooterAccent logo={<span>Logo</span>} columns={[{ title: 'Navegação', links: [{ label: 'Início', href: '/' }] }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/navigation/BloominCredit.tsx",
+      "type": "component",
+      "target": "src/components/library/navigation/BloominCredit.tsx",
+      "content": "import { cn } from '@/lib/utils'\r\n\r\n/** Logo oficial Bloomin (PNG embutido para funcionar no catálogo e nos projetos instalados). */\r\nconst BLOOMIN_LOGO_SRC =\r\n  'data:image/png;base64,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'\r\n\r\nexport const BLOOMIN_URL = 'https://bloomin.com.br'\r\n\r\nexport type BloominLogoProps = {\r\n  className?: string\r\n  /** Altura visual do logo (largura acompanha a proporção). */\r\n  height?: number\r\n}\r\n\r\nexport function BloominLogo({ className, height = 18 }: BloominLogoProps) {\r\n  return (\r\n    // eslint-disable-next-line @next/next/no-img-element -- data URI portátil no registry\r\n    <img\r\n      src={BLOOMIN_LOGO_SRC}\r\n      alt=\"Bloomin\"\r\n      width={Math.round(height * (421 / 108))}\r\n      height={height}\r\n      className={cn('h-[1.125rem] w-auto', className)}\r\n      style={{ height, width: 'auto' }}\r\n    />\r\n  )\r\n}\r\n\r\nexport type BloominCreditProps = {\r\n  label?: string\r\n  href?: string\r\n  className?: string\r\n  /** Fundo escuro atrás do logo (o PNG oficial tem fundo preto). */\r\n  logoClassName?: string\r\n}\r\n\r\n/** Crédito padrão “Desenvolvido por” com o logo da Bloomin. */\r\nexport function BloominCredit({\r\n  label = 'Desenvolvido por',\r\n  href = BLOOMIN_URL,\r\n  className,\r\n  logoClassName,\r\n}: BloominCreditProps) {\r\n  return (\r\n    <span className={cn('inline-flex items-center gap-2 text-sm', className)}>\r\n      <span className=\"opacity-80\">{label}</span>\r\n      <a\r\n        href={href}\r\n        target=\"_blank\"\r\n        rel=\"noopener noreferrer\"\r\n        aria-label=\"Bloomin — agência de marketing digital\"\r\n        className={cn(\r\n          'inline-flex items-center rounded-md bg-neutral-950 px-2 py-1 transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',\r\n          logoClassName,\r\n        )}\r\n      >\r\n        <BloominLogo height={16} />\r\n      </a>\r\n    </span>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/navigation/FooterAccent.tsx",
+      "type": "component",
+      "target": "src/components/library/navigation/FooterAccent.tsx",
+      "content": "import type { ReactNode } from 'react'\r\nimport Link from 'next/link'\r\n\r\nimport { getAccentTone, type AccentTone } from '@/components/library/primitives/accentTones'\r\nimport { CurrentYear } from '@/components/library/primitives/CurrentYear'\r\nimport { cn } from '@/lib/utils'\r\n\r\nimport { BloominCredit } from './BloominCredit'\r\n\r\nexport type FooterAccentColumn = {\r\n  title: string\r\n  links: readonly { label: string; href: string }[]\r\n}\r\n\r\nexport type FooterAccentProps = {\r\n  logo: ReactNode\r\n  columns: readonly FooterAccentColumn[]\r\n  description?: string\r\n  logoHref?: string\r\n  socialLinks?: readonly { label: string; href: string; icon: ReactNode }[]\r\n  legalLinks?: readonly { label: string; href: string }[]\r\n  copyright?: ReactNode\r\n  /** Crédito extra além do “Desenvolvido por Bloomin”. */\r\n  credit?: ReactNode\r\n  /** Exibe “Desenvolvido por” com o logo da Bloomin. Padrão: true. */\r\n  showDevelopedBy?: boolean\r\n  tone?: AccentTone\r\n  className?: string\r\n}\r\n\r\n/** Rodapé com marca, redes sociais, colunas de links com divisórias e barra legal. */\r\nexport function FooterAccent({\r\n  logo,\r\n  columns,\r\n  description,\r\n  logoHref = '/',\r\n  socialLinks = [],\r\n  legalLinks = [],\r\n  copyright,\r\n  credit,\r\n  showDevelopedBy = true,\r\n  tone = 'glow',\r\n  className,\r\n}: FooterAccentProps) {\r\n  const t = getAccentTone(tone)\r\n  const isGlow = tone === 'glow'\r\n  const link = isGlow\r\n    ? 'text-[#ffb0eb] transition-colors hover:text-[#ae89ff]'\r\n    : tone === 'industrial'\r\n      ? 'text-slate-600 transition-colors hover:text-amber-600'\r\n      : 'text-slate-400 transition-colors hover:text-amber-500'\r\n\r\n  return (\r\n    <footer\r\n      className={cn(\r\n        isGlow ? 'bg-[#0e0e0e] text-[#c1c1c1] shadow-[0_-2px_0.5rem_#000]' : t.alt,\r\n        !isGlow && cn('border-t', t.border),\r\n        className,\r\n      )}\r\n    >\r\n      <div className=\"container\">\r\n        <div className=\"flex flex-wrap gap-8 py-10\">\r\n          <div className=\"min-w-[240px] flex-1\">\r\n            <Link href={logoHref} className={cn('inline-block', t.focus)}>\r\n              {logo}\r\n            </Link>\r\n            {description ? (\r\n              <p className={cn('mt-4 max-w-md text-sm leading-relaxed', t.body)}>{description}</p>\r\n            ) : null}\r\n            {socialLinks.length ? (\r\n              <div className=\"mt-5 flex items-center gap-3\">\r\n                {socialLinks.map((social) => (\r\n                  <a\r\n                    key={social.label}\r\n                    href={social.href}\r\n                    target=\"_blank\"\r\n                    rel=\"noopener noreferrer\"\r\n                    aria-label={social.label}\r\n                    className={cn('grid h-9 w-9 place-items-center', t.iconButton, t.focus)}\r\n                  >\r\n                    {social.icon}\r\n                  </a>\r\n                ))}\r\n              </div>\r\n            ) : null}\r\n          </div>\r\n\r\n          {columns.map((column) => (\r\n            <nav key={column.title} className=\"min-w-[200px] flex-1\" aria-label={column.title}>\r\n              <h2\r\n                className={cn(\r\n                  'mb-3 text-lg font-semibold',\r\n                  t.strong,\r\n                  !isGlow && 'text-base uppercase tracking-wide',\r\n                )}\r\n              >\r\n                {column.title}\r\n                <span className={cn('mt-2 block h-0.5 w-10', t.line)} aria-hidden />\r\n              </h2>\r\n              <ul>\r\n                {column.links.map((item) => (\r\n                  <li key={item.label} className={cn('border-b py-2.5', t.border)}>\r\n                    <Link href={item.href} className={cn(link, t.focus)}>\r\n                      {item.label}\r\n                    </Link>\r\n                  </li>\r\n                ))}\r\n              </ul>\r\n            </nav>\r\n          ))}\r\n        </div>\r\n\r\n        <div\r\n          className={cn(\r\n            'flex flex-wrap items-center justify-between gap-4 border-t py-6 text-sm',\r\n            t.border,\r\n            t.body,\r\n          )}\r\n        >\r\n          <p>\r\n            {copyright ?? (\r\n              <>\r\n                Copyright © <CurrentYear />. Todos os direitos reservados.\r\n              </>\r\n            )}\r\n          </p>\r\n          {legalLinks.length || credit || showDevelopedBy ? (\r\n            <div className=\"flex flex-wrap items-center gap-x-6 gap-y-2\">\r\n              {legalLinks.map((item) => (\r\n                <Link key={item.label} href={item.href} className={cn(link, t.focus)}>\r\n                  {item.label}\r\n                </Link>\r\n              ))}\r\n              {credit}\r\n              {showDevelopedBy ? <BloominCredit /> : null}\r\n            </div>\r\n          ) : null}\r\n        </div>\r\n      </div>\r\n    </footer>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/accentTones.ts",
+      "type": "component",
+      "target": "src/components/library/primitives/accentTones.ts",
+      "content": "/**\r\n * Temas visuais compartilhados pelos componentes de origem dos templates Next.\r\n * - glow: fundo escuro com gradiente rosa/roxo.\r\n * - industrial: fundo claro com destaque âmbar.\r\n * - industrial-dark: fundo slate escuro com destaque âmbar.\r\n */\r\nexport type AccentTone = 'glow' | 'industrial' | 'industrial-dark'\r\n\r\nexport type AccentToneTokens = {\r\n  section: string\r\n  alt: string\r\n  panel: string\r\n  panelHover: string\r\n  border: string\r\n  divide: string\r\n  heading: string\r\n  strong: string\r\n  body: string\r\n  muted: string\r\n  accent: string\r\n  line: string\r\n  fill: string\r\n  onFill: string\r\n  iconButton: string\r\n  radius: string\r\n  overlayFrom: string\r\n  chip: string\r\n  focus: string\r\n  hoverLift: string\r\n  input: string\r\n  error: string\r\n}\r\n\r\nexport const accentTones: Record<AccentTone, AccentToneTokens> = {\r\n  glow: {\r\n    section: 'bg-[#121212] text-[#c1c1c1]',\r\n    alt: 'bg-[#0e0e0e] text-[#c1c1c1]',\r\n    panel: 'bg-[#221d2f]',\r\n    panelHover: 'hover:bg-[#2a2339]',\r\n    border: 'border-[#493849]',\r\n    divide: 'divide-[#493849]',\r\n    heading:\r\n      'w-fit bg-gradient-to-r from-[#c642a5] to-[#7c39cf] bg-clip-text font-normal text-transparent',\r\n    strong: 'text-white',\r\n    body: 'text-[#c1c1c1]',\r\n    muted: 'text-[#c1c1c1]/75',\r\n    accent: 'text-[#ffb0eb]',\r\n    line: 'bg-gradient-to-r from-[#c642a5] to-[#7c39cf]',\r\n    fill: 'bg-gradient-to-br from-[#c642a5] to-[#7c39cf]',\r\n    onFill: 'text-white',\r\n    iconButton:\r\n      'rounded-full border border-[#493849] text-white hover:border-[#c642a5] hover:bg-[#c642a5]',\r\n    radius: 'rounded-2xl',\r\n    overlayFrom: 'from-[#121212]',\r\n    chip: 'border-[#493849] bg-[#121212]/70',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c642a5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121212]',\r\n    hoverLift:\r\n      'hover:-translate-y-1 hover:border-[#c642a5]/50 hover:shadow-[0_12px_40px_rgba(198,66,165,0.18)]',\r\n    input:\r\n      'rounded-md border-[#493849] bg-[#221d2f] text-white placeholder:text-[#c1c1c1]/70 focus-visible:ring-[#c642a5]',\r\n    error: 'text-red-400',\r\n  },\r\n  industrial: {\r\n    section: 'bg-slate-50 text-slate-600',\r\n    alt: 'bg-white text-slate-600',\r\n    panel: 'bg-white',\r\n    panelHover: 'hover:bg-slate-50',\r\n    border: 'border-slate-200',\r\n    divide: 'divide-slate-200',\r\n    heading: 'font-semibold uppercase tracking-wide text-slate-900',\r\n    strong: 'text-slate-900',\r\n    body: 'text-slate-600',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-600',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-slate-300 text-slate-700 hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/15 bg-slate-950/50',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-amber-500',\r\n    error: 'text-red-600',\r\n  },\r\n  'industrial-dark': {\r\n    section: 'bg-slate-950 text-slate-400',\r\n    alt: 'bg-slate-900 text-slate-400',\r\n    panel: 'bg-slate-900',\r\n    panelHover: 'hover:bg-white/5',\r\n    border: 'border-white/10',\r\n    divide: 'divide-white/10',\r\n    heading: 'font-semibold uppercase tracking-wide text-white',\r\n    strong: 'text-white',\r\n    body: 'text-slate-400',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-500',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-white/20 text-white hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/10 bg-slate-950/40',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-white/10 bg-slate-900 text-white placeholder:text-slate-500 focus-visible:ring-amber-500',\r\n    error: 'text-red-400',\r\n  },\r\n}\r\n\r\nexport function getAccentTone(tone: AccentTone = 'glow'): AccentToneTokens {\r\n  return accentTones[tone]\r\n}\r\n\r\nexport function padIndex(index: number): string {\r\n  return String(index + 1).padStart(2, '0')\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/CurrentYear.tsx",
+      "type": "component",
+      "target": "src/components/library/primitives/CurrentYear.tsx",
+      "content": "'use client'\r\n\r\nimport { useSyncExternalStore } from 'react'\r\n\r\nconst subscribe = () => () => {}\r\n\r\n/**\r\n * Ano atual lido só no navegador: não chama `new Date()` no prerender,\r\n * o que o Next 16 com `cacheComponents` rejeita.\r\n */\r\nexport function CurrentYear() {\r\n  return useSyncExternalStore(\r\n    subscribe,\r\n    () => new Date().getFullYear(),\r\n    () => null,\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

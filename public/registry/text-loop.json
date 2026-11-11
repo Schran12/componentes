@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "text-loop",
+  "kind": "component",
+  "title": "TextLoop",
+  "description": "Alternância animada de palavras com presença e blur.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/TextLoop",
+    "tags": [
+      "texto",
+      "loop",
+      "presença",
+      "framer-motion"
+    ],
+    "variants": [
+      "prefixo",
+      "intervalo",
+      "reduced-motion"
+    ],
+    "props": [
+      {
+        "name": "words",
+        "type": "string[]",
+        "description": "Palavras alternadas.",
+        "required": true
+      },
+      {
+        "name": "interval",
+        "type": "number",
+        "description": "Intervalo em milissegundos.",
+        "required": false,
+        "default": "2400"
+      },
+      {
+        "name": "prefix",
+        "type": "string",
+        "description": "Texto fixo anterior.",
+        "required": false
+      },
+      {
+        "name": "wordClassName",
+        "type": "string",
+        "description": "Classes aplicadas à palavra.",
+        "required": false
+      }
+    ],
+    "example": "<TextLoop prefix=\"Experiências\" words={['modernas', 'rápidas', 'memoráveis']} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/TextLoop.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/TextLoop.tsx",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\nimport { AnimatePresence, motion, useReducedMotion } from 'framer-motion'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type TextLoopProps = {\r\n  words: string[]\r\n  interval?: number\r\n  prefix?: string\r\n  className?: string\r\n  wordClassName?: string\r\n}\r\n\r\nexport function TextLoop({\r\n  words,\r\n  interval = 2400,\r\n  prefix,\r\n  className,\r\n  wordClassName,\r\n}: TextLoopProps) {\r\n  const [index, setIndex] = useState(0)\r\n  const reduceMotion = useReducedMotion()\r\n\r\n  useEffect(() => {\r\n    if (words.length < 2 || reduceMotion) return\r\n    const timer = window.setInterval(() => {\r\n      setIndex((current) => (current + 1) % words.length)\r\n    }, interval)\r\n    return () => window.clearInterval(timer)\r\n  }, [interval, reduceMotion, words.length])\r\n\r\n  if (!words.length) return null\r\n\r\n  return (\r\n    <span className={cn('inline-flex items-center gap-2', className)}>\r\n      {prefix ? <span>{prefix}</span> : null}\r\n      <span className=\"relative inline-grid overflow-hidden\">\r\n        <span className=\"invisible col-start-1 row-start-1\" aria-hidden=\"true\">\r\n          {words.reduce(\r\n            (longest, word) => (word.length > longest.length ? word : longest),\r\n            words[0],\r\n          )}\r\n        </span>\r\n        <AnimatePresence mode=\"wait\" initial={false}>\r\n          <motion.span\r\n            className={cn('col-start-1 row-start-1 text-primary', wordClassName)}\r\n            key={words[index]}\r\n            initial={reduceMotion ? false : { y: '70%', opacity: 0, filter: 'blur(6px)' }}\r\n            animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}\r\n            exit={reduceMotion ? undefined : { y: '-70%', opacity: 0, filter: 'blur(6px)' }}\r\n            transition={{ duration: reduceMotion ? 0 : 0.35, ease: 'easeOut' }}\r\n          >\r\n            {words[index]}\r\n          </motion.span>\r\n        </AnimatePresence>\r\n      </span>\r\n    </span>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

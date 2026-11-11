@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "navbar-split-logo",
+  "kind": "component",
+  "title": "NavbarSplitLogo",
+  "description": "Navbar com menu hambúrguer e links à esquerda, logo centralizado, redes sociais com divisórias e CTA à direita; drawer lateral.",
+  "meta": {
+    "category": "navigation",
+    "role": "page.navigation",
+    "placement": "before-main",
+    "stage": "header",
+    "topics": [
+      "navbar"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/navigation/NavbarSplitLogo",
+    "tags": [
+      "navbar",
+      "menu",
+      "cabeçalho",
+      "logo central",
+      "orçamento"
+    ],
+    "variants": [
+      "logo central",
+      "dropdown",
+      "redes sociais",
+      "drawer lateral"
+    ],
+    "props": [
+      {
+        "name": "logo",
+        "type": "ReactNode",
+        "description": "Logo exibido ao centro.",
+        "required": true
+      },
+      {
+        "name": "items",
+        "type": "readonly NavbarSplitLogoItem[]",
+        "description": "Links, com children opcionais para dropdown.",
+        "required": true
+      },
+      {
+        "name": "logoHref",
+        "type": "string",
+        "description": "Destino do logo.",
+        "required": false,
+        "default": "'/'"
+      },
+      {
+        "name": "socialLinks",
+        "type": "readonly { label: string; href: string; icon: ReactNode }[]",
+        "description": "Redes sociais à direita.",
+        "required": false
+      },
+      {
+        "name": "cta",
+        "type": "{ label: string; href: string }",
+        "description": "Botão de destaque (ex.: Orçamento).",
+        "required": false
+      },
+      {
+        "name": "position",
+        "type": "'static' | 'sticky'",
+        "description": "Fixa no topo ao rolar.",
+        "required": false,
+        "default": "'sticky'"
+      }
+    ],
+    "example": "<NavbarSplitLogo logo={<Logo />} items={items} socialLinks={socials} cta={{ label: 'Orçamento', href: '/contato' }} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/navigation/NavbarSplitLogo.tsx",
+      "type": "component",
+      "target": "src/components/library/navigation/NavbarSplitLogo.tsx",
+      "content": "'use client'\r\n\r\nimport Link from 'next/link'\r\nimport { usePathname } from 'next/navigation'\r\nimport { ChevronDown, Menu, X } from 'lucide-react'\r\nimport { useEffect, useState, type ReactNode } from 'react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type NavbarSplitLogoItem = {\r\n  label: string\r\n  href: string\r\n  children?: readonly { label: string; href: string }[]\r\n}\r\n\r\nexport type NavbarSplitLogoProps = {\r\n  logo: ReactNode\r\n  items: readonly NavbarSplitLogoItem[]\r\n  logoHref?: string\r\n  socialLinks?: readonly { label: string; href: string; icon: ReactNode }[]\r\n  cta?: { label: string; href: string }\r\n  position?: 'static' | 'sticky'\r\n  className?: string\r\n}\r\n\r\n/** Navbar com menu à esquerda, logo centralizado e redes sociais + CTA à direita. */\r\nexport function NavbarSplitLogo({\r\n  logo,\r\n  items,\r\n  logoHref = '/',\r\n  socialLinks = [],\r\n  cta,\r\n  position = 'sticky',\r\n  className,\r\n}: NavbarSplitLogoProps) {\r\n  const pathname = usePathname()\r\n  const [open, setOpen] = useState(false)\r\n\r\n  useEffect(() => setOpen(false), [pathname])\r\n\r\n  useEffect(() => {\r\n    if (!open) return\r\n    const previous = document.body.style.overflow\r\n    document.body.style.overflow = 'hidden'\r\n    const onKey = (event: KeyboardEvent) => {\r\n      if (event.key === 'Escape') setOpen(false)\r\n    }\r\n    window.addEventListener('keydown', onKey)\r\n    return () => {\r\n      document.body.style.overflow = previous\r\n      window.removeEventListener('keydown', onKey)\r\n    }\r\n  }, [open])\r\n\r\n  const isActive = (href: string) =>\r\n    href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`)\r\n\r\n  const focus =\r\n    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'\r\n  const linkClass = (href: string) =>\r\n    cn(\r\n      'inline-flex items-center gap-1 py-2 text-[13px] font-medium uppercase tracking-wide transition-colors',\r\n      isActive(href) ? 'text-primary' : 'text-muted-foreground hover:text-foreground',\r\n      focus,\r\n    )\r\n\r\n  return (\r\n    <>\r\n      <header\r\n        className={cn(\r\n          'z-50 w-full border-b bg-background/95 backdrop-blur',\r\n          position === 'sticky' && 'sticky top-0',\r\n          className,\r\n        )}\r\n      >\r\n        <div className=\"container grid h-20 grid-cols-[1fr_auto_1fr] items-center gap-4\">\r\n          <div className=\"flex items-center gap-6\">\r\n            <button\r\n              type=\"button\"\r\n              onClick={() => setOpen(true)}\r\n              className={cn(\r\n                'inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition hover:bg-muted',\r\n                focus,\r\n              )}\r\n              aria-expanded={open}\r\n              aria-controls=\"navbar-split-logo-drawer\"\r\n              aria-label=\"Abrir menu\"\r\n            >\r\n              <Menu className=\"h-5 w-5\" />\r\n            </button>\r\n            <nav className=\"hidden items-center gap-5 xl:flex\" aria-label=\"Principal\">\r\n              {items.map((item) =>\r\n                item.children?.length ? (\r\n                  <div key={item.label} className=\"group relative\">\r\n                    <Link href={item.href} className={linkClass(item.href)}>\r\n                      {item.label}\r\n                      <ChevronDown className=\"h-3.5 w-3.5 transition-transform group-focus-within:rotate-180 group-hover:rotate-180\" />\r\n                    </Link>\r\n                    <div className=\"invisible absolute left-0 top-full z-50 min-w-[200px] translate-y-1 pt-2 opacity-0 transition-all group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100\">\r\n                      <ul className=\"overflow-hidden rounded-lg border bg-popover py-1 shadow-lg\">\r\n                        {item.children.map((child) => (\r\n                          <li key={child.label}>\r\n                            <Link\r\n                              href={child.href}\r\n                              className={cn(\r\n                                'block px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',\r\n                                focus,\r\n                              )}\r\n                            >\r\n                              {child.label}\r\n                            </Link>\r\n                          </li>\r\n                        ))}\r\n                      </ul>\r\n                    </div>\r\n                  </div>\r\n                ) : (\r\n                  <Link\r\n                    key={item.label}\r\n                    href={item.href}\r\n                    aria-current={isActive(item.href) ? 'page' : undefined}\r\n                    className={linkClass(item.href)}\r\n                  >\r\n                    {item.label}\r\n                  </Link>\r\n                ),\r\n              )}\r\n            </nav>\r\n          </div>\r\n\r\n          <Link\r\n            href={logoHref}\r\n            className={cn('flex items-center justify-center rounded-sm', focus)}\r\n          >\r\n            {logo}\r\n          </Link>\r\n\r\n          <div className=\"flex items-center justify-end gap-4\">\r\n            {socialLinks.length ? (\r\n              <ul className=\"hidden items-center divide-x sm:flex\">\r\n                {socialLinks.map((social) => (\r\n                  <li key={social.label} className=\"px-2.5\">\r\n                    <a\r\n                      href={social.href}\r\n                      target=\"_blank\"\r\n                      rel=\"noopener noreferrer\"\r\n                      aria-label={social.label}\r\n                      className={cn(\r\n                        'flex text-muted-foreground transition-colors hover:text-primary [&_svg]:h-4 [&_svg]:w-4',\r\n                        focus,\r\n                      )}\r\n                    >\r\n                      {social.icon}\r\n                    </a>\r\n                  </li>\r\n                ))}\r\n              </ul>\r\n            ) : null}\r\n            {cta ? (\r\n              <Link\r\n                href={cta.href}\r\n                className={cn(\r\n                  'hidden h-10 items-center rounded-md bg-primary px-5 text-[13px] font-semibold uppercase tracking-wide text-primary-foreground transition hover:bg-primary-hover sm:inline-flex',\r\n                  focus,\r\n                )}\r\n              >\r\n                {cta.label}\r\n              </Link>\r\n            ) : null}\r\n          </div>\r\n        </div>\r\n      </header>\r\n\r\n      <div\r\n        className={cn(\r\n          'fixed inset-0 z-[55] bg-black/50 backdrop-blur-[2px] transition-opacity duration-300',\r\n          open ? 'opacity-100' : 'pointer-events-none opacity-0',\r\n        )}\r\n        onClick={() => setOpen(false)}\r\n        aria-hidden=\"true\"\r\n      />\r\n      <aside\r\n        id=\"navbar-split-logo-drawer\"\r\n        role=\"dialog\"\r\n        aria-modal=\"true\"\r\n        aria-label=\"Menu\"\r\n        className={cn(\r\n          'fixed inset-y-0 left-0 z-[60] flex w-[min(100%,22rem)] flex-col bg-background shadow-2xl transition-[transform,visibility] duration-300 ease-out',\r\n          open ? 'visible translate-x-0' : 'invisible -translate-x-full',\r\n        )}\r\n      >\r\n        <div className=\"flex h-20 items-center justify-between border-b px-5\">\r\n          <Link href={logoHref} onClick={() => setOpen(false)} className={focus}>\r\n            {logo}\r\n          </Link>\r\n          <button\r\n            type=\"button\"\r\n            onClick={() => setOpen(false)}\r\n            className={cn(\r\n              'inline-flex h-10 w-10 items-center justify-center rounded-md hover:bg-muted',\r\n              focus,\r\n            )}\r\n            aria-label=\"Fechar menu\"\r\n          >\r\n            <X className=\"h-5 w-5\" />\r\n          </button>\r\n        </div>\r\n        <nav className=\"flex-1 overflow-y-auto px-5 py-4\" aria-label=\"Menu principal\">\r\n          <ul className=\"space-y-1\">\r\n            {items.map((item) => (\r\n              <li key={item.label}>\r\n                <Link\r\n                  href={item.href}\r\n                  onClick={() => setOpen(false)}\r\n                  className={cn(\r\n                    'block rounded-md px-3 py-2.5 text-sm font-medium uppercase tracking-wide transition-colors hover:bg-muted',\r\n                    isActive(item.href) ? 'text-primary' : 'text-foreground',\r\n                    focus,\r\n                  )}\r\n                >\r\n                  {item.label}\r\n                </Link>\r\n                {item.children?.length ? (\r\n                  <ul className=\"mb-2 ml-3 border-l pl-3\">\r\n                    {item.children.map((child) => (\r\n                      <li key={child.label}>\r\n                        <Link\r\n                          href={child.href}\r\n                          onClick={() => setOpen(false)}\r\n                          className={cn(\r\n                            'block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',\r\n                            focus,\r\n                          )}\r\n                        >\r\n                          {child.label}\r\n                        </Link>\r\n                      </li>\r\n                    ))}\r\n                  </ul>\r\n                ) : null}\r\n              </li>\r\n            ))}\r\n          </ul>\r\n        </nav>\r\n        {socialLinks.length || cta ? (\r\n          <div className=\"space-y-4 border-t px-5 py-5\">\r\n            {socialLinks.length ? (\r\n              <div className=\"flex gap-2\">\r\n                {socialLinks.map((social) => (\r\n                  <a\r\n                    key={social.label}\r\n                    href={social.href}\r\n                    target=\"_blank\"\r\n                    rel=\"noopener noreferrer\"\r\n                    aria-label={social.label}\r\n                    className={cn(\r\n                      'flex h-10 w-10 items-center justify-center rounded-full border text-muted-foreground transition hover:border-primary hover:text-primary [&_svg]:h-4 [&_svg]:w-4',\r\n                      focus,\r\n                    )}\r\n                  >\r\n                    {social.icon}\r\n                  </a>\r\n                ))}\r\n              </div>\r\n            ) : null}\r\n            {cta ? (\r\n              <Link\r\n                href={cta.href}\r\n                onClick={() => setOpen(false)}\r\n                className={cn(\r\n                  'flex h-11 items-center justify-center rounded-md bg-primary text-sm font-semibold uppercase tracking-wide text-primary-foreground transition hover:bg-primary-hover',\r\n                  focus,\r\n                )}\r\n              >\r\n                {cta.label}\r\n              </Link>\r\n            ) : null}\r\n          </div>\r\n        ) : null}\r\n      </aside>\r\n    </>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

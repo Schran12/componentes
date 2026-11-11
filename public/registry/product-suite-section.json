@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "product-suite-section",
+  "kind": "component",
+  "title": "ProductSuiteSection",
+  "description": "Suíte de produtos em abas acessíveis com recursos, ação e visual configurável.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.products",
+    "placement": "inside-main",
+    "stage": "servicos",
+    "topics": [
+      "products"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/data-display/ProductSuiteSection",
+    "tags": [
+      "fintech",
+      "produtos",
+      "tabs",
+      "interativo",
+      "saas"
+    ],
+    "variants": [
+      "visual padrão",
+      "visual customizado",
+      "navegação por teclado"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "items",
+        "type": "readonly ProductSuiteItem[]",
+        "description": "Produtos exibidos nas abas.",
+        "required": true
+      },
+      {
+        "name": "initialItemId",
+        "type": "string",
+        "description": "Aba inicialmente selecionada.",
+        "required": false
+      }
+    ],
+    "example": "<ProductSuiteSection title=\"Produtos conectados\" items={[{ id: 'um', label: 'Produto', title: 'Solução completa', description: 'Lorem ipsum.' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/ProductSuiteSection.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/ProductSuiteSection.tsx",
+      "content": "'use client'\r\n\r\nimport type { KeyboardEvent, ReactNode } from 'react'\r\nimport { useId, useState } from 'react'\r\nimport Link from 'next/link'\r\nimport { ArrowRight, Check, Layers3 } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ProductSuiteItem = {\r\n  id: string\r\n  label: string\r\n  title: string\r\n  description: string\r\n  features?: readonly string[]\r\n  action?: { label: string; href: string }\r\n  icon?: ReactNode\r\n  visual?: ReactNode\r\n}\r\n\r\nexport type ProductSuiteSectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description?: string\r\n  items: readonly ProductSuiteItem[]\r\n  initialItemId?: string\r\n  className?: string\r\n}\r\n\r\nexport function ProductSuiteSection({\r\n  eyebrow,\r\n  title,\r\n  description,\r\n  items,\r\n  initialItemId,\r\n  className,\r\n}: ProductSuiteSectionProps) {\r\n  const baseId = useId()\r\n  const [activeId, setActiveId] = useState(\r\n    initialItemId && items.some((item) => item.id === initialItemId) ? initialItemId : items[0]?.id,\r\n  )\r\n  const activeIndex = Math.max(\r\n    0,\r\n    items.findIndex((item) => item.id === activeId),\r\n  )\r\n  const activeItem = items[activeIndex]\r\n\r\n  function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {\r\n    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return\r\n    event.preventDefault()\r\n\r\n    const nextIndex =\r\n      event.key === 'Home'\r\n        ? 0\r\n        : event.key === 'End'\r\n          ? items.length - 1\r\n          : event.key === 'ArrowRight'\r\n            ? (index + 1) % items.length\r\n            : (index - 1 + items.length) % items.length\r\n\r\n    setActiveId(items[nextIndex]?.id)\r\n    document.getElementById(`${baseId}-tab-${items[nextIndex]?.id}`)?.focus()\r\n  }\r\n\r\n  if (!activeItem) return null\r\n\r\n  return (\r\n    <section className={cn('overflow-hidden bg-white py-20 text-[#0a2540] md:py-28', className)}>\r\n      <div className=\"container\">\r\n        <div className=\"max-w-3xl\">\r\n          {eyebrow ? <p className=\"text-sm font-semibold text-[#635bff]\">{eyebrow}</p> : null}\r\n          <h2 className=\"mt-4 text-4xl font-bold tracking-[-0.035em] md:text-6xl\">{title}</h2>\r\n          {description ? (\r\n            <p className=\"mt-6 max-w-2xl text-lg leading-8 text-[#425466]\">{description}</p>\r\n          ) : null}\r\n        </div>\r\n\r\n        <div\r\n          role=\"tablist\"\r\n          aria-label={title}\r\n          className=\"mt-12 flex gap-2 overflow-x-auto border-b border-[#dfe7ef] pb-px\"\r\n        >\r\n          {items.map((item, index) => {\r\n            const selected = item.id === activeItem.id\r\n            return (\r\n              <button\r\n                key={item.id}\r\n                id={`${baseId}-tab-${item.id}`}\r\n                type=\"button\"\r\n                role=\"tab\"\r\n                aria-selected={selected}\r\n                aria-controls={`${baseId}-panel-${item.id}`}\r\n                tabIndex={selected ? 0 : -1}\r\n                onClick={() => setActiveId(item.id)}\r\n                onKeyDown={(event) => handleKeyDown(event, index)}\r\n                className={cn(\r\n                  'relative flex min-w-fit items-center gap-2 px-4 py-4 text-sm font-semibold text-[#697386] transition hover:text-[#0a2540] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#635bff]',\r\n                  selected && 'text-[#635bff]',\r\n                )}\r\n              >\r\n                {item.icon ? <span aria-hidden>{item.icon}</span> : null}\r\n                {item.label}\r\n                {selected ? (\r\n                  <span className=\"absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-[#635bff]\" />\r\n                ) : null}\r\n              </button>\r\n            )\r\n          })}\r\n        </div>\r\n\r\n        <article\r\n          id={`${baseId}-panel-${activeItem.id}`}\r\n          role=\"tabpanel\"\r\n          aria-labelledby={`${baseId}-tab-${activeItem.id}`}\r\n          className=\"grid min-h-[480px] gap-12 rounded-b-[2rem] bg-[#f6f9fc] p-7 sm:p-10 lg:grid-cols-[.82fr_1.18fr] lg:items-center lg:p-14\"\r\n        >\r\n          <div>\r\n            <span className=\"flex h-12 w-12 items-center justify-center rounded-2xl bg-[#635bff] text-white shadow-lg shadow-[#635bff]/25\">\r\n              {activeItem.icon ?? <Layers3 className=\"h-5 w-5\" aria-hidden />}\r\n            </span>\r\n            <h3 className=\"mt-7 text-3xl font-bold tracking-tight md:text-4xl\">\r\n              {activeItem.title}\r\n            </h3>\r\n            <p className=\"mt-5 leading-7 text-[#425466]\">{activeItem.description}</p>\r\n\r\n            {activeItem.features?.length ? (\r\n              <ul className=\"mt-7 grid gap-3\">\r\n                {activeItem.features.map((feature) => (\r\n                  <li key={feature} className=\"flex items-center gap-3 text-sm text-[#425466]\">\r\n                    <span className=\"flex h-5 w-5 items-center justify-center rounded-full bg-[#635bff]/10 text-[#635bff]\">\r\n                      <Check className=\"h-3 w-3\" aria-hidden />\r\n                    </span>\r\n                    {feature}\r\n                  </li>\r\n                ))}\r\n              </ul>\r\n            ) : null}\r\n\r\n            {activeItem.action ? (\r\n              <Link\r\n                href={activeItem.action.href}\r\n                className=\"mt-8 inline-flex items-center gap-2 rounded-full bg-[#0a2540] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1d3b53] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#635bff] focus-visible:ring-offset-2\"\r\n              >\r\n                {activeItem.action.label}\r\n                <ArrowRight className=\"h-4 w-4\" aria-hidden />\r\n              </Link>\r\n            ) : null}\r\n          </div>\r\n\r\n          <div className=\"relative min-h-[340px] overflow-hidden rounded-[1.75rem] border border-white bg-white p-5 shadow-[0_30px_80px_-35px_rgba(10,37,64,.45)] sm:p-8\">\r\n            {activeItem.visual ?? (\r\n              <div className=\"flex h-full min-h-[300px] flex-col\">\r\n                <div className=\"flex items-center justify-between\">\r\n                  <span className=\"h-3 w-28 rounded-full bg-[#dfe7ef]\" />\r\n                  <span className=\"h-9 w-24 rounded-full bg-[#635bff]/10\" />\r\n                </div>\r\n                <div className=\"mt-8 grid grid-cols-3 gap-3\">\r\n                  {[72, 88, 64].map((value) => (\r\n                    <div key={value} className=\"rounded-2xl border border-[#e6ebf1] p-4\">\r\n                      <span className=\"block h-2 w-12 rounded bg-[#aab7c4]\" />\r\n                      <span\r\n                        className=\"mt-4 block h-6 rounded bg-[#0a2540]\"\r\n                        style={{ width: value }}\r\n                      />\r\n                    </div>\r\n                  ))}\r\n                </div>\r\n                <div className=\"mt-5 flex flex-1 items-end gap-3 rounded-2xl bg-[#f6f9fc] p-5\">\r\n                  {[36, 58, 48, 82, 66, 92, 74, 110].map((height, index) => (\r\n                    <span\r\n                      key={`${height}-${index}`}\r\n                      className=\"flex-1 rounded-t bg-gradient-to-t from-[#635bff] to-[#80e9ff]\"\r\n                      style={{ height }}\r\n                    />\r\n                  ))}\r\n                </div>\r\n              </div>\r\n            )}\r\n          </div>\r\n        </article>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

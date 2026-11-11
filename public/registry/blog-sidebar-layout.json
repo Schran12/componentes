@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "blog-sidebar-layout",
+  "kind": "component",
+  "title": "BlogSidebarLayout",
+  "description": "Listagem de blog com busca sem acento, filtro por categoria com contagem, posts recentes e CTA lateral fixo.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": "blog",
+    "topics": [
+      "blog"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/data-display/BlogSidebarLayout",
+    "tags": [
+      "blog",
+      "artigos",
+      "busca",
+      "categorias",
+      "sidebar"
+    ],
+    "variants": [
+      "busca",
+      "categorias",
+      "com CTA",
+      "vazio"
+    ],
+    "props": [
+      {
+        "name": "posts",
+        "type": "BlogSidebarPost[]",
+        "description": "Posts com título, resumo, imagem, data e categoria.",
+        "required": true
+      },
+      {
+        "name": "recent",
+        "type": "BlogSidebarPost[]",
+        "description": "Posts recentes; padrão: os 3 primeiros.",
+        "required": false
+      },
+      {
+        "name": "labels",
+        "type": "BlogSidebarLabels",
+        "description": "Textos de busca, categorias, recentes e vazio.",
+        "required": false
+      },
+      {
+        "name": "cta",
+        "type": "{ title; description?; action }",
+        "description": "Card de chamada na lateral.",
+        "required": false
+      }
+    ],
+    "example": "<BlogSidebarLayout posts={posts} cta={{ title: 'Fale com a gente', action: { label: 'Contato', href: '/contato' } }} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/BlogGrid.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/BlogGrid.tsx",
+      "content": "import Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { ArrowRight } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type BlogGridProps = {\r\n  title?: string\r\n  posts: Array<{\r\n    slug: string\r\n    title: string\r\n    excerpt?: string\r\n    image: { src: string; alt: string }\r\n    date: string\r\n    category?: string\r\n    href?: string\r\n  }>\r\n  className?: string\r\n}\r\n\r\nexport function BlogGrid({ title, posts, className }: BlogGridProps) {\r\n  return (\r\n    <section\r\n      className={cn('py-16 md:py-24', className)}\r\n      aria-labelledby={title ? 'blog-title' : undefined}\r\n    >\r\n      <div className=\"container\">\r\n        {title ? (\r\n          <h2 id=\"blog-title\" className=\"mb-10 text-3xl font-bold tracking-tight md:text-4xl\">\r\n            {title}\r\n          </h2>\r\n        ) : null}\r\n        <div className=\"grid gap-7 md:grid-cols-2 lg:grid-cols-3\">\r\n          {posts.map((post) => (\r\n            <article\r\n              key={post.slug}\r\n              className=\"group overflow-hidden rounded-2xl border bg-card shadow-sm\"\r\n            >\r\n              <Link\r\n                href={post.href ?? `/blog/${post.slug}`}\r\n                className=\"block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\"\r\n              >\r\n                <div className=\"relative aspect-video overflow-hidden bg-muted\">\r\n                  <Image\r\n                    src={post.image.src}\r\n                    alt={post.image.alt}\r\n                    fill\r\n                    className=\"object-cover transition duration-500 group-hover:scale-105\"\r\n                    sizes=\"(min-width: 1024px) 33vw, 50vw\"\r\n                  />\r\n                </div>\r\n                <div className=\"p-6\">\r\n                  <div className=\"flex gap-2 text-xs font-medium text-muted-foreground\">\r\n                    {post.category ? <span>{post.category}</span> : null}\r\n                    <time dateTime={post.date}>{post.date}</time>\r\n                  </div>\r\n                  <h3 className=\"mt-3 text-xl font-semibold\">{post.title}</h3>\r\n                  {post.excerpt ? (\r\n                    <p className=\"mt-2 line-clamp-3 text-sm leading-6 text-muted-foreground\">\r\n                      {post.excerpt}\r\n                    </p>\r\n                  ) : null}\r\n                  <span className=\"mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary\">\r\n                    Ler artigo <ArrowRight className=\"h-4 w-4\" aria-hidden=\"true\" />\r\n                  </span>\r\n                </div>\r\n              </Link>\r\n            </article>\r\n          ))}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/data-display/BlogSidebarLayout.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/BlogSidebarLayout.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { useId, useMemo, useState } from 'react'\r\nimport { ArrowRight, Search } from 'lucide-react'\r\n\r\nimport { BlogGrid } from '@/components/library/data-display/BlogGrid'\r\nimport { Input } from '@/components/ui/input'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type BlogSidebarPost = {\r\n  slug: string\r\n  title: string\r\n  excerpt: string\r\n  image: { src: string; alt: string }\r\n  date: string\r\n  category?: string\r\n  href: string\r\n}\r\n\r\nexport type BlogSidebarLabels = {\r\n  searchLabel?: string\r\n  searchPlaceholder?: string\r\n  categoriesTitle?: string\r\n  allLabel?: string\r\n  recentTitle?: string\r\n  emptyMessage?: string\r\n}\r\n\r\nexport type BlogSidebarLayoutProps = {\r\n  posts: BlogSidebarPost[]\r\n  /** Posts recentes exibidos na barra lateral; padrão: os 3 primeiros. */\r\n  recent?: BlogSidebarPost[]\r\n  labels?: BlogSidebarLabels\r\n  cta?: { title: string; description?: string; action: { label: string; href: string } }\r\n  className?: string\r\n}\r\n\r\nconst normalize = (value: string) =>\r\n  value\r\n    .normalize('NFD')\r\n    .replace(/[\\u0300-\\u036f]/g, '')\r\n    .toLowerCase()\r\n\r\nexport function BlogSidebarLayout({\r\n  posts,\r\n  recent = posts.slice(0, 3),\r\n  labels = {},\r\n  cta,\r\n  className,\r\n}: BlogSidebarLayoutProps) {\r\n  const {\r\n    searchLabel = 'Buscar no blog',\r\n    searchPlaceholder = 'Digite um termo',\r\n    categoriesTitle = 'Categorias',\r\n    allLabel = 'Todas',\r\n    recentTitle = 'Posts recentes',\r\n    emptyMessage = 'Nenhum artigo encontrado.',\r\n  } = labels\r\n  const searchId = useId()\r\n  const [query, setQuery] = useState('')\r\n  const [category, setCategory] = useState<string | null>(null)\r\n\r\n  const categories = useMemo(() => {\r\n    const counts = new Map<string, number>()\r\n    posts.forEach((post) => {\r\n      if (post.category) counts.set(post.category, (counts.get(post.category) ?? 0) + 1)\r\n    })\r\n    return Array.from(counts, ([name, count]) => ({ name, count }))\r\n  }, [posts])\r\n\r\n  const term = normalize(query.trim())\r\n  const visible = posts.filter(\r\n    (post) =>\r\n      (!category || post.category === category) &&\r\n      (!term || normalize([post.title, post.excerpt, post.category].join(' ')).includes(term)),\r\n  )\r\n\r\n  const filters = [\r\n    { name: null as string | null, label: allLabel, count: posts.length },\r\n    ...categories.map((item) => ({\r\n      name: item.name as string | null,\r\n      label: item.name,\r\n      count: item.count,\r\n    })),\r\n  ]\r\n\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)} aria-label=\"Artigos do blog\">\r\n      <div className=\"container grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-x-12 lg:gap-y-6\">\r\n        <div className=\"space-y-6 lg:col-start-2 lg:row-start-1\">\r\n          <div className=\"rounded-2xl border bg-card p-6 shadow-sm\">\r\n            <label htmlFor={searchId} className=\"text-sm font-semibold\">\r\n              {searchLabel}\r\n            </label>\r\n            <div className=\"relative mt-3\">\r\n              <Search\r\n                className=\"pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground\"\r\n                aria-hidden=\"true\"\r\n              />\r\n              <Input\r\n                id={searchId}\r\n                type=\"search\"\r\n                value={query}\r\n                onChange={(event) => setQuery(event.target.value)}\r\n                placeholder={searchPlaceholder}\r\n                className=\"pl-9\"\r\n              />\r\n            </div>\r\n          </div>\r\n\r\n          <nav\r\n            aria-labelledby={`${searchId}-categorias`}\r\n            className=\"rounded-2xl border bg-card p-6 shadow-sm\"\r\n          >\r\n            <h2 id={`${searchId}-categorias`} className=\"text-sm font-semibold\">\r\n              {categoriesTitle}\r\n            </h2>\r\n            <ul className=\"mt-3 space-y-1\">\r\n              {filters.map((filter) => {\r\n                const active = category === filter.name\r\n                return (\r\n                  <li key={filter.label}>\r\n                    <button\r\n                      type=\"button\"\r\n                      aria-pressed={active}\r\n                      onClick={() => setCategory(filter.name)}\r\n                      className={cn(\r\n                        'flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',\r\n                        active\r\n                          ? 'bg-primary font-medium text-primary-foreground'\r\n                          : 'text-muted-foreground hover:bg-muted hover:text-foreground',\r\n                      )}\r\n                    >\r\n                      {filter.label}\r\n                      <span\r\n                        className={cn(\r\n                          'rounded-full px-2 py-0.5 text-xs',\r\n                          active ? 'bg-primary-foreground/20' : 'bg-muted',\r\n                        )}\r\n                      >\r\n                        {filter.count}\r\n                      </span>\r\n                    </button>\r\n                  </li>\r\n                )\r\n              })}\r\n            </ul>\r\n          </nav>\r\n        </div>\r\n\r\n        <div className=\"lg:col-start-1 lg:row-span-2 lg:row-start-1\">\r\n          <p className=\"sr-only\" aria-live=\"polite\">\r\n            {visible.length} {visible.length === 1 ? 'artigo encontrado' : 'artigos encontrados'}\r\n          </p>\r\n          {visible.length ? (\r\n            <BlogGrid\r\n              posts={visible}\r\n              className=\"py-0 md:py-0 [&_.container]:max-w-none [&_.container]:px-0 lg:[&_.grid]:grid-cols-2\"\r\n            />\r\n          ) : (\r\n            <p className=\"rounded-2xl border border-dashed p-10 text-center text-muted-foreground\">\r\n              {emptyMessage}\r\n            </p>\r\n          )}\r\n        </div>\r\n\r\n        <div className=\"space-y-6 lg:sticky lg:top-28 lg:col-start-2 lg:row-start-2 lg:self-start\">\r\n          {recent.length ? (\r\n            <div className=\"rounded-2xl border bg-card p-6 shadow-sm\">\r\n              <h2 className=\"text-sm font-semibold\">{recentTitle}</h2>\r\n              <ul className=\"mt-4 space-y-4\">\r\n                {recent.map((post) => (\r\n                  <li key={post.slug}>\r\n                    <Link\r\n                      href={post.href}\r\n                      className=\"group flex gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\"\r\n                    >\r\n                      <span className=\"relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-muted\">\r\n                        <Image\r\n                          src={post.image.src}\r\n                          alt=\"\"\r\n                          fill\r\n                          className=\"object-cover\"\r\n                          sizes=\"64px\"\r\n                        />\r\n                      </span>\r\n                      <span className=\"min-w-0\">\r\n                        <span className=\"line-clamp-2 text-sm font-medium leading-snug group-hover:text-primary\">\r\n                          {post.title}\r\n                        </span>\r\n                        <span className=\"mt-1 block text-xs text-muted-foreground\">\r\n                          {post.date}\r\n                        </span>\r\n                      </span>\r\n                    </Link>\r\n                  </li>\r\n                ))}\r\n              </ul>\r\n            </div>\r\n          ) : null}\r\n\r\n          {cta ? (\r\n            <div className=\"rounded-2xl bg-primary p-6 text-primary-foreground shadow-lg shadow-primary/20\">\r\n              <h2 className=\"text-lg font-semibold\">{cta.title}</h2>\r\n              {cta.description ? (\r\n                <p className=\"mt-2 text-sm leading-6 text-primary-foreground/80\">\r\n                  {cta.description}\r\n                </p>\r\n              ) : null}\r\n              <Link\r\n                href={cta.action.href}\r\n                className=\"mt-5 inline-flex items-center gap-2 rounded-lg bg-primary-foreground px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary-foreground/90\"\r\n              >\r\n                {cta.action.label}\r\n                <ArrowRight className=\"h-4 w-4\" aria-hidden=\"true\" />\r\n              </Link>\r\n            </div>\r\n          ) : null}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/ui/input.tsx",
+      "type": "ui",
+      "target": "src/components/ui/input.tsx",
+      "content": "import * as React from 'react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nconst Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(\r\n  ({ className, type, ...props }, ref) => {\r\n    return (\r\n      <input\r\n        type={type}\r\n        className={cn(\r\n          'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',\r\n          className,\r\n        )}\r\n        ref={ref}\r\n        {...props}\r\n      />\r\n    )\r\n  },\r\n)\r\nInput.displayName = 'Input'\r\n\r\nexport { Input }\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

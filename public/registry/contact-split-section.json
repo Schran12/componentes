@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "contact-split-section",
+  "kind": "component",
+  "title": "ContactSplitSection",
+  "description": "Seção de contato em duas colunas com canais, redes sociais e formulário livre.",
+  "meta": {
+    "category": "forms",
+    "role": "section.contact",
+    "placement": "end-of-main",
+    "stage": "contato",
+    "topics": [
+      "contact"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/forms/ContactSplitSection",
+    "tags": [
+      "contato",
+      "seção",
+      "formulário",
+      "redes sociais"
+    ],
+    "variants": [
+      "formulário customizado",
+      "canais de contato",
+      "redes sociais"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "methods",
+        "type": "ContactMethod[]",
+        "description": "Canais de contato.",
+        "required": true
+      },
+      {
+        "name": "form",
+        "type": "ReactNode",
+        "description": "Formulário ou conteúdo da coluna direita.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "socialLinks",
+        "type": "Array<{ label: string; href: string }>",
+        "description": "Links sociais.",
+        "required": false
+      },
+      {
+        "name": "formTitle",
+        "type": "string",
+        "description": "Título do formulário.",
+        "required": false
+      }
+    ],
+    "example": "<ContactSplitSection title=\"Vamos criar juntos\" methods={[{ label: 'E-mail', value: 'oi@acme.com', href: 'mailto:oi@acme.com' }]} form={<ContactForm />} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/forms/ContactSplitSection.tsx",
+      "type": "component",
+      "target": "src/components/library/forms/ContactSplitSection.tsx",
+      "content": "import type { LucideIcon } from 'lucide-react'\r\nimport { ArrowUpRight } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ContactMethod = {\r\n  label: string\r\n  value: string\r\n  href: string\r\n  icon?: LucideIcon\r\n}\r\n\r\nexport type ContactSplitSectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description?: string\r\n  methods: ContactMethod[]\r\n  socialLinks?: Array<{ label: string; href: string }>\r\n  form: React.ReactNode\r\n  formTitle?: string\r\n  className?: string\r\n}\r\n\r\nexport function ContactSplitSection({\r\n  eyebrow = 'Vamos conversar',\r\n  title,\r\n  description,\r\n  methods,\r\n  socialLinks = [],\r\n  form,\r\n  formTitle = 'Conte sobre o seu projeto',\r\n  className,\r\n}: ContactSplitSectionProps) {\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)}>\r\n      <div className=\"container\">\r\n        <div className=\"overflow-hidden rounded-[2rem] border bg-card shadow-sm\">\r\n          <div className=\"grid lg:grid-cols-[0.85fr_1.15fr]\">\r\n            <div className=\"min-w-0 bg-foreground p-7 text-background md:p-10 lg:p-12\">\r\n              <p className=\"text-sm font-semibold uppercase tracking-[0.18em] text-background/70\">\r\n                {eyebrow}\r\n              </p>\r\n              <h2 className=\"mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl\">\r\n                {title}\r\n              </h2>\r\n              {description ? (\r\n                <p className=\"mt-5 max-w-md leading-7 text-background/70\">{description}</p>\r\n              ) : null}\r\n\r\n              <address className=\"mt-10 space-y-3 not-italic\">\r\n                {methods.map((method) => {\r\n                  const Icon = method.icon\r\n                  return (\r\n                    <a\r\n                      key={`${method.label}-${method.value}`}\r\n                      href={method.href}\r\n                      className=\"group flex items-center gap-4 rounded-2xl border border-background/15 p-4 transition hover:bg-background/10\"\r\n                    >\r\n                      <span className=\"flex size-10 shrink-0 items-center justify-center rounded-xl bg-background/10\">\r\n                        {Icon ? (\r\n                          <Icon className=\"size-5\" aria-hidden=\"true\" />\r\n                        ) : (\r\n                          <ArrowUpRight className=\"size-5\" />\r\n                        )}\r\n                      </span>\r\n                      <span className=\"min-w-0\">\r\n                        <span className=\"block text-xs uppercase tracking-wider text-background/55\">\r\n                          {method.label}\r\n                        </span>\r\n                        <span className=\"mt-1 block font-medium [overflow-wrap:anywhere]\">\r\n                          {method.value}\r\n                        </span>\r\n                      </span>\r\n                    </a>\r\n                  )\r\n                })}\r\n              </address>\r\n\r\n              {socialLinks.length ? (\r\n                <div className=\"mt-8 flex flex-wrap gap-2\">\r\n                  {socialLinks.map((link) => (\r\n                    <a\r\n                      key={link.label}\r\n                      href={link.href}\r\n                      className=\"rounded-full border border-background/20 px-3 py-1.5 text-sm transition hover:bg-background hover:text-foreground\"\r\n                    >\r\n                      {link.label}\r\n                    </a>\r\n                  ))}\r\n                </div>\r\n              ) : null}\r\n            </div>\r\n\r\n            <div className=\"min-w-0 p-7 md:p-10 lg:p-12\">\r\n              <h3 className=\"mb-7 text-2xl font-semibold\">{formTitle}</h3>\r\n              {form}\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

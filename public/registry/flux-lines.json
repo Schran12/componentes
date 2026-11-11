@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "flux-lines",
+  "kind": "component",
+  "title": "FluxLines",
+  "description": "Fundo de linhas luminosas em fluxo contínuo que o cursor atrai e enrola como um ímã.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/FluxLines",
+    "tags": [
+      "background",
+      "canvas",
+      "linhas",
+      "cursor",
+      "animação"
+    ],
+    "variants": [
+      "canvas",
+      "cursor magnético",
+      "movimento reduzido"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Conteúdo sobre o fundo.",
+        "required": false
+      },
+      {
+        "name": "lineCount",
+        "type": "number",
+        "description": "Quantidade de linhas.",
+        "required": false,
+        "default": "26"
+      },
+      {
+        "name": "amplitude",
+        "type": "number",
+        "description": "Altura das ondas em px.",
+        "required": false,
+        "default": "38"
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "description": "Velocidade do fluxo.",
+        "required": false,
+        "default": "1"
+      },
+      {
+        "name": "magnetRadius",
+        "type": "number",
+        "description": "Raio de atração do cursor em px.",
+        "required": false,
+        "default": "170"
+      },
+      {
+        "name": "magnetStrength",
+        "type": "number",
+        "description": "Força da curvatura do cursor.",
+        "required": false,
+        "default": "1"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "description": "Cor das linhas; usa --primary por padrão.",
+        "required": false
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes do contêiner (fundo padrão bg-slate-950).",
+        "required": false
+      }
+    ],
+    "example": "<FluxLines className=\"min-h-[420px]\">\n  <div className=\"container py-24\">\n    <h2 className=\"text-4xl font-bold\">Energia em movimento</h2>\n  </div>\n</FluxLines>"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/FluxLines.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/FluxLines.tsx",
+      "content": "'use client'\r\n\r\nimport { useEffect, useRef, type ReactNode } from 'react'\r\nimport { cn } from '@/lib/utils'\r\nimport { useReducedMotion } from './useReducedMotion'\r\n\r\nexport type FluxLinesProps = {\r\n  children?: ReactNode\r\n  className?: string\r\n  lineCount?: number\r\n  amplitude?: number\r\n  speed?: number\r\n  magnetRadius?: number\r\n  magnetStrength?: number\r\n  color?: string\r\n}\r\n\r\ntype Rgb = [number, number, number]\r\n\r\nfunction toRgb(context: CanvasRenderingContext2D, color: string): Rgb {\r\n  context.fillStyle = '#000'\r\n  context.fillStyle = color\r\n  const value = String(context.fillStyle)\r\n  if (value.startsWith('#')) {\r\n    const hex = parseInt(value.slice(1), 16)\r\n    return [(hex >> 16) & 255, (hex >> 8) & 255, hex & 255]\r\n  }\r\n  const [r = 0, g = 0, b = 0] = value.match(/[\\d.]+/g)?.map(Number) ?? []\r\n  return [r, g, b]\r\n}\r\n\r\nconst mix = (from: Rgb, to: Rgb, amount: number): Rgb =>\r\n  from.map((value, index) => Math.round(value + (to[index] - value) * amount)) as Rgb\r\n\r\nconst rgba = ([r, g, b]: Rgb, alpha: number) => `rgba(${r}, ${g}, ${b}, ${alpha})`\r\n\r\nexport function FluxLines({\r\n  children,\r\n  className,\r\n  lineCount = 26,\r\n  amplitude = 38,\r\n  speed = 1,\r\n  magnetRadius = 170,\r\n  magnetStrength = 1,\r\n  color,\r\n}: FluxLinesProps) {\r\n  const rootRef = useRef<HTMLDivElement>(null)\r\n  const canvasRef = useRef<HTMLCanvasElement>(null)\r\n  const reduced = useReducedMotion()\r\n\r\n  useEffect(() => {\r\n    const root = rootRef.current\r\n    const canvas = canvasRef.current\r\n    const context = canvas?.getContext('2d')\r\n    if (!root || !canvas || !context) return\r\n\r\n    const primary = getComputedStyle(root).getPropertyValue('--primary').trim()\r\n    const base = toRgb(context, color ?? (primary ? `hsl(${primary})` : '#a855f7'))\r\n    const glow = mix(base, [255, 255, 255], 0.35)\r\n    const highlight = mix(base, [255, 255, 255], 0.75)\r\n\r\n    let width = 0\r\n    let height = 0\r\n    let frame = 0\r\n    const pointer = { x: -9999, y: -9999, strength: 0, target: 0 }\r\n\r\n    const resize = () => {\r\n      const ratio = Math.min(window.devicePixelRatio || 1, 2)\r\n      width = root.clientWidth\r\n      height = root.clientHeight\r\n      canvas.width = width * ratio\r\n      canvas.height = height * ratio\r\n      context.setTransform(ratio, 0, 0, ratio, 0, 0)\r\n    }\r\n\r\n    const tracePaths = (time: number) => {\r\n      const t = time * 0.00035 * speed\r\n      const step = 10\r\n      context.beginPath()\r\n      for (let line = 0; line < lineCount; line += 1) {\r\n        const progress = lineCount > 1 ? line / (lineCount - 1) : 0.5\r\n        const baseY = height * (0.08 + progress * 0.84)\r\n        for (let x = -step; x <= width + step; x += step) {\r\n          let px = x\r\n          let py =\r\n            baseY +\r\n            Math.sin(x * 0.0042 + t * 2.1 + line * 0.33) * amplitude * 0.6 +\r\n            Math.sin(x * 0.011 - t * 2.9 + line * 0.85) * amplitude * 0.22 +\r\n            Math.sin(x * 0.0018 + t * 1.3 + progress * 5.5) * amplitude * 0.55\r\n          const dx = px - pointer.x\r\n          const dy = py - pointer.y\r\n          const distance = Math.hypot(dx, dy)\r\n          if (pointer.strength > 0.001 && distance < magnetRadius) {\r\n            const force = (1 - distance / magnetRadius) ** 2 * pointer.strength * magnetStrength\r\n            const angle = force * 1.6\r\n            px = pointer.x + dx * Math.cos(angle) - dy * Math.sin(angle)\r\n            py = pointer.y + dx * Math.sin(angle) + dy * Math.cos(angle)\r\n          }\r\n          if (x === -step) context.moveTo(px, py)\r\n          else context.lineTo(px, py)\r\n        }\r\n      }\r\n    }\r\n\r\n    const draw = (time: number) => {\r\n      pointer.strength += (pointer.target - pointer.strength) * 0.08\r\n      context.clearRect(0, 0, width, height)\r\n      context.globalCompositeOperation = 'lighter'\r\n      context.lineWidth = 1.2\r\n      tracePaths(time)\r\n\r\n      context.shadowColor = rgba(glow, 0.9)\r\n      context.shadowBlur = 10\r\n      context.strokeStyle = rgba(glow, 0.32)\r\n      context.stroke()\r\n\r\n      if (pointer.strength > 0.01) {\r\n        const radius = magnetRadius * 1.6\r\n        const reveal = context.createRadialGradient(\r\n          pointer.x,\r\n          pointer.y,\r\n          0,\r\n          pointer.x,\r\n          pointer.y,\r\n          radius,\r\n        )\r\n        reveal.addColorStop(0, rgba(highlight, 0.95 * pointer.strength))\r\n        reveal.addColorStop(1, rgba(highlight, 0))\r\n        context.shadowColor = rgba(highlight, 0.9)\r\n        context.shadowBlur = 16\r\n        context.strokeStyle = reveal\r\n        context.stroke()\r\n      }\r\n      context.shadowBlur = 0\r\n      context.globalCompositeOperation = 'source-over'\r\n\r\n      if (!reduced) frame = requestAnimationFrame(draw)\r\n    }\r\n\r\n    const move = (event: PointerEvent) => {\r\n      const bounds = root.getBoundingClientRect()\r\n      pointer.x = event.clientX - bounds.left\r\n      pointer.y = event.clientY - bounds.top\r\n      pointer.target = 1\r\n      if (reduced) draw(0)\r\n    }\r\n    const leave = () => {\r\n      pointer.target = 0\r\n      if (reduced) {\r\n        pointer.strength = 0\r\n        draw(0)\r\n      }\r\n    }\r\n\r\n    const observer = new ResizeObserver(() => {\r\n      resize()\r\n      if (reduced) draw(0)\r\n    })\r\n    observer.observe(root)\r\n    resize()\r\n    root.addEventListener('pointermove', move)\r\n    root.addEventListener('pointerleave', leave)\r\n    frame = requestAnimationFrame(draw)\r\n\r\n    return () => {\r\n      cancelAnimationFrame(frame)\r\n      observer.disconnect()\r\n      root.removeEventListener('pointermove', move)\r\n      root.removeEventListener('pointerleave', leave)\r\n    }\r\n  }, [amplitude, color, lineCount, magnetRadius, magnetStrength, reduced, speed])\r\n\r\n  return (\r\n    <div\r\n      ref={rootRef}\r\n      className={cn('relative isolate overflow-hidden bg-slate-950 text-white', className)}\r\n    >\r\n      <canvas ref={canvasRef} className=\"absolute inset-0 -z-10 h-full w-full\" aria-hidden=\"true\" />\r\n      {children}\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/motion/useReducedMotion.ts",
+      "type": "component",
+      "target": "src/components/library/motion/useReducedMotion.ts",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\nconst QUERY = '(prefers-reduced-motion: reduce)'\r\n\r\nexport function prefersReducedMotion(): boolean {\r\n  return typeof window !== 'undefined' && window.matchMedia(QUERY).matches\r\n}\r\n\r\nexport function useReducedMotion(): boolean {\r\n  const [reduced, setReduced] = useState(false)\r\n\r\n  useEffect(() => {\r\n    const media = window.matchMedia(QUERY)\r\n    const update = (): void => setReduced(media.matches)\r\n\r\n    update()\r\n    media.addEventListener('change', update)\r\n    return () => media.removeEventListener('change', update)\r\n  }, [])\r\n\r\n  return reduced\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

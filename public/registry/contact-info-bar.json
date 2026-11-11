@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "contact-info-bar",
+  "kind": "component",
+  "title": "ContactInfoBar",
+  "description": "Barra superior compacta para endereço, e-mail, horário e outros contatos.",
+  "meta": {
+    "category": "navigation",
+    "role": "section.contact",
+    "placement": "end-of-main",
+    "stage": "topbar",
+    "topics": [
+      "topbar"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/navigation/ContactInfoBar",
+    "tags": [
+      "contato",
+      "topbar",
+      "top bar",
+      "informações"
+    ],
+    "variants": [
+      "primary",
+      "dark",
+      "light"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "readonly ContactInfoBarItem[]",
+        "description": "Informações exibidas.",
+        "required": true
+      },
+      {
+        "name": "variant",
+        "type": "'primary' | 'dark' | 'light'",
+        "description": "Aparência.",
+        "required": false,
+        "default": "'primary'"
+      }
+    ],
+    "example": "<ContactInfoBar items={[{ label: 'E-mail', value: 'contato@empresa.com', href: 'mailto:contato@empresa.com' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/navigation/ContactInfoBar.tsx",
+      "type": "component",
+      "target": "src/components/library/navigation/ContactInfoBar.tsx",
+      "content": "import type { ReactNode } from 'react'\r\nimport { Clock3, Mail, MapPin } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ContactInfoBarItem = {\r\n  label: string\r\n  value: ReactNode\r\n  href?: string\r\n  icon?: ReactNode\r\n}\r\n\r\nexport type ContactInfoBarProps = {\r\n  items: readonly ContactInfoBarItem[]\r\n  variant?: 'primary' | 'dark' | 'light'\r\n  className?: string\r\n}\r\n\r\nconst defaultIcons = [MapPin, Mail, Clock3]\r\n\r\nexport function ContactInfoBar({ items, variant = 'primary', className }: ContactInfoBarProps) {\r\n  return (\r\n    <aside\r\n      className={cn(\r\n        'border-b text-xs',\r\n        variant === 'primary' && 'border-primary-foreground/10 bg-primary text-primary-foreground',\r\n        variant === 'dark' && 'border-white/10 bg-[#10100e] text-white',\r\n        variant === 'light' && 'bg-muted/60 text-muted-foreground',\r\n        className,\r\n      )}\r\n      aria-label=\"Informações de contato\"\r\n    >\r\n      <div className=\"container flex min-h-10 flex-wrap items-center justify-center gap-x-6 gap-y-2 py-2 md:justify-between\">\r\n        {items.map((item, index) => {\r\n          const Icon = defaultIcons[index % defaultIcons.length]\r\n          const content = (\r\n            <>\r\n              {item.icon ?? <Icon className=\"h-3.5 w-3.5 shrink-0\" aria-hidden />}\r\n              <span className=\"font-medium\">{item.label}:</span>\r\n              <span className=\"opacity-75\">{item.value}</span>\r\n            </>\r\n          )\r\n\r\n          return item.href ? (\r\n            <a\r\n              key={`${item.label}-${index}`}\r\n              href={item.href}\r\n              className=\"flex items-center gap-1.5 rounded-sm transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current\"\r\n            >\r\n              {content}\r\n            </a>\r\n          ) : (\r\n            <span key={`${item.label}-${index}`} className=\"flex items-center gap-1.5\">\r\n              {content}\r\n            </span>\r\n          )\r\n        })}\r\n      </div>\r\n    </aside>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

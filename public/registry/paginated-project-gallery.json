@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "paginated-project-gallery",
+  "kind": "component",
+  "title": "PaginatedProjectGallery",
+  "description": "Portfólio com filtro por categoria, paginação e overlay roxo com título no hover.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": "galeria",
+    "topics": [
+      "galleries"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/data-display/PaginatedProjectGallery",
+    "tags": [
+      "portfólio",
+      "projetos",
+      "galeria",
+      "filtro",
+      "paginação"
+    ],
+    "variants": [
+      "filtro",
+      "paginação",
+      "overlay no hover"
+    ],
+    "props": [
+      {
+        "name": "projects",
+        "type": "GalleryProject[]",
+        "description": "Projetos com categoria e imagem.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "perPage",
+        "type": "number",
+        "description": "Itens por página.",
+        "required": false,
+        "default": "6"
+      },
+      {
+        "name": "allLabel",
+        "type": "string",
+        "description": "Rótulo do filtro geral.",
+        "required": false,
+        "default": "'Todos'"
+      },
+      {
+        "name": "previousLabel",
+        "type": "string",
+        "description": "Botão anterior.",
+        "required": false,
+        "default": "'Anterior'"
+      },
+      {
+        "name": "nextLabel",
+        "type": "string",
+        "description": "Botão próximo.",
+        "required": false,
+        "default": "'Próximo'"
+      }
+    ],
+    "example": "<PaginatedProjectGallery title=\"Projetos\" projects={[{ id: '1', title: 'Cozinha', category: 'Reforma', image: { src: '/p1.jpg', alt: '' } }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/PaginatedProjectGallery.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/PaginatedProjectGallery.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport { useMemo, useState } from 'react'\r\nimport { AnimatePresence, motion, useReducedMotion } from 'framer-motion'\r\nimport { ChevronLeft, ChevronRight } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type GalleryProject = {\r\n  id: string\r\n  title: string\r\n  category: string\r\n  image: { src: string; alt: string }\r\n  href?: string\r\n}\r\n\r\nexport type PaginatedProjectGalleryProps = {\r\n  title?: string\r\n  description?: string\r\n  projects: GalleryProject[]\r\n  perPage?: number\r\n  allLabel?: string\r\n  previousLabel?: string\r\n  nextLabel?: string\r\n  className?: string\r\n}\r\n\r\nexport function PaginatedProjectGallery({\r\n  title,\r\n  description,\r\n  projects,\r\n  perPage = 6,\r\n  allLabel = 'Todos',\r\n  previousLabel = 'Anterior',\r\n  nextLabel = 'Próximo',\r\n  className,\r\n}: PaginatedProjectGalleryProps) {\r\n  const [category, setCategory] = useState<string | null>(null)\r\n  const [page, setPage] = useState(1)\r\n  const reduceMotion = useReducedMotion()\r\n  const categories = useMemo(\r\n    () => Array.from(new Set(projects.map((item) => item.category))),\r\n    [projects],\r\n  )\r\n  const filtered = category ? projects.filter((item) => item.category === category) : projects\r\n  const pages = Math.max(1, Math.ceil(filtered.length / perPage))\r\n  const current = Math.min(page, pages)\r\n  const visible = filtered.slice((current - 1) * perPage, current * perPage)\r\n\r\n  function selectCategory(value: string | null) {\r\n    setCategory(value)\r\n    setPage(1)\r\n  }\r\n\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)}>\r\n      <div className=\"container\">\r\n        {title || description ? (\r\n          <div className=\"mx-auto max-w-2xl text-center\">\r\n            {title ? (\r\n              <h2 className=\"text-3xl font-bold uppercase tracking-tight md:text-4xl\">{title}</h2>\r\n            ) : null}\r\n            {description ? (\r\n              <p className=\"mt-4 text-lg leading-8 text-muted-foreground\">{description}</p>\r\n            ) : null}\r\n          </div>\r\n        ) : null}\r\n\r\n        <div\r\n          className=\"mt-10 flex flex-wrap justify-center gap-2\"\r\n          role=\"group\"\r\n          aria-label=\"Filtrar projetos\"\r\n        >\r\n          {[null, ...categories].map((item) => (\r\n            <button\r\n              key={item ?? 'all'}\r\n              type=\"button\"\r\n              onClick={() => selectCategory(item)}\r\n              aria-pressed={category === item}\r\n              className={cn(\r\n                'rounded-full border px-4 py-2 text-sm font-medium transition',\r\n                category === item\r\n                  ? 'border-primary bg-primary text-primary-foreground'\r\n                  : 'hover:border-primary/50 hover:text-primary',\r\n              )}\r\n            >\r\n              {item ?? allLabel}\r\n            </button>\r\n          ))}\r\n        </div>\r\n\r\n        <motion.ul layout className=\"mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3\">\r\n          <AnimatePresence mode=\"popLayout\">\r\n            {visible.map((project) => (\r\n              <motion.li\r\n                layout\r\n                key={project.id}\r\n                initial={reduceMotion ? false : { opacity: 0, scale: 0.94 }}\r\n                animate={{ opacity: 1, scale: 1 }}\r\n                exit={reduceMotion ? undefined : { opacity: 0, scale: 0.94 }}\r\n                transition={{ duration: 0.3 }}\r\n              >\r\n                <a\r\n                  href={project.href ?? '#'}\r\n                  className=\"group relative block aspect-[4/3] overflow-hidden rounded-2xl bg-muted\"\r\n                >\r\n                  <Image\r\n                    src={project.image.src}\r\n                    alt={project.image.alt}\r\n                    fill\r\n                    className=\"object-cover transition duration-700 group-hover:scale-110\"\r\n                    sizes=\"(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw\"\r\n                  />\r\n                  <span className=\"absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-primary/90 via-primary/30 to-transparent p-5 text-primary-foreground opacity-0 transition duration-300 group-hover:opacity-100\">\r\n                    <span className=\"translate-y-3 text-xs font-bold uppercase tracking-widest opacity-80 transition duration-300 group-hover:translate-y-0\">\r\n                      {project.category}\r\n                    </span>\r\n                    <span className=\"translate-y-3 text-lg font-semibold transition delay-75 duration-300 group-hover:translate-y-0\">\r\n                      {project.title}\r\n                    </span>\r\n                  </span>\r\n                </a>\r\n              </motion.li>\r\n            ))}\r\n          </AnimatePresence>\r\n        </motion.ul>\r\n\r\n        {pages > 1 ? (\r\n          <nav className=\"mt-10 flex items-center justify-center gap-2\" aria-label=\"Paginação\">\r\n            <button\r\n              type=\"button\"\r\n              onClick={() => setPage(current - 1)}\r\n              disabled={current === 1}\r\n              className=\"inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition hover:text-primary disabled:opacity-40\"\r\n            >\r\n              <ChevronLeft className=\"h-4 w-4\" />\r\n              {previousLabel}\r\n            </button>\r\n            {Array.from({ length: pages }, (_, index) => index + 1).map((number) => (\r\n              <button\r\n                key={number}\r\n                type=\"button\"\r\n                onClick={() => setPage(number)}\r\n                aria-current={number === current ? 'page' : undefined}\r\n                className={cn(\r\n                  'h-10 w-10 rounded-full text-sm font-semibold transition',\r\n                  number === current ? 'bg-primary text-primary-foreground' : 'hover:bg-muted',\r\n                )}\r\n              >\r\n                {number}\r\n              </button>\r\n            ))}\r\n            <button\r\n              type=\"button\"\r\n              onClick={() => setPage(current + 1)}\r\n              disabled={current === pages}\r\n              className=\"inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition hover:text-primary disabled:opacity-40\"\r\n            >\r\n              {nextLabel}\r\n              <ChevronRight className=\"h-4 w-4\" />\r\n            </button>\r\n          </nav>\r\n        ) : null}\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

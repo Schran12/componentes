@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "cta-inline",
+  "kind": "component",
+  "title": "CTAInline",
+  "description": "Chamada compacta para inserir entre blocos de conteúdo.",
+  "meta": {
+    "category": "feedback",
+    "role": "section.conversion",
+    "placement": "end-of-main",
+    "stage": "cta",
+    "topics": [
+      "cta"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/feedback/CTAInline",
+    "tags": [
+      "cta",
+      "inline",
+      "conversão"
+    ],
+    "variants": [
+      "com descrição",
+      "compacta"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "action",
+        "type": "{ label: string; href: string }",
+        "description": "Ação.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      }
+    ],
+    "example": "<CTAInline title=\"Precisa de ajuda?\" description=\"Fale com um especialista.\" action={{ label: 'Contato', href: '/contato' }} />"
+  },
+  "dependencies": [
+    "@radix-ui/react-slot@^1.0.2",
+    "class-variance-authority@^0.7.0",
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/feedback/CTAInline.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/CTAInline.tsx",
+      "content": "import Link from 'next/link'\r\nimport { ArrowRight } from 'lucide-react'\r\nimport { Button } from '@/components/ui/button'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type CTAInlineProps = {\r\n  title: string\r\n  description?: string\r\n  action: { label: string; href: string }\r\n  className?: string\r\n}\r\n\r\nexport function CTAInline({ title, description, action, className }: CTAInlineProps) {\r\n  return (\r\n    <aside\r\n      className={cn(\r\n        'flex flex-col gap-5 rounded-2xl border bg-muted/30 p-6 sm:flex-row sm:items-center sm:justify-between md:p-8',\r\n        className,\r\n      )}\r\n      aria-label={title}\r\n    >\r\n      <div>\r\n        <h2 className=\"text-xl font-semibold\">{title}</h2>\r\n        {description ? <p className=\"mt-1 text-sm text-muted-foreground\">{description}</p> : null}\r\n      </div>\r\n      <Button asChild className=\"shrink-0\">\r\n        <Link href={action.href}>\r\n          {action.label}\r\n          <ArrowRight className=\"ml-2 h-4 w-4\" aria-hidden=\"true\" />\r\n        </Link>\r\n      </Button>\r\n    </aside>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "type": "ui",
+      "target": "src/components/ui/button.tsx",
+      "content": "import * as React from 'react'\r\nimport { Slot } from '@radix-ui/react-slot'\r\nimport { cva, type VariantProps } from 'class-variance-authority'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nconst buttonVariants = cva(\r\n  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',\r\n  {\r\n    variants: {\r\n      variant: {\r\n        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',\r\n        destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',\r\n        outline:\r\n          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',\r\n        secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',\r\n        ghost: 'hover:bg-accent hover:text-accent-foreground',\r\n        link: 'text-primary underline-offset-4 hover:underline',\r\n      },\r\n      size: {\r\n        default: 'h-9 px-4 py-2',\r\n        sm: 'h-8 rounded-md px-3 text-xs',\r\n        lg: 'h-10 rounded-md px-8',\r\n        icon: 'h-9 w-9',\r\n      },\r\n    },\r\n    defaultVariants: {\r\n      variant: 'default',\r\n      size: 'default',\r\n    },\r\n  },\r\n)\r\n\r\nexport interface ButtonProps\r\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {\r\n  asChild?: boolean\r\n}\r\n\r\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\r\n  ({ className, variant, size, asChild = false, ...props }, ref) => {\r\n    const Comp = asChild ? Slot : 'button'\r\n    return (\r\n      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />\r\n    )\r\n  },\r\n)\r\nButton.displayName = 'Button'\r\n\r\nexport { Button, buttonVariants }\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "swiper-showcase-section",
+  "kind": "component",
+  "title": "SwiperShowcaseSection",
+  "description": "Showcase editorial com navegação lateral e transição creative do Swiper.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/SwiperShowcaseSection",
+    "tags": [
+      "swiper",
+      "carousel",
+      "showcase",
+      "interativo"
+    ],
+    "variants": [
+      "light",
+      "dark",
+      "creative effect",
+      "teclado",
+      "reduced-motion"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "readonly SwiperShowcaseItem[]",
+        "description": "Slides.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "theme",
+        "type": "'light' | 'dark'",
+        "description": "Tema.",
+        "required": false,
+        "default": "'light'"
+      }
+    ],
+    "example": "<SwiperShowcaseSection title=\"Projetos\" theme=\"dark\" items={projects} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "swiper@^11.0.5",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/SwiperShowcaseSection.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/SwiperShowcaseSection.tsx",
+      "content": "'use client'\r\n\r\nimport { useState } from 'react'\r\nimport Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { ArrowUpRight } from 'lucide-react'\r\nimport { A11y, EffectCreative, Keyboard, Pagination } from 'swiper/modules'\r\nimport { Swiper, SwiperSlide } from 'swiper/react'\r\nimport type { Swiper as SwiperInstance } from 'swiper'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nimport { useReducedMotion } from './useReducedMotion'\r\n\r\nimport 'swiper/css'\r\nimport 'swiper/css/effect-creative'\r\nimport 'swiper/css/pagination'\r\n\r\nexport type SwiperShowcaseItem = {\r\n  id: string\r\n  eyebrow?: string\r\n  title: string\r\n  description: string\r\n  image: { src: string; alt: string }\r\n  action?: { label: string; href: string }\r\n}\r\n\r\nexport type SwiperShowcaseSectionProps = {\r\n  title?: string\r\n  description?: string\r\n  items: readonly SwiperShowcaseItem[]\r\n  theme?: 'light' | 'dark'\r\n  className?: string\r\n}\r\n\r\nexport function SwiperShowcaseSection({\r\n  title,\r\n  description,\r\n  items,\r\n  theme = 'light',\r\n  className,\r\n}: SwiperShowcaseSectionProps) {\r\n  const [activeIndex, setActiveIndex] = useState(0)\r\n  const [swiper, setSwiper] = useState<SwiperInstance | null>(null)\r\n  const reducedMotion = useReducedMotion()\r\n  const dark = theme === 'dark'\r\n\r\n  return (\r\n    <section\r\n      className={cn(\r\n        'overflow-hidden py-20 md:py-28',\r\n        dark ? 'bg-slate-950 text-white' : 'bg-background',\r\n        className,\r\n      )}\r\n    >\r\n      <div className=\"container\">\r\n        {title || description ? (\r\n          <header className=\"mb-10 max-w-2xl\">\r\n            {title ? (\r\n              <h2 className=\"text-3xl font-bold tracking-tight md:text-5xl\">{title}</h2>\r\n            ) : null}\r\n            {description ? (\r\n              <p className={cn('mt-4 leading-7', dark ? 'text-white/60' : 'text-muted-foreground')}>\r\n                {description}\r\n              </p>\r\n            ) : null}\r\n          </header>\r\n        ) : null}\r\n\r\n        <div className=\"grid gap-6 lg:grid-cols-[280px_1fr]\">\r\n          <div className=\"flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible\">\r\n            {items.map((item, index) => (\r\n              <button\r\n                type=\"button\"\r\n                key={item.id}\r\n                onClick={() => swiper?.slideTo(index)}\r\n                aria-pressed={activeIndex === index}\r\n                className={cn(\r\n                  'min-w-52 rounded-2xl border p-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:min-w-0',\r\n                  activeIndex === index\r\n                    ? dark\r\n                      ? 'border-white/40 bg-white/10'\r\n                      : 'border-primary bg-primary/5'\r\n                    : dark\r\n                      ? 'border-white/10 text-white/55 hover:bg-white/5'\r\n                      : 'text-muted-foreground hover:border-primary/30',\r\n                )}\r\n              >\r\n                <span className=\"text-xs font-bold text-primary\">\r\n                  {String(index + 1).padStart(2, '0')}\r\n                </span>\r\n                <span className=\"mt-2 block font-semibold\">{item.title}</span>\r\n              </button>\r\n            ))}\r\n          </div>\r\n\r\n          <Swiper\r\n            modules={[A11y, EffectCreative, Keyboard, Pagination]}\r\n            effect={reducedMotion ? 'slide' : 'creative'}\r\n            creativeEffect={{\r\n              prev: { shadow: true, translate: ['-12%', 0, -220], opacity: 0 },\r\n              next: { translate: ['100%', 0, 0] },\r\n            }}\r\n            keyboard={{ enabled: true }}\r\n            pagination={{ clickable: true }}\r\n            onSwiper={setSwiper}\r\n            onSlideChange={(instance) => setActiveIndex(instance.activeIndex)}\r\n            className=\"w-full overflow-hidden rounded-[2rem]\"\r\n          >\r\n            {items.map((item) => (\r\n              <SwiperSlide key={item.id}>\r\n                <article className=\"relative min-h-[600px] overflow-hidden rounded-[2rem] bg-slate-900 text-white\">\r\n                  <Image\r\n                    src={item.image.src}\r\n                    alt={item.image.alt}\r\n                    fill\r\n                    className=\"object-cover\"\r\n                    sizes=\"(min-width: 1024px) 70vw, 100vw\"\r\n                  />\r\n                  <div className=\"absolute inset-0 bg-gradient-to-t from-black/90 via-black/20\" />\r\n                  <div className=\"absolute inset-x-0 bottom-0 p-7 md:p-12\">\r\n                    {item.eyebrow ? (\r\n                      <p className=\"text-xs font-bold uppercase tracking-[0.22em] text-white/60\">\r\n                        {item.eyebrow}\r\n                      </p>\r\n                    ) : null}\r\n                    <h3 className=\"mt-3 text-3xl font-bold md:text-5xl\">{item.title}</h3>\r\n                    <p className=\"mt-4 max-w-2xl leading-7 text-white/65\">{item.description}</p>\r\n                    {item.action ? (\r\n                      <Link\r\n                        href={item.action.href}\r\n                        className=\"mt-6 inline-flex items-center gap-2 rounded-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white\"\r\n                      >\r\n                        {item.action.label}\r\n                        <ArrowUpRight className=\"h-4 w-4\" aria-hidden />\r\n                      </Link>\r\n                    ) : null}\r\n                  </div>\r\n                </article>\r\n              </SwiperSlide>\r\n            ))}\r\n          </Swiper>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/motion/useReducedMotion.ts",
+      "type": "component",
+      "target": "src/components/library/motion/useReducedMotion.ts",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\nconst QUERY = '(prefers-reduced-motion: reduce)'\r\n\r\nexport function prefersReducedMotion(): boolean {\r\n  return typeof window !== 'undefined' && window.matchMedia(QUERY).matches\r\n}\r\n\r\nexport function useReducedMotion(): boolean {\r\n  const [reduced, setReduced] = useState(false)\r\n\r\n  useEffect(() => {\r\n    const media = window.matchMedia(QUERY)\r\n    const update = (): void => setReduced(media.matches)\r\n\r\n    update()\r\n    media.addEventListener('change', update)\r\n    return () => media.removeEventListener('change', update)\r\n  }, [])\r\n\r\n  return reduced\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

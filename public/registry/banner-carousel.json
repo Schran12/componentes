@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "banner-carousel",
+  "kind": "component",
+  "title": "BannerCarousel",
+  "description": "Carrossel de destaques acessível com autoplay configurável.",
+  "meta": {
+    "category": "marketing",
+    "role": "page.hero",
+    "placement": "start-of-main",
+    "stage": "hero",
+    "topics": [
+      "banner"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/marketing/BannerCarousel",
+    "tags": [
+      "banner",
+      "carousel",
+      "swiper",
+      "acessível"
+    ],
+    "variants": [
+      "autoplay",
+      "manual",
+      "navigation",
+      "pagination"
+    ],
+    "props": [
+      {
+        "name": "slides",
+        "type": "BannerCarouselSlide[]",
+        "description": "Slides.",
+        "required": true
+      },
+      {
+        "name": "autoplayDelay",
+        "type": "number | false",
+        "description": "Intervalo ou autoplay desativado.",
+        "required": false,
+        "default": "6000"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Rótulo acessível.",
+        "required": false,
+        "default": "'Destaques'"
+      }
+    ],
+    "example": "<BannerCarousel slides={slides} autoplayDelay={false} />"
+  },
+  "dependencies": [
+    "@radix-ui/react-slot@^1.0.2",
+    "class-variance-authority@^0.7.0",
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "swiper@^11.0.5",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/marketing/BannerCarousel.tsx",
+      "type": "component",
+      "target": "src/components/library/marketing/BannerCarousel.tsx",
+      "content": "export { HeroCarousel as BannerCarousel } from './HeroCarousel'\r\nexport type {\r\n  HeroCarouselProps as BannerCarouselProps,\r\n  HeroCarouselSlide as BannerCarouselSlide,\r\n} from './HeroCarousel'\r\n"
+    },
+    {
+      "path": "src/components/library/marketing/HeroCarousel.tsx",
+      "type": "component",
+      "target": "src/components/library/marketing/HeroCarousel.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { Pause, Play } from 'lucide-react'\r\nimport { useState } from 'react'\r\nimport { A11y, Autoplay, Keyboard, Navigation, Pagination } from 'swiper/modules'\r\nimport { Swiper, SwiperSlide } from 'swiper/react'\r\nimport type { Swiper as SwiperInstance } from 'swiper'\r\nimport { Button } from '@/components/ui/button'\r\nimport { useReducedMotion } from '@/components/library/motion/useReducedMotion'\r\nimport { cn } from '@/lib/utils'\r\nimport 'swiper/css'\r\nimport 'swiper/css/navigation'\r\nimport 'swiper/css/pagination'\r\n\r\nexport type HeroCarouselSlide = {\r\n  id: string\r\n  title: string\r\n  description?: string\r\n  image: { src: string; alt: string }\r\n  action?: { label: string; href: string }\r\n}\r\n\r\nexport type HeroCarouselProps = {\r\n  slides: HeroCarouselSlide[]\r\n  autoplayDelay?: number | false\r\n  className?: string\r\n  label?: string\r\n}\r\n\r\nexport function HeroCarousel({\r\n  slides,\r\n  autoplayDelay = 6000,\r\n  className,\r\n  label = 'Destaques',\r\n}: HeroCarouselProps) {\r\n  const reducedMotion = useReducedMotion()\r\n  const [swiper, setSwiper] = useState<SwiperInstance | null>(null)\r\n  const [paused, setPaused] = useState(false)\r\n  const canAutoplay = Boolean(autoplayDelay) && !reducedMotion\r\n\r\n  function toggleAutoplay() {\r\n    if (!swiper) return\r\n    if (paused) swiper.autoplay.start()\r\n    else swiper.autoplay.stop()\r\n    setPaused((current) => !current)\r\n  }\r\n\r\n  return (\r\n    <section className={cn('relative bg-slate-950 text-white', className)} aria-label={label}>\r\n      <Swiper\r\n        modules={[A11y, Autoplay, Keyboard, Navigation, Pagination]}\r\n        navigation\r\n        pagination={{ clickable: true }}\r\n        keyboard={{ enabled: true }}\r\n        autoplay={\r\n          canAutoplay\r\n            ? { delay: Number(autoplayDelay), disableOnInteraction: true, pauseOnMouseEnter: true }\r\n            : false\r\n        }\r\n        loop={slides.length > 1}\r\n        a11y={{ enabled: true }}\r\n        onSwiper={setSwiper}\r\n        className=\"min-h-[560px]\"\r\n      >\r\n        {slides.map((slide, index) => (\r\n          <SwiperSlide key={slide.id}>\r\n            <article className=\"relative flex min-h-[560px] items-center\">\r\n              <Image\r\n                src={slide.image.src}\r\n                alt={slide.image.alt}\r\n                fill\r\n                priority={index === 0}\r\n                className=\"object-cover opacity-50\"\r\n                sizes=\"100vw\"\r\n              />\r\n              <div className=\"absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent\" />\r\n              <div className=\"container relative z-10 py-20\">\r\n                <h2 className=\"max-w-3xl text-4xl font-bold tracking-tight sm:text-6xl\">\r\n                  {slide.title}\r\n                </h2>\r\n                {slide.description ? (\r\n                  <p className=\"mt-5 max-w-2xl text-lg text-white/80\">{slide.description}</p>\r\n                ) : null}\r\n                {slide.action ? (\r\n                  <Button asChild size=\"lg\" className=\"mt-8\">\r\n                    <Link href={slide.action.href}>{slide.action.label}</Link>\r\n                  </Button>\r\n                ) : null}\r\n              </div>\r\n            </article>\r\n          </SwiperSlide>\r\n        ))}\r\n      </Swiper>\r\n      {canAutoplay ? (\r\n        <Button\r\n          type=\"button\"\r\n          size=\"icon\"\r\n          variant=\"secondary\"\r\n          className=\"absolute bottom-5 right-5 z-20 rounded-full shadow-lg\"\r\n          onClick={toggleAutoplay}\r\n          aria-label={paused ? 'Retomar carrossel' : 'Pausar carrossel'}\r\n        >\r\n          {paused ? <Play className=\"h-4 w-4\" /> : <Pause className=\"h-4 w-4\" />}\r\n        </Button>\r\n      ) : null}\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/motion/useReducedMotion.ts",
+      "type": "component",
+      "target": "src/components/library/motion/useReducedMotion.ts",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\nconst QUERY = '(prefers-reduced-motion: reduce)'\r\n\r\nexport function prefersReducedMotion(): boolean {\r\n  return typeof window !== 'undefined' && window.matchMedia(QUERY).matches\r\n}\r\n\r\nexport function useReducedMotion(): boolean {\r\n  const [reduced, setReduced] = useState(false)\r\n\r\n  useEffect(() => {\r\n    const media = window.matchMedia(QUERY)\r\n    const update = (): void => setReduced(media.matches)\r\n\r\n    update()\r\n    media.addEventListener('change', update)\r\n    return () => media.removeEventListener('change', update)\r\n  }, [])\r\n\r\n  return reduced\r\n}\r\n"
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "type": "ui",
+      "target": "src/components/ui/button.tsx",
+      "content": "import * as React from 'react'\r\nimport { Slot } from '@radix-ui/react-slot'\r\nimport { cva, type VariantProps } from 'class-variance-authority'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nconst buttonVariants = cva(\r\n  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',\r\n  {\r\n    variants: {\r\n      variant: {\r\n        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',\r\n        destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',\r\n        outline:\r\n          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',\r\n        secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',\r\n        ghost: 'hover:bg-accent hover:text-accent-foreground',\r\n        link: 'text-primary underline-offset-4 hover:underline',\r\n      },\r\n      size: {\r\n        default: 'h-9 px-4 py-2',\r\n        sm: 'h-8 rounded-md px-3 text-xs',\r\n        lg: 'h-10 rounded-md px-8',\r\n        icon: 'h-9 w-9',\r\n      },\r\n    },\r\n    defaultVariants: {\r\n      variant: 'default',\r\n      size: 'default',\r\n    },\r\n  },\r\n)\r\n\r\nexport interface ButtonProps\r\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {\r\n  asChild?: boolean\r\n}\r\n\r\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\r\n  ({ className, variant, size, asChild = false, ...props }, ref) => {\r\n    const Comp = asChild ? Slot : 'button'\r\n    return (\r\n      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />\r\n    )\r\n  },\r\n)\r\nButton.displayName = 'Button'\r\n\r\nexport { Button, buttonVariants }\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

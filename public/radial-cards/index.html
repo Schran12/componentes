@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Radial Cards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* ============================================================
+       CUSTOMISE — tweak colours, typography, and motion tokens
+       ============================================================ */
+    :root {
+      /* Background & ambient glow */
+      --bg-deep-olive: #2b302a;
+      --glow-soft-white: rgba(255, 255, 255, 0.14);
+      --glow-spread: 42vmin;
+
+      /* Polaroid card surface */
+      --card-paper-cream: #f4f1ea;
+      --card-frame-padding: 5.5%;
+      --card-width-min: 120px;
+      --card-width-vw: 18vw;
+      --card-width-vh: 34vh;
+      --card-width-max: 260px;
+      --card-radius-photo: 3px;
+      --card-shadow-layer-1: 0 2px 8px rgba(0, 0, 0, 0.12);
+      --card-shadow-layer-2: 0 12px 28px rgba(0, 0, 0, 0.22);
+      --card-shadow-layer-3: 0 24px 48px rgba(0, 0, 0, 0.18);
+
+      /* Label typography (Space Mono) */
+      --label-tracking: 0.14em;
+      --label-size: clamp(9px, 1.35vw, 11px);
+      --label-color: #3a3f38;
+
+      /* Wheel geometry (must match JS constants if changed) */
+      --wheel-deg-per-slot: 16deg;
+      --wheel-radius-factor: 4.6;
+      --wheel-lift-factor: 0.08;
+      --wheel-scale-boost: 0.06;
+      --parallax-x-percent: 6;
+      --hide-angle-deg: 68;
+
+      /* UI controls */
+      --ui-font: "Space Grotesk", system-ui, sans-serif;
+      --mono-font: "Space Mono", ui-monospace, monospace;
+      --pill-cream: var(--card-paper-cream);
+      --pill-ghost-border: rgba(244, 241, 234, 0.35);
+      --pill-text-dark: #2b302a;
+
+      /* Motion durations (seconds) — JS reads data attributes too */
+      --duration-step: 0.95;
+      --duration-snap: 1.1;
+      --duration-intro: 1.7;
+      --autoplay-interval: 2.8;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-deep-olive);
+      color: var(--card-paper-cream);
+      font-family: var(--ui-font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: clamp(24px, 6vh, 56px);
+      touch-action: none;
+      user-select: none;
+      cursor: grab;
+    }
+
+    .stage.is-dragging {
+      cursor: grabbing;
+    }
+
+    .stage__glow {
+      pointer-events: none;
+      position: absolute;
+      left: 50%;
+      top: 38%;
+      width: min(120vw, 140vh);
+      height: min(120vw, 140vh);
+      transform: translate(-50%, -50%);
+      background: radial-gradient(
+        circle at 50% 42%,
+        var(--glow-soft-white) 0%,
+        transparent var(--glow-spread)
+      );
+      z-index: 0;
+    }
+
+    .wheel {
+      position: absolute;
+      left: 50%;
+      top: 58%;
+      width: 0;
+      height: 0;
+      z-index: 2;
+      will-change: transform;
+    }
+
+    .card {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: clamp(
+        var(--card-width-min),
+        min(var(--card-width-vw), var(--card-width-vh)),
+        var(--card-width-max)
+      );
+      transform-origin: 50% 50%;
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+
+    .card.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .card__polaroid {
+      background: var(--card-paper-cream);
+      padding: var(--card-frame-padding);
+      border-radius: 2px;
+      box-shadow:
+        var(--card-shadow-layer-1),
+        var(--card-shadow-layer-2),
+        var(--card-shadow-layer-3);
+    }
+
+    .card__photo-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1.08;
+      overflow: hidden;
+      border-radius: var(--card-radius-photo);
+      background: #d8d4cb;
+    }
+
+    .card__photo {
+      position: absolute;
+      inset: 0;
+      width: 120%;
+      height: 100%;
+      object-fit: cover;
+      left: -10%;
+      will-change: transform;
+    }
+
+    .card__label {
+      margin: 0.55em 0 0;
+      text-align: center;
+      font-family: var(--mono-font);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--label-color);
+    }
+
+    .controls {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(16px, 4vw, 32px);
+      width: min(92vw, 520px);
+    }
+
+    .btn {
+      font-family: var(--ui-font);
+      font-size: clamp(13px, 2.4vw, 15px);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--pill-cream);
+      outline-offset: 3px;
+    }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--pill-cream);
+      padding: 12px 22px;
+      border-radius: 999px;
+      border: 1px solid var(--pill-ghost-border);
+    }
+
+    .btn--ghost:hover {
+      background: rgba(244, 241, 234, 0.06);
+    }
+
+    .btn--solid {
+      background: var(--pill-cream);
+      color: var(--pill-text-dark);
+      padding: 12px 28px;
+      border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn--solid:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .counter {
+      font-family: var(--mono-font);
+      font-size: clamp(14px, 2.6vw, 16px);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--card-paper-cream);
+      min-width: 6.5ch;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35em;
+    }
+
+    .counter__roll {
+      display: inline-block;
+      height: 1.2em;
+      overflow: hidden;
+      line-height: 1.2em;
+      vertical-align: bottom;
+    }
+
+    .counter__roll-inner {
+      display: flex;
+      flex-direction: column;
+      will-change: transform;
+    }
+
+    .counter__roll-digit {
+      height: 1.2em;
+      text-align: center;
+    }
+
+    .counter__sep,
+    .counter__total {
+      opacity: 0.85;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card,
+      .card__photo,
+      .wheel,
+      .counter__roll-inner {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" id="stage" aria-label="Radial card carousel">
+    <div class="stage__glow" aria-hidden="true"></div>
+    <div class="wheel" id="wheel" aria-live="polite"></div>
+
+    <nav class="controls" aria-label="Carousel controls">
+      <button type="button" class="btn btn--ghost" id="btnPrev" aria-label="Previous card">
+        Prev
+      </button>
+
+      <div class="counter" id="counter" aria-atomic="true">
+        <span class="counter__roll" id="counterRoll" aria-hidden="true">
+          <span class="counter__roll-inner" id="counterRollInner"></span>
+        </span>
+        <span class="counter__sep">/</span>
+        <span class="counter__total">10</span>
+      </div>
+
+      <button type="button" class="btn btn--solid" id="btnNext" aria-label="Next card">
+        Next
+      </button>
+    </nav>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      /**
+       * Radial Cards — invisible wheel carousel
+       * GSAP 3.12.5 drives continuous `pos`; layout recomputed every tween frame.
+       */
+
+      var CARD_COUNT = 10;
+      var DEG_PER_SLOT = 16;
+      var RADIUS_FACTOR = 4.6;
+      var LIFT_FACTOR = 0.08;
+      var SCALE_BOOST = 0.06;
+      var PARALLAX_X = 6;
+      var HIDE_ANGLE_DEG = 68;
+      var WRAP_SEAM = 4.65;
+      var DRAG_CARDS_PER_WIDTH = 1 / 1.1;
+      var SNAP_VEL_FACTOR = 260;
+      var STEP_DURATION = 0.95;
+      var SNAP_DURATION = 1.1;
+      var INTRO_DURATION = 1.7;
+      var AUTOPLAY_MS = 2800;
+
+      var CARDS_DATA = [
+        {
+          label: "COAST",
+          src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80&auto=format&fit=crop",
+        },
+        {
+          label: "ALPINE",
+          src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80&auto=format&fit=crop",
+        },
+        {
+          label: "DUSK",
+          src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&q=80&auto=format&fit=crop",
+        },
+        {
+          label: "DESERT",
+          src: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80&auto=format&fit=crop",
+        },
+        {
+          label: "FOREST",
+          src: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=80&auto=format&fit=crop",
+        },
+        {
+          label: "URBAN",
+          src: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&q=80&auto=format&fit=crop",
+        },
+        {
+          label: "NORDIC",
+          src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80&auto=format&fit=crop",
+        },
+        {
+          label: "REEF",
+          src: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80&auto=format&fit=crop",
+        },
+        {
+          label: "MIST",
+          src: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&q=80&auto=format&fit=crop",
+        },
+        {
+          label: "SUMMIT",
+          src: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&q=80&auto=format&fit=crop",
+        },
+      ];
+
+      var stage = document.getElementById("stage");
+      var wheel = document.getElementById("wheel");
+      var btnPrev = document.getElementById("btnPrev");
+      var btnNext = document.getElementById("btnNext");
+      var counterRollInner = document.getElementById("counterRollInner");
+
+      var state = {
+        pos: 0,
+        spread: 0.15,
+        lift: 1,
+        introY: 120,
+        cardWidth: 200,
+        reducedMotion: false,
+        dragging: false,
+        autoplayTimer: null,
+        hoverPaused: false,
+        lastIndex: 0,
+      };
+
+      var cardEls = [];
+      var posProxy = { pos: 0 };
+      var spreadProxy = { spread: 0.15, introY: 120, lift: 1 };
+      var posTween = null;
+      var dragStartX = 0;
+      var dragStartPos = 0;
+      var lastDragX = 0;
+      var lastDragTime = 0;
+      var velocity = 0;
+
+      function padCounter(n) {
+        return (n < 10 ? "0" : "") + n;
+      }
+
+      function wrapDistance(index, pos) {
+        var d = index - pos;
+        var half = CARD_COUNT / 2;
+        while (d > half) d -= CARD_COUNT;
+        while (d < -half) d += CARD_COUNT;
+        return d;
+      }
+
+      function modIndex(n) {
+        return ((n % CARD_COUNT) + CARD_COUNT) % CARD_COUNT;
+      }
+
+      function activeIndex() {
+        return modIndex(Math.round(state.pos));
+      }
+
+      function measureCardWidth() {
+        if (cardEls[0]) {
+          state.cardWidth = cardEls[0].offsetWidth || 200;
+        }
+      }
+
+      function buildCounterRoll() {
+        counterRollInner.innerHTML = "";
+        for (var i = 1; i <= CARD_COUNT; i++) {
+          var span = document.createElement("span");
+          span.className = "counter__roll-digit";
+          span.textContent = padCounter(i);
+          counterRollInner.appendChild(span);
+        }
+        setCounterRollPosition(state.lastIndex, false);
+      }
+
+      function setCounterRollPosition(index, animate) {
+        var digitH = 1.2;
+        var targetY = -index * digitH;
+        if (state.reducedMotion || !animate) {
+          gsap.set(counterRollInner, { y: targetY + "em" });
+          return;
+        }
+        gsap.to(counterRollInner, {
+          y: targetY + "em",
+          duration: 0.55,
+          ease: "power3.inOut",
+          overwrite: true,
+        });
+      }
+
+      function updateCounterDisplay(animate) {
+        var idx = activeIndex();
+        if (idx !== state.lastIndex) {
+          state.lastIndex = idx;
+          setCounterRollPosition(idx, animate);
+        }
+      }
+
+      function buildCards() {
+        wheel.innerHTML = "";
+        cardEls = [];
+        CARDS_DATA.forEach(function (data, i) {
+          var card = document.createElement("article");
+          card.className = "card";
+          card.setAttribute("data-index", String(i));
+          card.innerHTML =
+            '<div class="card__polaroid">' +
+            '<div class="card__photo-wrap">' +
+            '<img class="card__photo" src="' +
+            data.src +
+            '" alt="" loading="lazy" draggable="false" />' +
+            "</div>" +
+            '<p class="card__label">' +
+            data.label +
+            "</p>" +
+            "</div>";
+          wheel.appendChild(card);
+          cardEls.push({
+            root: card,
+            photo: card.querySelector(".card__photo"),
+          });
+        });
+        measureCardWidth();
+      }
+
+      function renderWheel() {
+        measureCardWidth();
+        var cw = state.cardWidth;
+        var R = cw * RADIUS_FACTOR * state.spread;
+        var liftGlobal = state.lift;
+        var introOffsetY = state.introY;
+
+        for (var i = 0; i < CARD_COUNT; i++) {
+          var d = wrapDistance(i, state.pos) * state.spread;
+          var angleDeg = d * DEG_PER_SLOT;
+          var angleRad = (angleDeg * Math.PI) / 180;
+          var nearness = Math.max(0, 1 - Math.abs(d));
+          var scale = 1 + nearness * SCALE_BOOST;
+          var x = Math.sin(angleRad) * R;
+          var y =
+            (1 - Math.cos(angleRad)) * R -
+            nearness * cw * LIFT_FACTOR * liftGlobal +
+            introOffsetY;
+          var rotation = angleDeg;
+
+          var hide =
+            Math.abs(angleDeg) > HIDE_ANGLE_DEG || Math.abs(d) > WRAP_SEAM;
+          var el = cardEls[i];
+          el.root.classList.toggle("is-hidden", hide);
+          if (hide) continue;
+
+          gsap.set(el.root, {
+            x: x,
+            y: y,
+            rotation: rotation,
+            scale: scale,
+            xPercent: -50,
+            yPercent: -50,
+          });
+
+          gsap.set(el.photo, {
+            xPercent: -d * PARALLAX_X,
+          });
+        }
+
+        updateCounterDisplay(false);
+      }
+
+      function attachRenderHook(tween) {
+        if (!tween) return;
+        tween.eventCallback("onUpdate", renderWheel);
+      }
+
+      function killPosTween() {
+        if (posTween) {
+          posTween.kill();
+          posTween = null;
+        }
+      }
+
+      function tweenPosTo(target, duration, ease, onDone) {
+        killPosTween();
+        posProxy.pos = state.pos;
+        posTween = gsap.to(posProxy, {
+          pos: target,
+          duration: duration,
+          ease: ease,
+          onUpdate: function () {
+            state.pos = posProxy.pos;
+            renderWheel();
+            updateCounterDisplay(true);
+          },
+          onComplete: function () {
+            state.pos = target;
+            renderWheel();
+            updateCounterDisplay(true);
+            posTween = null;
+            if (onDone) onDone();
+          },
+        });
+      }
+
+      function breatheLift() {
+        gsap.to(spreadProxy, {
+          lift: 0.4,
+          duration: STEP_DURATION * 0.45,
+          ease: "power3.inOut",
+          onUpdate: function () {
+            state.lift = spreadProxy.lift;
+            renderWheel();
+          },
+          yoyo: true,
+          repeat: 1,
+        });
+      }
+
+      function stepNext() {
+        var target = state.pos + 1;
+        tweenPosTo(target, STEP_DURATION, "power3.inOut");
+        breatheLift();
+        updateCounterDisplay(true);
+      }
+
+      function stepPrev() {
+        var target = state.pos - 1;
+        tweenPosTo(target, STEP_DURATION, "power3.inOut");
+        breatheLift();
+        updateCounterDisplay(true);
+      }
+
+      function snapAfterDrag() {
+        var cw = state.cardWidth || 200;
+        var target = Math.round(state.pos - (velocity * SNAP_VEL_FACTOR) / cw);
+        tweenPosTo(target, SNAP_DURATION, "power3.inOut");
+      }
+
+      function runIntro() {
+        spreadProxy.spread = 0.15;
+        spreadProxy.introY = 120;
+        state.spread = 0.15;
+        state.introY = 120;
+        renderWheel();
+
+        if (state.reducedMotion) {
+          state.spread = 1;
+          state.introY = 0;
+          renderWheel();
+          return;
+        }
+
+        gsap.to(spreadProxy, {
+          spread: 1,
+          introY: 0,
+          duration: INTRO_DURATION,
+          ease: "expo.inOut",
+          onUpdate: function () {
+            state.spread = spreadProxy.spread;
+            state.introY = spreadProxy.introY;
+            renderWheel();
+          },
+        });
+      }
+
+      function clearAutoplay() {
+        if (state.autoplayTimer) {
+          clearInterval(state.autoplayTimer);
+          state.autoplayTimer = null;
+        }
+      }
+
+      function startAutoplay() {
+        clearAutoplay();
+        if (state.reducedMotion) return;
+        state.autoplayTimer = setInterval(function () {
+          if (state.hoverPaused || state.dragging) return;
+          stepNext();
+        }, AUTOPLAY_MS);
+      }
+
+      function onPointerDown(e) {
+        if (state.reducedMotion) return;
+        state.dragging = true;
+        stage.classList.add("is-dragging");
+        killPosTween();
+        dragStartX = e.clientX;
+        dragStartPos = state.pos;
+        lastDragX = e.clientX;
+        lastDragTime = performance.now();
+        velocity = 0;
+        stage.setPointerCapture(e.pointerId);
+      }
+
+      function onPointerMove(e) {
+        if (!state.dragging) return;
+        var now = performance.now();
+        var dt = Math.max(now - lastDragTime, 1);
+        var dx = e.clientX - lastDragX;
+        velocity = dx / dt;
+        lastDragX = e.clientX;
+        lastDragTime = now;
+
+        var cw = state.cardWidth || 200;
+        var deltaCards = ((e.clientX - dragStartX) / cw) * DRAG_CARDS_PER_WIDTH;
+        state.pos = dragStartPos - deltaCards;
+        posProxy.pos = state.pos;
+        renderWheel();
+        updateCounterDisplay(true);
+      }
+
+      function onPointerUp(e) {
+        if (!state.dragging) return;
+        state.dragging = false;
+        stage.classList.remove("is-dragging");
+        try {
+          stage.releasePointerCapture(e.pointerId);
+        } catch (err) {}
+        snapAfterDrag();
+      }
+
+      function bindEvents() {
+        btnNext.addEventListener("click", function () {
+          stepNext();
+        });
+        btnPrev.addEventListener("click", function () {
+          stepPrev();
+        });
+
+        stage.addEventListener("pointerdown", onPointerDown);
+        stage.addEventListener("pointermove", onPointerMove);
+        stage.addEventListener("pointerup", onPointerUp);
+        stage.addEventListener("pointercancel", onPointerUp);
+
+        stage.addEventListener("mouseenter", function () {
+          state.hoverPaused = true;
+        });
+        stage.addEventListener("mouseleave", function () {
+          state.hoverPaused = false;
+        });
+
+        window.addEventListener(
+          "keydown",
+          function (ev) {
+            if (ev.key === "ArrowRight") {
+              ev.preventDefault();
+              stepNext();
+            } else if (ev.key === "ArrowLeft") {
+              ev.preventDefault();
+              stepPrev();
+            }
+          },
+          { passive: false }
+        );
+
+        window.addEventListener("resize", function () {
+          measureCardWidth();
+          renderWheel();
+        });
+      }
+
+      function initReducedMotion() {
+        var mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+        state.reducedMotion = mq.matches;
+        function apply() {
+          state.reducedMotion = mq.matches;
+          if (state.reducedMotion) {
+            clearAutoplay();
+            state.spread = 1;
+            state.introY = 0;
+            renderWheel();
+          } else {
+            startAutoplay();
+          }
+        }
+        apply();
+        if (mq.addEventListener) {
+          mq.addEventListener("change", apply);
+        } else if (mq.addListener) {
+          mq.addListener(apply);
+        }
+      }
+
+      function init() {
+        buildCounterRoll();
+        buildCards();
+        state.lastIndex = activeIndex();
+        setCounterRollPosition(state.lastIndex, false);
+        bindEvents();
+        initReducedMotion();
+        runIntro();
+        startAutoplay();
+        renderWheel();
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>

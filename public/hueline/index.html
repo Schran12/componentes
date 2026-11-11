@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hueline Saturation SS27</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared.css" />
+  </head>
+  <body id="hl-page-home">
+    <!-- Loader -->
+    <div class="hl-loader" id="hl-loader" aria-hidden="true">
+      <div class="hl-loader-band" style="--band: var(--cobalt)"></div>
+      <div class="hl-loader-band" style="--band: var(--marigold)"></div>
+      <div class="hl-loader-band" style="--band: var(--orchid)"></div>
+      <div class="hl-loader-band" style="--band: var(--lagoon)"></div>
+      <div class="hl-loader-band" style="--band: var(--ink)"></div>
+    </div>
+    <div class="hl-loader-ui" id="hl-loader-ui">
+      <span class="hl-loader-count">000</span>
+    </div>
+
+    <header class="hl-nav" role="banner">
+      <a class="hl-wordmark" href="index.html" aria-label="Hueline home">
+        <span class="hue">HUE</span><span class="line">line</span>
+      </a>
+      <nav class="hl-nav-links" aria-label="Primary">
+        <a href="#wardrobe">Wardrobe</a>
+        <a href="#lookbook">Lookbook</a>
+        <a href="#colour">Colour</a>
+        <a href="#shop-grid">Shop</a>
+      </nav>
+      <div class="hl-nav-actions">
+        <button type="button" class="hl-nav-btn" data-action="search">Search</button>
+        <button type="button" class="hl-nav-btn" data-action="saved">
+          Saved <span class="badge" data-badge="saved" hidden></span>
+        </button>
+        <button type="button" class="hl-nav-btn" data-action="bag">
+          Bag <span class="badge" data-badge="bag" hidden></span>
+        </button>
+        <button type="button" class="hl-menu-toggle" data-action="menu" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2 Hero -->
+    <section class="hl-hero" aria-label="Hero film">
+      <div class="hl-hero-pin">
+        <div class="hl-hero-ground"></div>
+        <div class="hl-hero-media" data-reveal="img">
+          <video autoplay muted loop playsinline poster="./assets/hero-poster.jpg">
+            <source src="./hero-main.webm" type="video/webm" />
+            <source src="./hero-main.mp4" type="video/mp4" />
+          </video>
+          <div class="hl-hero-fallback" aria-hidden="true"></div>
+        </div>
+        <div class="hl-hero-closeups">
+          <div class="hl-hero-pane is-left">
+            <video muted loop playsinline>
+              <source src="./assets/hero-close-1.webm" type="video/webm" />
+              <source src="./assets/hero-close-1.mp4" type="video/mp4" />
+            </video>
+            <div class="hl-media-fallback" style="--fb: var(--orchid)">Close 1</div>
+          </div>
+          <div class="hl-hero-pane is-right">
+            <video muted loop playsinline>
+              <source src="./assets/hero-close-2.webm" type="video/webm" />
+              <source src="./assets/hero-close-2.mp4" type="video/mp4" />
+            </video>
+            <div class="hl-media-fallback" style="--fb: var(--lagoon)">Close 2</div>
+          </div>
+        </div>
+        <div class="hl-hero-content">
+          <p class="hl-hero-eyebrow t-mono">SS27 · Collection 04 · Saturation</p>
+          <h1 class="hl-hero-title t-cond">
+            <span class="hl-hero-line-1">WEAR THE</span>
+            <span class="hl-hero-colour colour">colour</span>
+            <span class="hl-hero-line-3">OUT LOUD</span>
+          </h1>
+          <div class="hl-hero-foot">
+            <p class="hl-hero-copy">
+              Six silhouettes. Twelve dyes. Mixed by hand in Bagru and cut in Jaipur, in runs of 48 pieces per colourway.
+            </p>
+            <div class="hl-hero-actions">
+              <a class="hl-pill" href="#shop-grid" data-magnetic>Shop the drop →</a>
+              <span class="hl-scroll-cue">Scroll</span>
+            </div>
+          </div>
+        </div>
+        <p class="hl-hero-arch-note">Saturation SS27 — filmed in the dye yard</p>
+      </div>
+    </section>
+
+    <!-- 3 Ticker -->
+    <div class="hl-ticker-wrap" aria-hidden="true">
+      <div class="hl-ticker" id="hl-ticker">
+        <span>Tailoring <span class="hl-dot" style="--dot: #2b3fd6"></span> Cobalt</span>
+        <span>Streetwear <span class="hl-dot" style="--dot: #13807a"></span> Lagoon</span>
+        <span>Evening <span class="hl-dot" style="--dot: #c2378a"></span> Orchid</span>
+        <span>Knitwear <span class="hl-dot" style="--dot: #f0a21a"></span> Marigold</span>
+        <span>Resort <span class="hl-dot" style="--dot: #e46d2f"></span> Poppy</span>
+        <span>Denim <span class="hl-dot" style="--dot: #3a4a7a"></span> Indigo</span>
+        <span>Tailoring <span class="hl-dot" style="--dot: #2b3fd6"></span> Cobalt</span>
+        <span>Streetwear <span class="hl-dot" style="--dot: #13807a"></span> Lagoon</span>
+        <span>Evening <span class="hl-dot" style="--dot: #c2378a"></span> Orchid</span>
+        <span>Knitwear <span class="hl-dot" style="--dot: #f0a21a"></span> Marigold</span>
+        <span>Resort <span class="hl-dot" style="--dot: #e46d2f"></span> Poppy</span>
+        <span>Denim <span class="hl-dot" style="--dot: #3a4a7a"></span> Indigo</span>
+      </div>
+    </div>
+
+    <!-- 4 Six styles arches -->
+    <section class="hl-section" id="styles">
+      <div class="hl-section-head">
+        <h2>
+          <span class="mask-line"><span>Every style,</span></span>
+          <span class="mask-line"><span><em>one saturation</em></span></span>
+        </h2>
+        <p data-lines>Six arches, six moods — tailoring through denim, each dyed in the same Jaipur vats.</p>
+      </div>
+      <div class="hl-arches" id="hl-arches"></div>
+    </section>
+
+    <!-- 5 Wardrobe -->
+    <section class="hl-section hl-wardrobe" id="wardrobe">
+      <div class="hl-section-head">
+        <h2>
+          <span class="mask-line"><span>The wardrobe,</span></span>
+          <span class="mask-line"><span><em>in the round</em></span></span>
+        </h2>
+        <p data-lines>Drag the ring — scroll nudges it forward. The front piece reads its fabric and price.</p>
+      </div>
+      <div class="hl-wardrobe-tabs" role="tablist">
+        <button type="button" class="hl-wardrobe-tab is-active" data-style="T" style="--tab: #2b3fd6">Tailoring</button>
+        <button type="button" class="hl-wardrobe-tab" data-style="S" style="--tab: #13807a">Streetwear</button>
+        <button type="button" class="hl-wardrobe-tab" data-style="E" style="--tab: #c2378a">Evening</button>
+        <button type="button" class="hl-wardrobe-tab" data-style="K" style="--tab: #f0a21a">Knitwear</button>
+        <button type="button" class="hl-wardrobe-tab" data-style="R" style="--tab: #e46d2f">Resort</button>
+        <button type="button" class="hl-wardrobe-tab" data-style="D" style="--tab: #3a4a7a">Denim</button>
+      </div>
+      <div class="hl-wardrobe-stage" id="hl-wardrobe-stage">
+        <div class="hl-wardrobe-ring" id="hl-wardrobe-ring"></div>
+      </div>
+      <div class="hl-wardrobe-cap" id="hl-wardrobe-cap"></div>
+    </section>
+
+    <!-- 6 Style rails -->
+    <section class="hl-section" id="rails">
+      <div class="hl-section-head">
+        <h2><span class="mask-line"><span>Style <em>rails</em></span></span></h2>
+        <p data-lines>Horizontal rails per silhouette — hover to pause, drag to fling.</p>
+      </div>
+      <div class="hl-rails">
+        <div>
+          <div class="hl-rail-head"><span class="t-mono">Tailoring</span><span class="t-mono">4 pieces</span></div>
+          <div class="hl-rail-track-wrap"><div class="hl-rail-track" data-style="T"></div></div>
+        </div>
+        <div>
+          <div class="hl-rail-head"><span class="t-mono">Streetwear</span><span class="t-mono">4 pieces</span></div>
+          <div class="hl-rail-track-wrap"><div class="hl-rail-track" data-style="S"></div></div>
+        </div>
+        <div>
+          <div class="hl-rail-head"><span class="t-mono">Evening</span><span class="t-mono">4 pieces</span></div>
+          <div class="hl-rail-track-wrap"><div class="hl-rail-track" data-style="E"></div></div>
+        </div>
+        <div>
+          <div class="hl-rail-head"><span class="t-mono">Knitwear</span><span class="t-mono">4 pieces</span></div>
+          <div class="hl-rail-track-wrap"><div class="hl-rail-track" data-style="K"></div></div>
+        </div>
+        <div>
+          <div class="hl-rail-head"><span class="t-mono">Resort</span><span class="t-mono">4 pieces</span></div>
+          <div class="hl-rail-track-wrap"><div class="hl-rail-track" data-style="R"></div></div>
+        </div>
+        <div>
+          <div class="hl-rail-head"><span class="t-mono">Denim</span><span class="t-mono">4 pieces</span></div>
+          <div class="hl-rail-track-wrap"><div class="hl-rail-track" data-style="D"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 Lookbook -->
+    <section class="hl-lookbook-pin" id="lookbook">
+      <div class="hl-lookbook-track">
+        <article class="hl-look-panel">
+          <div>
+            <p class="hl-look-num">01</p>
+            <h2 class="t-cond">Cobalt structure</h2>
+            <p data-lines>Double-faced cashmere cut sharp, dyed in three dips until the blue reads almost electric.</p>
+          </div>
+          <div class="hl-look-frame" data-reveal="img">
+            <img src="./assets/look-01.jpg" alt="Look 01 cobalt tailoring" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hl-media-fallback',style:'--fb:#2b3fd6',textContent:'Look 01'}))" />
+          </div>
+        </article>
+        <article class="hl-look-panel">
+          <div>
+            <p class="hl-look-num">02</p>
+            <h2 class="t-cond">Evening orchid</h2>
+            <p data-lines>Bias slip in 19 momme silk — the hem moves like water under Jaipur streetlight.</p>
+          </div>
+          <div class="hl-look-frame" data-reveal="img">
+            <img src="./assets/look-02.jpg" alt="Look 02 evening orchid" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hl-media-fallback',style:'--fb:#c2378a',textContent:'Look 02'}))" />
+          </div>
+        </article>
+        <article class="hl-look-panel">
+          <div>
+            <p class="hl-look-num">03</p>
+            <h2 class="t-cond">Marigold knit</h2>
+            <p data-lines>Lambswool cardigan set, marigold from Bagru tagetes, paired with chalk alpaca.</p>
+          </div>
+          <div class="hl-look-frame" data-reveal="img">
+            <img src="./assets/look-03.jpg" alt="Look 03 marigold knit" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hl-media-fallback',style:'--fb:#f0a21a',textContent:'Look 03'}))" />
+          </div>
+        </article>
+        <article class="hl-look-panel">
+          <div>
+            <p class="hl-look-num">04</p>
+            <h2 class="t-cond">Lagoon fleece</h2>
+            <p data-lines>Brushed loop-back and fleece in lagoon green — streetwear washed in the same vat as tailoring.</p>
+          </div>
+          <div class="hl-look-frame" data-reveal="img">
+            <img src="./assets/look-04.jpg" alt="Look 04 lagoon streetwear" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hl-media-fallback',style:'--fb:#13807a',textContent:'Look 04'}))" />
+          </div>
+        </article>
+        <article class="hl-look-panel">
+          <div>
+            <p class="hl-look-num">05</p>
+            <h2 class="t-cond">Resort block</h2>
+            <p data-lines>Hand-block voile dress; six days per print run, forty-eight pieces then the screen rests.</p>
+          </div>
+          <div class="hl-look-frame" data-reveal="img">
+            <img src="./assets/look-05.jpg" alt="Look 05 resort block print" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hl-media-fallback',style:'--fb:#e46d2f',textContent:'Look 05'}))" />
+          </div>
+        </article>
+        <article class="hl-look-panel">
+          <div>
+            <p class="hl-look-num">06</p>
+            <h2 class="t-cond">Indigo denim</h2>
+            <p data-lines>14 oz selvedge overdyed cobalt on the trucker — raw edge, saturated seam.</p>
+          </div>
+          <div class="hl-look-frame" data-reveal="img">
+            <img src="./assets/look-06.jpg" alt="Look 06 indigo denim" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hl-media-fallback',style:'--fb:#3a4a7a',textContent:'Look 06'}))" />
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 8 Colour story -->
+    <section class="hl-section hl-colour-story" id="colour">
+      <div class="hl-colour-sticky">
+        <div class="hl-colour-roll"><div class="hl-colour-roll-inner" id="hl-colour-name">Cobalt</div></div>
+        <p class="hl-colour-recipe"><span id="hl-colour-ref">HL-04/01</span> · <span id="hl-colour-recipe-text">Indigo vat, 3 dips</span></p>
+      </div>
+      <div class="hl-section-head">
+        <h2><span class="mask-line"><span>One dye <em>pot.</em></span></span></h2>
+      </div>
+      <div class="hl-swatches">
+        <article class="hl-swatch" id="swatch-cobalt" style="background: #2b3fd6; color: #eceef2">
+          <p class="t-mono">Cobalt · HL-04/01</p>
+          <div class="hl-swatch-photo" data-reveal="img">
+            <img src="./assets/dye-cobalt.jpg" alt="Cobalt dye swatch" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hl-media-fallback',style:'--fb:#2b3fd6',textContent:'Dye'}))" />
+          </div>
+          <p class="t-price" data-swatch-price></p>
+          <div class="hl-swatch-notes"><p>Base: Indigo vat</p><p>Fix: Alum mordant</p><p>Fastness: Grade 4–5 wash</p></div>
+        </article>
+        <article class="hl-swatch" id="swatch-marigold" style="background: #f0a21a; color: #16141a">
+          <p class="t-mono">Marigold · HL-04/02</p>
+          <div class="hl-swatch-photo" data-reveal="img">
+            <img src="./assets/dye-marigold.jpg" alt="Marigold dye swatch" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hl-media-fallback',style:'--fb:#f0a21a',textContent:'Dye'}))" />
+          </div>
+          <div class="hl-swatch-notes"><p>Base: Tagetes</p><p>Fix: Alum</p><p>Fastness: Grade 3–4 light</p></div>
+        </article>
+        <article class="hl-swatch" id="swatch-orchid" style="background: #c2378a; color: #eceef2">
+          <p class="t-mono">Orchid · HL-04/03</p>
+          <div class="hl-swatch-photo" data-reveal="img">
+            <img src="./assets/dye-orchid.jpg" alt="Orchid dye swatch" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hl-media-fallback',style:'--fb:#c2378a',textContent:'Dye'}))" />
+          </div>
+          <div class="hl-swatch-notes"><p>Base: Lac</p><p>Fix: Copper mordant</p><p>Fastness: Grade 4 wash</p></div>
+        </article>
+        <article class="hl-swatch" id="swatch-lagoon" style="background: #13807a; color: #eceef2">
+          <p class="t-mono">Lagoon · HL-04/04</p>
+          <div class="hl-swatch-photo" data-reveal="img">
+            <img src="./assets/dye-lagoon.jpg" alt="Lagoon dye swatch" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hl-media-fallback',style:'--fb:#13807a',textContent:'Dye'}))" />
+          </div>
+          <div class="hl-swatch-notes"><p>Base: Pomegranate + indigo</p><p>Fix: Alum</p><p>Fastness: Grade 4–5</p></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 9 Shop -->
+    <section class="hl-section" id="shop-grid">
+      <div class="hl-section-head">
+        <h2><span class="mask-line"><span>Shop the <em>drop</em></span></span></h2>
+      </div>
+      <div class="hl-shop-controls">
+        <div class="hl-shop-tabs" role="tablist">
+          <button type="button" class="hl-shop-tab is-active" data-filter="all">All</button>
+          <button type="button" class="hl-shop-tab" data-filter="T">Tailoring</button>
+          <button type="button" class="hl-shop-tab" data-filter="S">Streetwear</button>
+          <button type="button" class="hl-shop-tab" data-filter="E">Evening</button>
+          <button type="button" class="hl-shop-tab" data-filter="K">Knitwear</button>
+          <button type="button" class="hl-shop-tab" data-filter="R">Resort</button>
+          <button type="button" class="hl-shop-tab" data-filter="D">Denim</button>
+        </div>
+        <div class="hl-shop-meta">
+          <label class="t-mono">
+            Sort
+            <select id="hl-shop-sort" aria-label="Sort products">
+              <option value="featured">Featured</option>
+              <option value="price-asc">Price low–high</option>
+              <option value="price-desc">Price high–low</option>
+              <option value="az">A–Z</option>
+            </select>
+          </label>
+          <span id="hl-shop-count">Showing 12 of 24 pieces</span>
+          <button type="button" class="hl-btn-ghost" id="hl-shop-toggle">Show all 24 pieces</button>
+        </div>
+      </div>
+      <div class="hl-shop-grid" id="hl-shop-grid"></div>
+    </section>
+
+    <!-- 10 Film band -->
+    <section class="hl-film-band" aria-label="Dye yard film">
+      <div class="hl-film-frame" data-reveal="img">
+        <video muted loop playsinline>
+          <source src="./assets/dye-yard.webm" type="video/webm" />
+          <source src="./assets/dye-yard.mp4" type="video/mp4" />
+        </video>
+        <div class="hl-media-fallback" style="--fb: var(--lagoon); min-height: 240px">Dye yard</div>
+      </div>
+    </section>
+
+    <!-- 11 Atelier -->
+    <section class="hl-section" id="atelier">
+      <div class="hl-atelier-grid">
+        <div class="hl-atelier-photo" data-reveal="img">
+          <img src="./assets/atelier.jpg" alt="Hueline atelier in Jaipur" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'hl-media-fallback',style:'--fb:#16141a',textContent:'Atelier'}))" />
+        </div>
+        <div>
+          <div class="hl-section-head">
+            <h2>
+              <span class="mask-line"><span>Slow colour,</span></span>
+              <span class="mask-line"><span><em>four generations</em></span></span>
+            </h2>
+            <p data-lines>Made by people who have done it for four generations — mulberry silk, hand block, small dye lots.</p>
+          </div>
+          <div class="hl-stats">
+            <div>
+              <p class="hl-stat-num"><span data-count="19">19</span></p>
+              <p class="hl-stat-label">Momme weight of our mulberry silk</p>
+            </div>
+            <div>
+              <p class="hl-stat-num"><span data-count="48">48</span></p>
+              <p class="hl-stat-label">Pieces cut per colourway, then the dye lot closes</p>
+            </div>
+            <div>
+              <p class="hl-stat-num"><span data-count="6">6</span></p>
+              <p class="hl-stat-label">Days for one hand-block print run</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 Footer mount -->
+    <div id="hl-footer-mount"></div>
+
+    <!-- Overlays -->
+    <div class="hl-overlay" id="hl-overlay-backdrop" data-close-overlay aria-hidden="true"></div>
+
+    <aside class="hl-drawer" id="hl-drawer" aria-hidden="true" aria-label="Bag and saved">
+      <div class="hl-drawer-head">
+        <div class="hl-drawer-tabs">
+          <button type="button" class="hl-drawer-tab is-active" data-tab="bag">Bag</button>
+          <button type="button" class="hl-drawer-tab" data-tab="saved">Saved</button>
+        </div>
+        <button type="button" class="t-mono" data-close="drawer">Close</button>
+      </div>
+      <div class="hl-drawer-body" data-drawer-panel="bag"></div>
+      <div class="hl-drawer-body" data-drawer-panel="saved" hidden></div>
+    </aside>
+
+    <div class="hl-search-panel" id="hl-search" aria-hidden="true">
+      <button type="button" class="t-mono" data-close="search" style="margin-bottom: 1rem">Close</button>
+      <label class="sr-only" for="hl-search-input">Search collection</label>
+      <input class="hl-search-input" id="hl-search-input" type="search" placeholder="Search pieces…" autocomplete="off" />
+      <div class="hl-search-results" id="hl-search-results"></div>
+    </div>
+
+    <nav class="hl-mobile-menu" id="hl-mobile-menu" aria-hidden="true">
+      <a href="#wardrobe">Wardrobe</a>
+      <a href="#lookbook">Lookbook</a>
+      <a href="#colour">Colour</a>
+      <a href="#shop-grid">Shop</a>
+    </nav>
+
+    <div class="hl-qv" id="hl-qv" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Quick view">
+      <button type="button" class="hl-qv-close t-mono" data-close="qv">Close</button>
+      <div id="hl-qv-body"></div>
+    </div>
+
+    <script src="catalog.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+    <script src="ui.js"></script>
+    <script>
+      document.querySelectorAll("[data-swatch-price]").forEach(function (el, i) {
+        var codes = ["HL-T-01", "HL-K-01", "HL-E-01", "HL-S-02"];
+        if (window.HL) el.textContent = HL.byCode(codes[i]).name + " — " + HL.formatPrice(HL.byCode(codes[i]).price);
+      });
+    </script>
+  </body>
+</html>

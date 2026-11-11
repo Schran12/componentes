@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "floating-media-article",
+  "kind": "component",
+  "title": "FloatingMediaArticle",
+  "description": "Artigo com imagem flutuante (texto contorna) e trecho expansível \"ler mais\".",
+  "meta": {
+    "category": "content",
+    "role": "section.content",
+    "placement": "inside-main",
+    "stage": "sobre",
+    "topics": [
+      "about"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/content/FloatingMediaArticle",
+    "tags": [
+      "artigo",
+      "texto",
+      "produto",
+      "imagem flutuante",
+      "template-next"
+    ],
+    "variants": [
+      "left",
+      "right",
+      "ler mais",
+      "glow",
+      "industrial"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "image",
+        "type": "{ src: string; alt: string }",
+        "description": "Imagem.",
+        "required": true
+      },
+      {
+        "name": "paragraphs",
+        "type": "readonly string[]",
+        "description": "Parágrafos.",
+        "required": true
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "description": "Eyebrow.",
+        "required": false
+      },
+      {
+        "name": "caption",
+        "type": "string",
+        "description": "Legenda.",
+        "required": false
+      },
+      {
+        "name": "imagePosition",
+        "type": "'left' | 'right'",
+        "description": "Lado da imagem.",
+        "required": false,
+        "default": "'right'"
+      },
+      {
+        "name": "more",
+        "type": "{ paragraphs; collapsedLabel?; expandedLabel? }",
+        "description": "Conteúdo expansível.",
+        "required": false
+      },
+      {
+        "name": "tone",
+        "type": "'glow' | 'industrial' | 'industrial-dark'",
+        "description": "Tema visual: glow (escuro rosa/roxo), industrial (claro âmbar) ou industrial-dark.",
+        "required": false,
+        "default": "'glow'"
+      }
+    ],
+    "example": "<FloatingMediaArticle title=\"Sobre o produto\" image={{ src: '/images/p.webp', alt: '' }} paragraphs={['Lorem ipsum.']} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/FloatingMediaArticle.tsx",
+      "type": "component",
+      "target": "src/components/library/content/FloatingMediaArticle.tsx",
+      "content": "import Image from 'next/image'\r\n\r\nimport { ExpandableTextBox } from '@/components/library/feedback/ExpandableTextBox'\r\nimport { EyebrowHeading } from '@/components/library/primitives/EyebrowHeading'\r\nimport { getAccentTone, type AccentTone } from '@/components/library/primitives/accentTones'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type FloatingMediaArticleProps = {\r\n  title: string\r\n  image: { src: string; alt: string }\r\n  paragraphs: readonly string[]\r\n  eyebrow?: string\r\n  caption?: string\r\n  imagePosition?: 'left' | 'right'\r\n  more?: { paragraphs: readonly string[]; collapsedLabel?: string; expandedLabel?: string }\r\n  tone?: AccentTone\r\n  className?: string\r\n}\r\n\r\n/** Artigo editorial com figura flutuante contornada pelo texto e bloco \"leia mais\" opcional. */\r\nexport function FloatingMediaArticle({\r\n  title,\r\n  image,\r\n  paragraphs,\r\n  eyebrow,\r\n  caption,\r\n  imagePosition = 'right',\r\n  more,\r\n  tone = 'glow',\r\n  className,\r\n}: FloatingMediaArticleProps) {\r\n  const t = getAccentTone(tone)\r\n\r\n  return (\r\n    <section className={cn(t.section, className)}>\r\n      <div className=\"container py-14 lg:py-16\">\r\n        <EyebrowHeading tone={tone} eyebrow={eyebrow} title={title} />\r\n\r\n        <div className=\"mt-8\">\r\n          <figure\r\n            className={cn(\r\n              'relative mb-5 w-full overflow-hidden border sm:w-[46%] lg:w-[42%]',\r\n              imagePosition === 'right'\r\n                ? 'sm:float-right sm:ml-8 lg:ml-10'\r\n                : 'sm:float-left sm:mr-8 lg:mr-10',\r\n              t.border,\r\n              tone === 'glow' && 'rounded-xl',\r\n            )}\r\n          >\r\n            <div className={cn('relative aspect-[4/3] w-full', t.panel)}>\r\n              <Image\r\n                src={image.src}\r\n                alt={image.alt}\r\n                fill\r\n                sizes=\"(max-width: 640px) 100vw, 46vw\"\r\n                className=\"object-cover\"\r\n              />\r\n            </div>\r\n            {caption ? (\r\n              <figcaption\r\n                className={cn(\r\n                  'border-t px-4 py-3 text-[0.65rem] uppercase tracking-[0.2em]',\r\n                  t.border,\r\n                  t.panel,\r\n                  t.muted,\r\n                )}\r\n              >\r\n                {caption}\r\n              </figcaption>\r\n            ) : null}\r\n          </figure>\r\n\r\n          {paragraphs.map((paragraph, index) => (\r\n            <p\r\n              key={index}\r\n              className={cn('mb-4 text-base leading-relaxed sm:text-[1.05rem]', t.body)}\r\n            >\r\n              {paragraph}\r\n            </p>\r\n          ))}\r\n\r\n          <div className=\"clear-both\" />\r\n\r\n          {more ? (\r\n            <ExpandableTextBox\r\n              tone={tone}\r\n              paragraphs={more.paragraphs}\r\n              collapsedLabel={more.collapsedLabel}\r\n              expandedLabel={more.expandedLabel}\r\n              className=\"mt-8\"\r\n            />\r\n          ) : null}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/feedback/ExpandableTextBox.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/ExpandableTextBox.tsx",
+      "content": "'use client'\r\n\r\nimport { useId, useState } from 'react'\r\nimport { ChevronDown } from 'lucide-react'\r\n\r\nimport { getAccentTone, type AccentTone } from '@/components/library/primitives/accentTones'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ExpandableTextBoxProps = {\r\n  paragraphs: readonly string[]\r\n  collapsedLabel?: string\r\n  expandedLabel?: string\r\n  defaultOpen?: boolean\r\n  tone?: AccentTone\r\n  className?: string\r\n}\r\n\r\n/** Caixa \"leia mais\" que expande parágrafos extras com transição de altura. */\r\nexport function ExpandableTextBox({\r\n  paragraphs,\r\n  collapsedLabel = 'Ler mais',\r\n  expandedLabel = 'Mostrar menos',\r\n  defaultOpen = false,\r\n  tone = 'glow',\r\n  className,\r\n}: ExpandableTextBoxProps) {\r\n  const t = getAccentTone(tone)\r\n  const [open, setOpen] = useState(defaultOpen)\r\n  const panelId = useId()\r\n\r\n  return (\r\n    <div className={cn('border', t.border, t.panel, tone === 'glow' && 'rounded-md', className)}>\r\n      <button\r\n        type=\"button\"\r\n        onClick={() => setOpen((value) => !value)}\r\n        className={cn(\r\n          'flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors sm:px-6',\r\n          t.panelHover,\r\n          t.focus,\r\n        )}\r\n        aria-expanded={open}\r\n        aria-controls={panelId}\r\n      >\r\n        <span className={cn('text-sm font-semibold tracking-wide', t.strong)}>\r\n          {open ? expandedLabel : collapsedLabel}\r\n        </span>\r\n        <ChevronDown\r\n          className={cn(\r\n            'h-5 w-5 shrink-0 transition-transform duration-300',\r\n            t.accent,\r\n            open && 'rotate-180',\r\n          )}\r\n          aria-hidden\r\n        />\r\n      </button>\r\n      <div\r\n        id={panelId}\r\n        className={cn(\r\n          'grid transition-all duration-500 ease-out',\r\n          open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',\r\n        )}\r\n      >\r\n        <div className=\"overflow-hidden\" aria-hidden={!open}>\r\n          <div\r\n            className={cn(\r\n              'space-y-4 border-t px-5 py-5 text-sm leading-relaxed sm:px-6 sm:py-6 sm:text-base',\r\n              t.border,\r\n              t.body,\r\n            )}\r\n          >\r\n            {paragraphs.map((paragraph, index) => (\r\n              <p key={index}>{paragraph}</p>\r\n            ))}\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/accentTones.ts",
+      "type": "component",
+      "target": "src/components/library/primitives/accentTones.ts",
+      "content": "/**\r\n * Temas visuais compartilhados pelos componentes de origem dos templates Next.\r\n * - glow: fundo escuro com gradiente rosa/roxo.\r\n * - industrial: fundo claro com destaque âmbar.\r\n * - industrial-dark: fundo slate escuro com destaque âmbar.\r\n */\r\nexport type AccentTone = 'glow' | 'industrial' | 'industrial-dark'\r\n\r\nexport type AccentToneTokens = {\r\n  section: string\r\n  alt: string\r\n  panel: string\r\n  panelHover: string\r\n  border: string\r\n  divide: string\r\n  heading: string\r\n  strong: string\r\n  body: string\r\n  muted: string\r\n  accent: string\r\n  line: string\r\n  fill: string\r\n  onFill: string\r\n  iconButton: string\r\n  radius: string\r\n  overlayFrom: string\r\n  chip: string\r\n  focus: string\r\n  hoverLift: string\r\n  input: string\r\n  error: string\r\n}\r\n\r\nexport const accentTones: Record<AccentTone, AccentToneTokens> = {\r\n  glow: {\r\n    section: 'bg-[#121212] text-[#c1c1c1]',\r\n    alt: 'bg-[#0e0e0e] text-[#c1c1c1]',\r\n    panel: 'bg-[#221d2f]',\r\n    panelHover: 'hover:bg-[#2a2339]',\r\n    border: 'border-[#493849]',\r\n    divide: 'divide-[#493849]',\r\n    heading:\r\n      'w-fit bg-gradient-to-r from-[#c642a5] to-[#7c39cf] bg-clip-text font-normal text-transparent',\r\n    strong: 'text-white',\r\n    body: 'text-[#c1c1c1]',\r\n    muted: 'text-[#c1c1c1]/75',\r\n    accent: 'text-[#ffb0eb]',\r\n    line: 'bg-gradient-to-r from-[#c642a5] to-[#7c39cf]',\r\n    fill: 'bg-gradient-to-br from-[#c642a5] to-[#7c39cf]',\r\n    onFill: 'text-white',\r\n    iconButton:\r\n      'rounded-full border border-[#493849] text-white hover:border-[#c642a5] hover:bg-[#c642a5]',\r\n    radius: 'rounded-2xl',\r\n    overlayFrom: 'from-[#121212]',\r\n    chip: 'border-[#493849] bg-[#121212]/70',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c642a5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121212]',\r\n    hoverLift:\r\n      'hover:-translate-y-1 hover:border-[#c642a5]/50 hover:shadow-[0_12px_40px_rgba(198,66,165,0.18)]',\r\n    input:\r\n      'rounded-md border-[#493849] bg-[#221d2f] text-white placeholder:text-[#c1c1c1]/70 focus-visible:ring-[#c642a5]',\r\n    error: 'text-red-400',\r\n  },\r\n  industrial: {\r\n    section: 'bg-slate-50 text-slate-600',\r\n    alt: 'bg-white text-slate-600',\r\n    panel: 'bg-white',\r\n    panelHover: 'hover:bg-slate-50',\r\n    border: 'border-slate-200',\r\n    divide: 'divide-slate-200',\r\n    heading: 'font-semibold uppercase tracking-wide text-slate-900',\r\n    strong: 'text-slate-900',\r\n    body: 'text-slate-600',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-600',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-slate-300 text-slate-700 hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/15 bg-slate-950/50',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-amber-500',\r\n    error: 'text-red-600',\r\n  },\r\n  'industrial-dark': {\r\n    section: 'bg-slate-950 text-slate-400',\r\n    alt: 'bg-slate-900 text-slate-400',\r\n    panel: 'bg-slate-900',\r\n    panelHover: 'hover:bg-white/5',\r\n    border: 'border-white/10',\r\n    divide: 'divide-white/10',\r\n    heading: 'font-semibold uppercase tracking-wide text-white',\r\n    strong: 'text-white',\r\n    body: 'text-slate-400',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-500',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-white/20 text-white hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/10 bg-slate-950/40',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-white/10 bg-slate-900 text-white placeholder:text-slate-500 focus-visible:ring-amber-500',\r\n    error: 'text-red-400',\r\n  },\r\n}\r\n\r\nexport function getAccentTone(tone: AccentTone = 'glow'): AccentToneTokens {\r\n  return accentTones[tone]\r\n}\r\n\r\nexport function padIndex(index: number): string {\r\n  return String(index + 1).padStart(2, '0')\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/EyebrowHeading.tsx",
+      "type": "component",
+      "target": "src/components/library/primitives/EyebrowHeading.tsx",
+      "content": "import type { ReactNode } from 'react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nimport { getAccentTone, type AccentTone } from './accentTones'\r\n\r\nexport type EyebrowHeadingProps = {\r\n  title: ReactNode\r\n  eyebrow?: ReactNode\r\n  description?: ReactNode\r\n  tone?: AccentTone\r\n  align?: 'left' | 'center'\r\n  layout?: 'stacked' | 'split'\r\n  size?: 'md' | 'lg'\r\n  titleAs?: 'h1' | 'h2' | 'h3'\r\n  action?: ReactNode\r\n  className?: string\r\n}\r\n\r\nconst titleSizes = {\r\n  md: 'text-3xl leading-[1.15] sm:text-4xl lg:text-[2.5rem]',\r\n  lg: 'text-3xl leading-[1.12] sm:text-4xl md:text-5xl lg:text-[3.25rem]',\r\n}\r\n\r\n/** Cabeçalho de seção com linha de destaque, título temático e descrição opcional ao lado. */\r\nexport function EyebrowHeading({\r\n  title,\r\n  eyebrow,\r\n  description,\r\n  tone = 'glow',\r\n  align = 'left',\r\n  layout = 'stacked',\r\n  size = 'md',\r\n  titleAs: Title = 'h2',\r\n  action,\r\n  className,\r\n}: EyebrowHeadingProps) {\r\n  const t = getAccentTone(tone)\r\n  const centered = align === 'center'\r\n  const split = layout === 'split' && !centered\r\n\r\n  const line = <span className={cn('h-px w-8 shrink-0', t.line)} aria-hidden />\r\n\r\n  return (\r\n    <div\r\n      className={cn(\r\n        split && 'flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between',\r\n        centered && 'mx-auto max-w-3xl text-center',\r\n        className,\r\n      )}\r\n    >\r\n      <div className={cn(split ? 'max-w-2xl' : centered ? '' : 'max-w-3xl')}>\r\n        {eyebrow ? (\r\n          <div className={cn('mb-4 flex items-center gap-3', centered && 'justify-center')}>\r\n            {line}\r\n            <span\r\n              className={cn('text-[0.65rem] font-medium uppercase tracking-[0.28em]', t.accent)}\r\n            >\r\n              {eyebrow}\r\n            </span>\r\n            {centered ? line : null}\r\n          </div>\r\n        ) : null}\r\n        <Title className={cn(t.heading, titleSizes[size], centered && 'mx-auto')}>{title}</Title>\r\n        {!split && description ? (\r\n          <p\r\n            className={cn(\r\n              'mt-5 max-w-2xl text-base leading-relaxed md:text-lg',\r\n              t.body,\r\n              centered && 'mx-auto',\r\n            )}\r\n          >\r\n            {description}\r\n          </p>\r\n        ) : null}\r\n        {!split && action ? (\r\n          <div className={cn('mt-8 flex flex-wrap gap-3', centered && 'justify-center')}>\r\n            {action}\r\n          </div>\r\n        ) : null}\r\n      </div>\r\n      {split && (description || action) ? (\r\n        <div className=\"max-w-md space-y-5\">\r\n          {description ? (\r\n            <p className={cn('text-sm leading-relaxed lg:text-base', t.body)}>{description}</p>\r\n          ) : null}\r\n          {action}\r\n        </div>\r\n      ) : null}\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

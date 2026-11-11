@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "contact-card",
+  "kind": "component",
+  "title": "ContactCard",
+  "description": "Card para canal de contato, opcionalmente clicável e com ícone.",
+  "meta": {
+    "category": "forms",
+    "role": "section.contact",
+    "placement": "end-of-main",
+    "stage": "contato",
+    "topics": [
+      "contact",
+      "cards"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/forms/ContactCard",
+    "tags": [
+      "contato",
+      "card",
+      "telefone",
+      "email"
+    ],
+    "variants": [
+      "link",
+      "informativo",
+      "com ícone"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Rótulo.",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Valor.",
+        "required": true
+      },
+      {
+        "name": "href",
+        "type": "string",
+        "description": "Link opcional.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "icon",
+        "type": "LucideIcon",
+        "description": "Ícone.",
+        "required": false
+      }
+    ],
+    "example": "<ContactCard title=\"E-mail\" value=\"contato@acme.com\" href=\"mailto:contato@acme.com\" />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/forms/ContactCard.tsx",
+      "type": "component",
+      "target": "src/components/library/forms/ContactCard.tsx",
+      "content": "import type { LucideIcon } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ContactCardProps = {\r\n  title: string\r\n  value: string\r\n  href?: string\r\n  description?: string\r\n  icon?: LucideIcon\r\n  className?: string\r\n}\r\n\r\nexport function ContactCard({\r\n  title,\r\n  value,\r\n  href,\r\n  description,\r\n  icon: Icon,\r\n  className,\r\n}: ContactCardProps) {\r\n  const content = (\r\n    <>\r\n      {Icon ? (\r\n        <span className=\"flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary\">\r\n          <Icon className=\"h-5 w-5\" aria-hidden=\"true\" />\r\n        </span>\r\n      ) : null}\r\n      <span className=\"min-w-0\">\r\n        <span className=\"block text-sm font-medium text-muted-foreground\">{title}</span>\r\n        <span className=\"mt-1 block font-semibold [overflow-wrap:anywhere]\">{value}</span>\r\n        {description ? (\r\n          <span className=\"mt-1 block text-sm text-muted-foreground\">{description}</span>\r\n        ) : null}\r\n      </span>\r\n    </>\r\n  )\r\n\r\n  return href ? (\r\n    <a\r\n      href={href}\r\n      className={cn(\r\n        'flex min-w-0 gap-4 rounded-2xl border bg-card p-5 transition hover:border-primary/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',\r\n        className,\r\n      )}\r\n    >\r\n      {content}\r\n    </a>\r\n  ) : (\r\n    <div className={cn('flex min-w-0 gap-4 rounded-2xl border bg-card p-5', className)}>\r\n      {content}\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

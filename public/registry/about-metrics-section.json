@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "about-metrics-section",
+  "kind": "component",
+  "title": "AboutMetricsSection",
+  "description": "Seção institucional com narrativa longa, mídia e métricas de trajetória.",
+  "meta": {
+    "category": "content",
+    "role": "section.about",
+    "placement": "inside-main",
+    "stage": "sobre",
+    "topics": [
+      "about"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/content/AboutMetricsSection",
+    "tags": [
+      "sobre",
+      "métricas",
+      "agência",
+      "história"
+    ],
+    "variants": [
+      "mídia à esquerda",
+      "mídia à direita",
+      "visual abstrato"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "paragraphs",
+        "type": "readonly string[]",
+        "description": "Parágrafos da narrativa.",
+        "required": true
+      },
+      {
+        "name": "metrics",
+        "type": "readonly { value: string; label: string }[]",
+        "description": "Métricas.",
+        "required": true
+      },
+      {
+        "name": "image",
+        "type": "{ src: string; alt: string }",
+        "description": "Imagem opcional.",
+        "required": false
+      },
+      {
+        "name": "mediaPosition",
+        "type": "'left' | 'right'",
+        "description": "Posição da mídia.",
+        "required": false,
+        "default": "'right'"
+      },
+      {
+        "name": "action",
+        "type": "{ label: string; href: string }",
+        "description": "Ação opcional.",
+        "required": false
+      }
+    ],
+    "example": "<AboutMetricsSection title=\"Nossa história\" paragraphs={['Lorem ipsum.']} metrics={[{ value: '20+', label: 'Anos' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/AboutMetricsSection.tsx",
+      "type": "component",
+      "target": "src/components/library/content/AboutMetricsSection.tsx",
+      "content": "import Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { ArrowUpRight } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type AboutMetricsSectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  paragraphs: readonly string[]\r\n  metrics: readonly { value: string; label: string }[]\r\n  image?: { src: string; alt: string }\r\n  action?: { label: string; href: string }\r\n  mediaPosition?: 'left' | 'right'\r\n  className?: string\r\n}\r\n\r\nexport function AboutMetricsSection({\r\n  eyebrow,\r\n  title,\r\n  paragraphs,\r\n  metrics,\r\n  image,\r\n  action,\r\n  mediaPosition = 'right',\r\n  className,\r\n}: AboutMetricsSectionProps) {\r\n  return (\r\n    <section className={cn('overflow-hidden bg-white py-20 md:py-28', className)}>\r\n      <div className=\"container grid items-center gap-14 lg:grid-cols-[1.12fr_.88fr] lg:gap-20\">\r\n        <div className={cn(mediaPosition === 'left' && 'lg:order-2')}>\r\n          {eyebrow ? (\r\n            <p className=\"text-xs font-bold uppercase tracking-[0.24em] text-[#752871]\">\r\n              {eyebrow}\r\n            </p>\r\n          ) : null}\r\n          <h2 className=\"mt-4 text-3xl font-bold tracking-tight text-[#10100e] md:text-5xl\">\r\n            {title}\r\n          </h2>\r\n          <div className=\"mt-7 space-y-5\">\r\n            {paragraphs.map((paragraph, index) => (\r\n              <p key={`${paragraph.slice(0, 24)}-${index}`} className=\"leading-8 text-[#5a5560]\">\r\n                {paragraph}\r\n              </p>\r\n            ))}\r\n          </div>\r\n\r\n          <dl className=\"mt-10 grid grid-cols-2 gap-6 border-y border-[#e8e4ea] py-7 sm:grid-cols-3\">\r\n            {metrics.slice(0, 3).map((metric) => (\r\n              <div key={`${metric.value}-${metric.label}`}>\r\n                <dd className=\"text-3xl font-bold text-[#752871] md:text-4xl\">{metric.value}</dd>\r\n                <dt className=\"mt-1 text-xs uppercase tracking-wider text-[#7a7480]\">\r\n                  {metric.label}\r\n                </dt>\r\n              </div>\r\n            ))}\r\n          </dl>\r\n\r\n          {action ? (\r\n            <Link\r\n              href={action.href}\r\n              className=\"mt-8 inline-flex items-center gap-2 font-semibold text-[#752871]\"\r\n            >\r\n              {action.label}\r\n              <ArrowUpRight className=\"h-4 w-4\" aria-hidden />\r\n            </Link>\r\n          ) : null}\r\n        </div>\r\n\r\n        <div className={cn('relative min-h-[520px]', mediaPosition === 'left' && 'lg:order-1')}>\r\n          <div className=\"absolute inset-4 rotate-3 rounded-[3rem] bg-[#752871]/15\" />\r\n          <figure className=\"absolute inset-0 overflow-hidden rounded-[3rem] bg-[#3f2644] shadow-xl\">\r\n            {image ? (\r\n              <Image\r\n                src={image.src}\r\n                alt={image.alt}\r\n                fill\r\n                className=\"object-cover\"\r\n                sizes=\"(min-width: 1024px) 40vw, 90vw\"\r\n              />\r\n            ) : (\r\n              <div className=\"relative h-full overflow-hidden\">\r\n                <span className=\"absolute -left-16 top-12 h-72 w-72 rounded-[45%_55%_40%_60%] bg-[#752871]\" />\r\n                <span className=\"absolute -right-12 bottom-10 h-64 w-64 rounded-[60%_40%] bg-[#9b4b96]\" />\r\n                <span className=\"absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full border-[24px] border-white/20\" />\r\n              </div>\r\n            )}\r\n          </figure>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

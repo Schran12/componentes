@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "conversational-workflow-section",
+  "kind": "component",
+  "title": "ConversationalWorkflowSection",
+  "description": "Fluxo de trabalho com IA apresentado como conversa, etapas e ideias acionáveis.",
+  "meta": {
+    "category": "content",
+    "role": "section.content",
+    "placement": "inside-main",
+    "stage": null,
+    "topics": [],
+    "clientComponent": false,
+    "importPath": "@/components/library/content/ConversationalWorkflowSection",
+    "tags": [
+      "social media",
+      "ia",
+      "agentes",
+      "chat",
+      "workflow"
+    ],
+    "variants": [
+      "com etapas",
+      "uma ou duas ações",
+      "conversa customizada"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": true
+      },
+      {
+        "name": "prompt",
+        "type": "string",
+        "description": "Mensagem do usuário.",
+        "required": false
+      },
+      {
+        "name": "response",
+        "type": "string",
+        "description": "Resposta do assistente.",
+        "required": false
+      },
+      {
+        "name": "steps",
+        "type": "readonly WorkflowStep[]",
+        "description": "Etapas do fluxo.",
+        "required": false
+      }
+    ],
+    "example": "<ConversationalWorkflowSection title=\"Planeje por conversa\" description=\"Lorem ipsum.\" />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/ConversationalWorkflowSection.tsx",
+      "type": "component",
+      "target": "src/components/library/content/ConversationalWorkflowSection.tsx",
+      "content": "import Link from 'next/link'\r\nimport { ArrowRight, Bot, CheckCircle2, Send, Sparkles } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type WorkflowStep = {\r\n  label: string\r\n  description: string\r\n}\r\n\r\nexport type ConversationalWorkflowSectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description: string\r\n  prompt?: string\r\n  response?: string\r\n  steps?: readonly WorkflowStep[]\r\n  primaryAction?: { label: string; href: string }\r\n  secondaryAction?: { label: string; href: string }\r\n  className?: string\r\n}\r\n\r\nexport function ConversationalWorkflowSection({\r\n  eyebrow,\r\n  title,\r\n  description,\r\n  prompt = 'Analise meu conteúdo recente e sugira o próximo plano editorial.',\r\n  response = 'Encontrei os formatos com melhor desempenho e preparei novas ideias para sua fila.',\r\n  steps = [],\r\n  primaryAction,\r\n  secondaryAction,\r\n  className,\r\n}: ConversationalWorkflowSectionProps) {\r\n  return (\r\n    <section className={cn('overflow-hidden bg-[#1b1b1b] py-20 text-white md:py-28', className)}>\r\n      <div className=\"container grid items-center gap-14 lg:grid-cols-[.88fr_1.12fr]\">\r\n        <div>\r\n          {eyebrow ? <p className=\"text-sm font-bold text-[#f4c95d]\">{eyebrow}</p> : null}\r\n          <h2 className=\"mt-5 text-4xl font-bold tracking-[-0.04em] md:text-6xl\">{title}</h2>\r\n          <p className=\"mt-6 max-w-xl text-lg leading-8 text-white/65\">{description}</p>\r\n\r\n          {steps.length ? (\r\n            <ol className=\"mt-9 grid gap-4\">\r\n              {steps.slice(0, 3).map((step, index) => (\r\n                <li key={`${step.label}-${index}`} className=\"flex gap-4\">\r\n                  <span className=\"flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f4c95d] text-xs font-black text-[#1b1b1b]\">\r\n                    {index + 1}\r\n                  </span>\r\n                  <div>\r\n                    <h3 className=\"font-semibold\">{step.label}</h3>\r\n                    <p className=\"mt-1 text-sm leading-6 text-white/50\">{step.description}</p>\r\n                  </div>\r\n                </li>\r\n              ))}\r\n            </ol>\r\n          ) : null}\r\n\r\n          <div className=\"mt-9 flex flex-wrap gap-4\">\r\n            {primaryAction ? (\r\n              <Link\r\n                href={primaryAction.href}\r\n                className=\"inline-flex items-center gap-2 rounded-xl bg-[#f4c95d] px-5 py-3 text-sm font-bold text-[#1b1b1b] transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white\"\r\n              >\r\n                {primaryAction.label}\r\n                <ArrowRight className=\"h-4 w-4\" aria-hidden />\r\n              </Link>\r\n            ) : null}\r\n            {secondaryAction ? (\r\n              <Link\r\n                href={secondaryAction.href}\r\n                className=\"inline-flex items-center gap-2 px-3 py-3 text-sm font-bold text-white transition hover:text-[#f4c95d] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white\"\r\n              >\r\n                {secondaryAction.label}\r\n              </Link>\r\n            ) : null}\r\n          </div>\r\n        </div>\r\n\r\n        <div className=\"relative\">\r\n          <div aria-hidden className=\"absolute -inset-10 rounded-full bg-[#2f6fed]/30 blur-3xl\" />\r\n          <div className=\"relative rounded-[2rem] border-2 border-white/20 bg-[#262626] p-4 shadow-2xl sm:p-6\">\r\n            <div className=\"flex items-center gap-3 border-b border-white/10 pb-4\">\r\n              <span className=\"flex h-10 w-10 items-center justify-center rounded-xl bg-[#2f6fed]\">\r\n                <Bot className=\"h-5 w-5\" aria-hidden />\r\n              </span>\r\n              <div>\r\n                <p className=\"text-sm font-bold\">Assistente de conteúdo</p>\r\n                <p className=\"text-xs text-white/45\">Dados e publicação conectados</p>\r\n              </div>\r\n            </div>\r\n\r\n            <div className=\"mt-6 space-y-5\">\r\n              <div className=\"ml-auto max-w-[88%] rounded-2xl rounded-br-sm bg-[#2f6fed] p-4 text-sm leading-6\">\r\n                {prompt}\r\n              </div>\r\n              <div className=\"max-w-[92%] rounded-2xl rounded-bl-sm bg-white p-5 text-[#1b1b1b]\">\r\n                <div className=\"flex items-center gap-2 text-xs font-bold text-[#2f6fed]\">\r\n                  <Sparkles className=\"h-4 w-4\" aria-hidden />\r\n                  Resposta baseada nos seus dados\r\n                </div>\r\n                <p className=\"mt-3 text-sm leading-6 text-[#555]\">{response}</p>\r\n                <div className=\"mt-5 grid gap-2\">\r\n                  {['Carrossel educativo', 'Vídeo curto', 'Bastidores da equipe'].map((idea) => (\r\n                    <div\r\n                      key={idea}\r\n                      className=\"flex items-center justify-between rounded-xl bg-[#f5f3ee] p-3 text-xs font-semibold\"\r\n                    >\r\n                      {idea}\r\n                      <CheckCircle2 className=\"h-4 w-4 text-[#247a46]\" aria-hidden />\r\n                    </div>\r\n                  ))}\r\n                </div>\r\n              </div>\r\n            </div>\r\n\r\n            <div className=\"mt-6 flex items-center gap-3 rounded-xl border border-white/15 bg-[#1b1b1b] p-3\">\r\n              <span className=\"flex-1 text-xs text-white/35\">Envie uma nova mensagem...</span>\r\n              <span className=\"flex h-8 w-8 items-center justify-center rounded-lg bg-[#f4c95d] text-[#1b1b1b]\">\r\n                <Send className=\"h-4 w-4\" aria-hidden />\r\n              </span>\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

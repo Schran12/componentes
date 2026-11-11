@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "motion-reveal",
+  "kind": "component",
+  "title": "MotionReveal",
+  "description": "Revelação declarativa pela viewport com direção e timing configuráveis.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/MotionReveal",
+    "tags": [
+      "reveal",
+      "viewport",
+      "entrada",
+      "framer-motion"
+    ],
+    "variants": [
+      "5 direções",
+      "once",
+      "repetição",
+      "reduced-motion"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Conteúdo revelado.",
+        "required": true
+      },
+      {
+        "name": "direction",
+        "type": "'up' | 'down' | 'left' | 'right' | 'none'",
+        "description": "Direção.",
+        "required": false,
+        "default": "'up'"
+      },
+      {
+        "name": "distance",
+        "type": "number",
+        "description": "Distância inicial.",
+        "required": false,
+        "default": "32"
+      },
+      {
+        "name": "delay",
+        "type": "number",
+        "description": "Atraso em segundos.",
+        "required": false,
+        "default": "0"
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "description": "Duração em segundos.",
+        "required": false,
+        "default": "0.55"
+      },
+      {
+        "name": "once",
+        "type": "boolean",
+        "description": "Executa uma vez.",
+        "required": false,
+        "default": "true"
+      }
+    ],
+    "example": "<MotionReveal direction=\"up\"><article>Conteúdo</article></MotionReveal>"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/MotionReveal.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/MotionReveal.tsx",
+      "content": "'use client'\r\n\r\nimport type { ReactNode } from 'react'\r\nimport { motion, useReducedMotion } from 'framer-motion'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type MotionRevealProps = {\r\n  children: ReactNode\r\n  direction?: 'up' | 'down' | 'left' | 'right' | 'none'\r\n  distance?: number\r\n  delay?: number\r\n  duration?: number\r\n  once?: boolean\r\n  className?: string\r\n}\r\n\r\nexport function MotionReveal({\r\n  children,\r\n  direction = 'up',\r\n  distance = 32,\r\n  delay = 0,\r\n  duration = 0.55,\r\n  once = true,\r\n  className,\r\n}: MotionRevealProps) {\r\n  const reduceMotion = useReducedMotion()\r\n  const offset = {\r\n    up: { x: 0, y: distance },\r\n    down: { x: 0, y: -distance },\r\n    left: { x: distance, y: 0 },\r\n    right: { x: -distance, y: 0 },\r\n    none: { x: 0, y: 0 },\r\n  }[direction]\r\n\r\n  return (\r\n    <motion.div\r\n      className={cn(className)}\r\n      initial={reduceMotion ? false : { opacity: 0, ...offset }}\r\n      whileInView={{ opacity: 1, x: 0, y: 0 }}\r\n      viewport={{ once, amount: 0.2 }}\r\n      transition={{ duration: reduceMotion ? 0 : duration, delay: reduceMotion ? 0 : delay }}\r\n    >\r\n      {children}\r\n    </motion.div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

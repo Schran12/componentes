@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "hover-reveal-services",
+  "kind": "component",
+  "title": "HoverRevealServices",
+  "description": "Painéis de serviços lado a lado que expandem e revelam imagem/descrição no hover.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": "servicos",
+    "topics": [
+      "products"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/data-display/HoverRevealServices",
+    "tags": [
+      "serviços",
+      "hover",
+      "painéis",
+      "expansão",
+      "template-next"
+    ],
+    "variants": [
+      "glow",
+      "industrial",
+      "industrial-dark"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "readonly { title; description; href; image; label? }[]",
+        "description": "Serviços.",
+        "required": true
+      },
+      {
+        "name": "tone",
+        "type": "'glow' | 'industrial' | 'industrial-dark'",
+        "description": "Tema visual: glow (escuro rosa/roxo), industrial (claro âmbar) ou industrial-dark.",
+        "required": false,
+        "default": "'glow'"
+      }
+    ],
+    "example": "<HoverRevealServices items={[{ title: 'Consultoria', description: 'Lorem ipsum.', href: '/servicos', image: { src: '/images/s1.webp', alt: '' } }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/HoverRevealServices.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/HoverRevealServices.tsx",
+      "content": "import Image from 'next/image'\r\nimport Link from 'next/link'\r\nimport { ArrowUpRight } from 'lucide-react'\r\n\r\nimport {\r\n  getAccentTone,\r\n  padIndex,\r\n  type AccentTone,\r\n} from '@/components/library/primitives/accentTones'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type HoverRevealServiceItem = {\r\n  title: string\r\n  description: string\r\n  href: string\r\n  image: { src: string; alt: string }\r\n  label?: string\r\n}\r\n\r\nexport type HoverRevealServicesProps = {\r\n  items: readonly HoverRevealServiceItem[]\r\n  tone?: AccentTone\r\n  className?: string\r\n}\r\n\r\nconst toneStyles: Record<\r\n  AccentTone,\r\n  { even: string; odd: string; veil: string; fade: string; badge: string; label: string }\r\n> = {\r\n  glow: {\r\n    even: 'bg-[#121212]',\r\n    odd: 'bg-[#221d2f]',\r\n    veil: 'group-hover:bg-[#121212]/60',\r\n    fade: 'from-[#121212] via-[#121212]/40',\r\n    badge: 'rounded-full border-[#493849] group-hover:border-[#c642a5] group-hover:bg-[#c642a5]',\r\n    label: 'text-[#ffb0eb] group-hover:text-[#ae89ff]',\r\n  },\r\n  industrial: {\r\n    even: 'bg-slate-950',\r\n    odd: 'bg-slate-900',\r\n    veil: 'group-hover:bg-slate-950/55',\r\n    fade: 'from-slate-950 via-slate-950/40',\r\n    badge:\r\n      'border-white/25 group-hover:border-amber-500 group-hover:bg-amber-500 group-hover:text-slate-950',\r\n    label: 'text-amber-500 group-hover:text-amber-400',\r\n  },\r\n  'industrial-dark': {\r\n    even: 'bg-slate-950',\r\n    odd: 'bg-slate-900',\r\n    veil: 'group-hover:bg-slate-950/55',\r\n    fade: 'from-slate-950 via-slate-950/40',\r\n    badge:\r\n      'border-white/25 group-hover:border-amber-500 group-hover:bg-amber-500 group-hover:text-slate-950',\r\n    label: 'text-amber-500 group-hover:text-amber-400',\r\n  },\r\n}\r\n\r\n/** Faixa de serviços em colunas que revelam a imagem de fundo no hover ou foco. */\r\nexport function HoverRevealServices({ items, tone = 'glow', className }: HoverRevealServicesProps) {\r\n  const t = getAccentTone(tone)\r\n  const s = toneStyles[tone]\r\n\r\n  return (\r\n    <section className={cn('w-full', s.even, className)}>\r\n      <div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4\">\r\n        {items.map((item, index) => (\r\n          <Link\r\n            key={item.href + item.title}\r\n            href={item.href}\r\n            className={cn(\r\n              'group relative isolate flex min-h-[22rem] flex-col justify-between overflow-hidden p-8 sm:min-h-[26rem] lg:min-h-[28rem] lg:p-10',\r\n              index % 2 === 0 ? s.even : s.odd,\r\n              t.focus,\r\n            )}\r\n          >\r\n            <Image\r\n              src={item.image.src}\r\n              alt={item.image.alt}\r\n              fill\r\n              sizes=\"(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw\"\r\n              className=\"scale-110 object-cover opacity-0 transition-all duration-700 ease-out group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100\"\r\n            />\r\n            <div\r\n              className={cn('absolute inset-0 transition-colors duration-500', s.veil)}\r\n              aria-hidden\r\n            />\r\n            <div\r\n              className={cn(\r\n                'absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100',\r\n                s.fade,\r\n              )}\r\n              aria-hidden\r\n            />\r\n\r\n            <span\r\n              className={cn(\r\n                'relative z-10 text-xs font-medium tracking-[0.28em] transition-colors duration-500',\r\n                s.label,\r\n              )}\r\n            >\r\n              {item.label ?? padIndex(index)}\r\n            </span>\r\n\r\n            <div className=\"relative z-10 mt-auto space-y-4\">\r\n              <div className=\"flex items-end justify-between gap-4\">\r\n                <h3 className=\"max-w-[12ch] text-2xl font-semibold leading-tight tracking-tight text-white lg:text-[1.65rem]\">\r\n                  {item.title}\r\n                </h3>\r\n                <span\r\n                  className={cn(\r\n                    'flex h-10 w-10 shrink-0 items-center justify-center border text-white transition-all duration-500',\r\n                    s.badge,\r\n                  )}\r\n                  aria-hidden\r\n                >\r\n                  <ArrowUpRight className=\"h-4 w-4 transition-transform duration-500 group-hover:rotate-45\" />\r\n                </span>\r\n              </div>\r\n              <p\r\n                className={cn(\r\n                  'max-w-[28ch] text-sm leading-relaxed transition-colors duration-500',\r\n                  tone === 'glow'\r\n                    ? 'text-[#c1c1c1] group-hover:text-white'\r\n                    : 'text-slate-400 group-hover:text-slate-200',\r\n                )}\r\n              >\r\n                {item.description}\r\n              </p>\r\n            </div>\r\n\r\n            {tone === 'glow' ? (\r\n              <span\r\n                className=\"absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-[#86196b] to-[#5327b3] opacity-60\"\r\n                aria-hidden\r\n              />\r\n            ) : null}\r\n          </Link>\r\n        ))}\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/accentTones.ts",
+      "type": "component",
+      "target": "src/components/library/primitives/accentTones.ts",
+      "content": "/**\r\n * Temas visuais compartilhados pelos componentes de origem dos templates Next.\r\n * - glow: fundo escuro com gradiente rosa/roxo.\r\n * - industrial: fundo claro com destaque âmbar.\r\n * - industrial-dark: fundo slate escuro com destaque âmbar.\r\n */\r\nexport type AccentTone = 'glow' | 'industrial' | 'industrial-dark'\r\n\r\nexport type AccentToneTokens = {\r\n  section: string\r\n  alt: string\r\n  panel: string\r\n  panelHover: string\r\n  border: string\r\n  divide: string\r\n  heading: string\r\n  strong: string\r\n  body: string\r\n  muted: string\r\n  accent: string\r\n  line: string\r\n  fill: string\r\n  onFill: string\r\n  iconButton: string\r\n  radius: string\r\n  overlayFrom: string\r\n  chip: string\r\n  focus: string\r\n  hoverLift: string\r\n  input: string\r\n  error: string\r\n}\r\n\r\nexport const accentTones: Record<AccentTone, AccentToneTokens> = {\r\n  glow: {\r\n    section: 'bg-[#121212] text-[#c1c1c1]',\r\n    alt: 'bg-[#0e0e0e] text-[#c1c1c1]',\r\n    panel: 'bg-[#221d2f]',\r\n    panelHover: 'hover:bg-[#2a2339]',\r\n    border: 'border-[#493849]',\r\n    divide: 'divide-[#493849]',\r\n    heading:\r\n      'w-fit bg-gradient-to-r from-[#c642a5] to-[#7c39cf] bg-clip-text font-normal text-transparent',\r\n    strong: 'text-white',\r\n    body: 'text-[#c1c1c1]',\r\n    muted: 'text-[#c1c1c1]/75',\r\n    accent: 'text-[#ffb0eb]',\r\n    line: 'bg-gradient-to-r from-[#c642a5] to-[#7c39cf]',\r\n    fill: 'bg-gradient-to-br from-[#c642a5] to-[#7c39cf]',\r\n    onFill: 'text-white',\r\n    iconButton:\r\n      'rounded-full border border-[#493849] text-white hover:border-[#c642a5] hover:bg-[#c642a5]',\r\n    radius: 'rounded-2xl',\r\n    overlayFrom: 'from-[#121212]',\r\n    chip: 'border-[#493849] bg-[#121212]/70',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c642a5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121212]',\r\n    hoverLift:\r\n      'hover:-translate-y-1 hover:border-[#c642a5]/50 hover:shadow-[0_12px_40px_rgba(198,66,165,0.18)]',\r\n    input:\r\n      'rounded-md border-[#493849] bg-[#221d2f] text-white placeholder:text-[#c1c1c1]/70 focus-visible:ring-[#c642a5]',\r\n    error: 'text-red-400',\r\n  },\r\n  industrial: {\r\n    section: 'bg-slate-50 text-slate-600',\r\n    alt: 'bg-white text-slate-600',\r\n    panel: 'bg-white',\r\n    panelHover: 'hover:bg-slate-50',\r\n    border: 'border-slate-200',\r\n    divide: 'divide-slate-200',\r\n    heading: 'font-semibold uppercase tracking-wide text-slate-900',\r\n    strong: 'text-slate-900',\r\n    body: 'text-slate-600',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-600',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-slate-300 text-slate-700 hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/15 bg-slate-950/50',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-amber-500',\r\n    error: 'text-red-600',\r\n  },\r\n  'industrial-dark': {\r\n    section: 'bg-slate-950 text-slate-400',\r\n    alt: 'bg-slate-900 text-slate-400',\r\n    panel: 'bg-slate-900',\r\n    panelHover: 'hover:bg-white/5',\r\n    border: 'border-white/10',\r\n    divide: 'divide-white/10',\r\n    heading: 'font-semibold uppercase tracking-wide text-white',\r\n    strong: 'text-white',\r\n    body: 'text-slate-400',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-500',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-white/20 text-white hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/10 bg-slate-950/40',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-white/10 bg-slate-900 text-white placeholder:text-slate-500 focus-visible:ring-amber-500',\r\n    error: 'text-red-400',\r\n  },\r\n}\r\n\r\nexport function getAccentTone(tone: AccentTone = 'glow'): AccentToneTokens {\r\n  return accentTones[tone]\r\n}\r\n\r\nexport function padIndex(index: number): string {\r\n  return String(index + 1).padStart(2, '0')\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "cta-centered-card",
+  "kind": "component",
+  "title": "CTACenteredCard",
+  "description": "Chamada para ação centralizada em cartão com sombra de brilho em gradiente.",
+  "meta": {
+    "category": "feedback",
+    "role": "section.conversion",
+    "placement": "end-of-main",
+    "stage": "cta",
+    "topics": [
+      "cta"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/feedback/CTACenteredCard",
+    "tags": [
+      "cta",
+      "chamada",
+      "conversão",
+      "cartão",
+      "template-next"
+    ],
+    "variants": [
+      "glow",
+      "industrial",
+      "industrial-dark",
+      "primary"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "description": "Eyebrow.",
+        "required": false
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "description": "Botões.",
+        "required": false
+      },
+      {
+        "name": "tone",
+        "type": "'glow' | 'industrial' | 'industrial-dark'",
+        "description": "Tema visual: glow (escuro rosa/roxo), industrial (claro âmbar) ou industrial-dark.",
+        "required": false,
+        "default": "'glow'"
+      },
+      {
+        "name": "variant",
+        "type": "'accent' | 'primary'",
+        "description": "primary usa a cor do tema e ignora tone.",
+        "required": false,
+        "default": "'accent'"
+      }
+    ],
+    "example": "<CTACenteredCard title=\"Pronto para começar?\" actions={<AccentButton href=\"/contato\">Fale conosco</AccentButton>} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/feedback/CTACenteredCard.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/CTACenteredCard.tsx",
+      "content": "import type { ReactNode } from 'react'\r\n\r\nimport { getAccentTone, type AccentTone } from '@/components/library/primitives/accentTones'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type CTACenteredCardProps = {\r\n  title: string\r\n  description?: string\r\n  eyebrow?: string\r\n  actions?: ReactNode\r\n  tone?: AccentTone\r\n  /** `primary` ignora o tom e usa o cartão na cor primária do tema. */\r\n  variant?: 'accent' | 'primary'\r\n  className?: string\r\n}\r\n\r\n/** Chamada para ação centralizada em cartão com sombra de brilho em gradiente. */\r\nexport function CTACenteredCard({\r\n  title,\r\n  description,\r\n  eyebrow,\r\n  actions,\r\n  tone = 'glow',\r\n  variant = 'accent',\r\n  className,\r\n}: CTACenteredCardProps) {\r\n  const t = getAccentTone(tone)\r\n  const isGlow = tone === 'glow'\r\n\r\n  if (variant === 'primary') {\r\n    return (\r\n      <section className={cn('w-full bg-background py-12 lg:py-16', className)}>\r\n        <div className=\"container\">\r\n          <div className=\"mx-auto flex max-w-4xl flex-col items-center gap-6 rounded-2xl bg-primary px-6 py-12 text-center text-primary-foreground shadow-xl shadow-primary/25 sm:px-12\">\r\n            {eyebrow ? (\r\n              <span className=\"text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground/80\">\r\n                {eyebrow}\r\n              </span>\r\n            ) : null}\r\n            <h2 className=\"text-3xl font-semibold md:text-4xl\">{title}</h2>\r\n            {description ? (\r\n              <p className=\"max-w-2xl text-base leading-relaxed text-primary-foreground/85 md:text-lg\">\r\n                {description}\r\n              </p>\r\n            ) : null}\r\n            {actions ? (\r\n              <div className=\"flex flex-wrap items-center justify-center gap-4\">{actions}</div>\r\n            ) : null}\r\n          </div>\r\n        </div>\r\n      </section>\r\n    )\r\n  }\r\n\r\n  return (\r\n    <section className={cn('w-full py-12 lg:py-16', t.section, className)}>\r\n      <div className=\"container\">\r\n        <div\r\n          className={cn(\r\n            'mx-auto flex max-w-4xl flex-col items-center gap-6 px-6 py-12 text-center sm:px-12',\r\n            t.panel,\r\n            isGlow\r\n              ? 'rounded-2xl shadow-[0.25rem_0_0.25rem_#86196b,0_0.25rem_0.25rem_#5327b3]'\r\n              : cn('border border-t-4 border-t-amber-500', t.border),\r\n          )}\r\n        >\r\n          {eyebrow ? (\r\n            <span className={cn('text-xs font-semibold uppercase tracking-[0.2em]', t.accent)}>\r\n              {eyebrow}\r\n            </span>\r\n          ) : null}\r\n          <h2 className={cn('text-3xl md:text-4xl', t.heading, isGlow && 'mx-auto')}>{title}</h2>\r\n          {description ? (\r\n            <p className={cn('max-w-2xl text-base leading-relaxed md:text-lg', t.body)}>\r\n              {description}\r\n            </p>\r\n          ) : null}\r\n          {actions ? (\r\n            <div className=\"flex flex-wrap items-center justify-center gap-4\">{actions}</div>\r\n          ) : null}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/accentTones.ts",
+      "type": "component",
+      "target": "src/components/library/primitives/accentTones.ts",
+      "content": "/**\r\n * Temas visuais compartilhados pelos componentes de origem dos templates Next.\r\n * - glow: fundo escuro com gradiente rosa/roxo.\r\n * - industrial: fundo claro com destaque âmbar.\r\n * - industrial-dark: fundo slate escuro com destaque âmbar.\r\n */\r\nexport type AccentTone = 'glow' | 'industrial' | 'industrial-dark'\r\n\r\nexport type AccentToneTokens = {\r\n  section: string\r\n  alt: string\r\n  panel: string\r\n  panelHover: string\r\n  border: string\r\n  divide: string\r\n  heading: string\r\n  strong: string\r\n  body: string\r\n  muted: string\r\n  accent: string\r\n  line: string\r\n  fill: string\r\n  onFill: string\r\n  iconButton: string\r\n  radius: string\r\n  overlayFrom: string\r\n  chip: string\r\n  focus: string\r\n  hoverLift: string\r\n  input: string\r\n  error: string\r\n}\r\n\r\nexport const accentTones: Record<AccentTone, AccentToneTokens> = {\r\n  glow: {\r\n    section: 'bg-[#121212] text-[#c1c1c1]',\r\n    alt: 'bg-[#0e0e0e] text-[#c1c1c1]',\r\n    panel: 'bg-[#221d2f]',\r\n    panelHover: 'hover:bg-[#2a2339]',\r\n    border: 'border-[#493849]',\r\n    divide: 'divide-[#493849]',\r\n    heading:\r\n      'w-fit bg-gradient-to-r from-[#c642a5] to-[#7c39cf] bg-clip-text font-normal text-transparent',\r\n    strong: 'text-white',\r\n    body: 'text-[#c1c1c1]',\r\n    muted: 'text-[#c1c1c1]/75',\r\n    accent: 'text-[#ffb0eb]',\r\n    line: 'bg-gradient-to-r from-[#c642a5] to-[#7c39cf]',\r\n    fill: 'bg-gradient-to-br from-[#c642a5] to-[#7c39cf]',\r\n    onFill: 'text-white',\r\n    iconButton:\r\n      'rounded-full border border-[#493849] text-white hover:border-[#c642a5] hover:bg-[#c642a5]',\r\n    radius: 'rounded-2xl',\r\n    overlayFrom: 'from-[#121212]',\r\n    chip: 'border-[#493849] bg-[#121212]/70',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c642a5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121212]',\r\n    hoverLift:\r\n      'hover:-translate-y-1 hover:border-[#c642a5]/50 hover:shadow-[0_12px_40px_rgba(198,66,165,0.18)]',\r\n    input:\r\n      'rounded-md border-[#493849] bg-[#221d2f] text-white placeholder:text-[#c1c1c1]/70 focus-visible:ring-[#c642a5]',\r\n    error: 'text-red-400',\r\n  },\r\n  industrial: {\r\n    section: 'bg-slate-50 text-slate-600',\r\n    alt: 'bg-white text-slate-600',\r\n    panel: 'bg-white',\r\n    panelHover: 'hover:bg-slate-50',\r\n    border: 'border-slate-200',\r\n    divide: 'divide-slate-200',\r\n    heading: 'font-semibold uppercase tracking-wide text-slate-900',\r\n    strong: 'text-slate-900',\r\n    body: 'text-slate-600',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-600',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-slate-300 text-slate-700 hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/15 bg-slate-950/50',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-amber-500',\r\n    error: 'text-red-600',\r\n  },\r\n  'industrial-dark': {\r\n    section: 'bg-slate-950 text-slate-400',\r\n    alt: 'bg-slate-900 text-slate-400',\r\n    panel: 'bg-slate-900',\r\n    panelHover: 'hover:bg-white/5',\r\n    border: 'border-white/10',\r\n    divide: 'divide-white/10',\r\n    heading: 'font-semibold uppercase tracking-wide text-white',\r\n    strong: 'text-white',\r\n    body: 'text-slate-400',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-500',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-white/20 text-white hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/10 bg-slate-950/40',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-white/10 bg-slate-900 text-white placeholder:text-slate-500 focus-visible:ring-amber-500',\r\n    error: 'text-red-400',\r\n  },\r\n}\r\n\r\nexport function getAccentTone(tone: AccentTone = 'glow'): AccentToneTokens {\r\n  return accentTones[tone]\r\n}\r\n\r\nexport function padIndex(index: number): string {\r\n  return String(index + 1).padStart(2, '0')\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

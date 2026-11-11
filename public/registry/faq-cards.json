@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "faq-cards",
+  "kind": "component",
+  "title": "FAQCards",
+  "description": "FAQ em cards responsivos, ideal para respostas curtas e escaneáveis.",
+  "meta": {
+    "category": "feedback",
+    "role": "section.faq",
+    "placement": "inside-main",
+    "stage": "faq",
+    "topics": [
+      "faq"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/feedback/FAQCards",
+    "tags": [
+      "faq",
+      "cards",
+      "grade",
+      "ajuda"
+    ],
+    "variants": [
+      "duas colunas",
+      "três colunas"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "Array<{ question: string; answer: ReactNode }>",
+        "description": "Perguntas.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "columns",
+        "type": "2 | 3",
+        "description": "Quantidade máxima de colunas.",
+        "required": false,
+        "default": "3"
+      }
+    ],
+    "example": "<FAQCards title=\"Dúvidas comuns\" columns={3} items={[{ question: 'Posso personalizar?', answer: 'Sim, todas as opções são configuradas por props.' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/feedback/FAQCards.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/FAQCards.tsx",
+      "content": "import { HelpCircle } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type FAQCardsProps = {\r\n  title?: string\r\n  description?: string\r\n  items: Array<{\r\n    question: string\r\n    answer: React.ReactNode\r\n  }>\r\n  columns?: 2 | 3\r\n  className?: string\r\n}\r\n\r\nexport function FAQCards({ title, description, items, columns = 3, className }: FAQCardsProps) {\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)} aria-labelledby=\"faq-cards-title\">\r\n      <div className=\"container\">\r\n        {(title || description) && (\r\n          <header className=\"mx-auto mb-10 max-w-2xl text-center md:mb-14\">\r\n            {title ? (\r\n              <h2 id=\"faq-cards-title\" className=\"text-3xl font-bold tracking-tight md:text-4xl\">\r\n                {title}\r\n              </h2>\r\n            ) : null}\r\n            {description ? (\r\n              <p className=\"mt-4 text-balance text-muted-foreground\">{description}</p>\r\n            ) : null}\r\n          </header>\r\n        )}\r\n\r\n        <div className={cn('grid gap-4 md:grid-cols-2', columns === 3 && 'xl:grid-cols-3')}>\r\n          {items.map((item) => (\r\n            <article\r\n              key={item.question}\r\n              className=\"group rounded-2xl border bg-card p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg motion-reduce:transform-none\"\r\n            >\r\n              <span className=\"mb-5 inline-flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground\">\r\n                <HelpCircle className=\"size-5\" aria-hidden=\"true\" />\r\n              </span>\r\n              <h3 className=\"text-lg font-semibold leading-snug\">{item.question}</h3>\r\n              <div className=\"mt-3 text-sm leading-6 text-muted-foreground\">{item.answer}</div>\r\n            </article>\r\n          ))}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

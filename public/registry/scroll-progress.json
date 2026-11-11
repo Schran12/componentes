@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "scroll-progress",
+  "kind": "component",
+  "title": "ScrollProgress",
+  "description": "Indicador fixo e suave do progresso de leitura da página.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": "flutuantes",
+    "topics": [
+      "floating"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/ScrollProgress",
+    "tags": [
+      "scroll",
+      "progresso",
+      "leitura",
+      "framer-motion"
+    ],
+    "variants": [
+      "top",
+      "bottom",
+      "altura customizada"
+    ],
+    "props": [
+      {
+        "name": "position",
+        "type": "'top' | 'bottom'",
+        "description": "Posição na viewport.",
+        "required": false,
+        "default": "'top'"
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "description": "Altura em pixels.",
+        "required": false,
+        "default": "3"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Rótulo acessível.",
+        "required": false,
+        "default": "'Progresso de leitura'"
+      }
+    ],
+    "example": "<ScrollProgress position=\"top\" />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/ScrollProgress.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/ScrollProgress.tsx",
+      "content": "'use client'\r\n\r\nimport { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ScrollProgressProps = {\r\n  position?: 'top' | 'bottom'\r\n  height?: number\r\n  className?: string\r\n  label?: string\r\n}\r\n\r\nexport function ScrollProgress({\r\n  position = 'top',\r\n  height = 3,\r\n  className,\r\n  label = 'Progresso de leitura',\r\n}: ScrollProgressProps) {\r\n  const { scrollYProgress } = useScroll()\r\n  const reduceMotion = useReducedMotion()\r\n  const scaleX = useSpring(scrollYProgress, {\r\n    stiffness: reduceMotion ? 1000 : 120,\r\n    damping: reduceMotion ? 100 : 24,\r\n    restDelta: 0.001,\r\n  })\r\n\r\n  return (\r\n    <motion.div\r\n      role=\"progressbar\"\r\n      aria-label={label}\r\n      aria-valuemin={0}\r\n      aria-valuemax={100}\r\n      className={cn(\r\n        'fixed inset-x-0 z-[70] origin-left bg-primary',\r\n        position === 'top' ? 'top-0' : 'bottom-0',\r\n        className,\r\n      )}\r\n      style={{ height, scaleX }}\r\n    />\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

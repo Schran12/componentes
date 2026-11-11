@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "team-grid",
+  "kind": "component",
+  "title": "TeamGrid",
+  "description": "Grade de equipe com foto, bio e contatos profissionais.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": "equipe",
+    "topics": [
+      "about"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/data-display/TeamGrid",
+    "tags": [
+      "equipe",
+      "pessoas",
+      "cards",
+      "contato"
+    ],
+    "variants": [
+      "com bio",
+      "com contato",
+      "4 colunas"
+    ],
+    "props": [
+      {
+        "name": "members",
+        "type": "TeamMember[]",
+        "description": "Integrantes.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": false
+      }
+    ],
+    "example": "<TeamGrid title=\"Liderança\" members={members} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/TeamGrid.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/TeamGrid.tsx",
+      "content": "import Image from 'next/image'\r\nimport { Linkedin, Mail } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type TeamGridProps = {\r\n  title?: string\r\n  members: Array<{\r\n    name: string\r\n    role: string\r\n    image: { src: string; alt?: string }\r\n    bio?: string\r\n    email?: string\r\n    linkedin?: string\r\n  }>\r\n  className?: string\r\n}\r\n\r\nexport function TeamGrid({ title, members, className }: TeamGridProps) {\r\n  return (\r\n    <section\r\n      className={cn('py-16 md:py-24', className)}\r\n      aria-labelledby={title ? 'team-title' : undefined}\r\n    >\r\n      <div className=\"container\">\r\n        {title ? (\r\n          <h2 id=\"team-title\" className=\"mb-10 text-3xl font-bold tracking-tight md:text-4xl\">\r\n            {title}\r\n          </h2>\r\n        ) : null}\r\n        <div className=\"grid gap-6 sm:grid-cols-2 lg:grid-cols-4\">\r\n          {members.map((member) => (\r\n            <article key={member.name} className=\"overflow-hidden rounded-2xl border bg-card\">\r\n              <div className=\"relative aspect-[4/5] bg-muted\">\r\n                <Image\r\n                  src={member.image.src}\r\n                  alt={member.image.alt ?? member.name}\r\n                  fill\r\n                  className=\"object-cover\"\r\n                  sizes=\"(min-width: 1024px) 25vw, 50vw\"\r\n                />\r\n              </div>\r\n              <div className=\"p-5\">\r\n                <h3 className=\"font-semibold\">{member.name}</h3>\r\n                <p className=\"text-sm text-primary\">{member.role}</p>\r\n                {member.bio ? (\r\n                  <p className=\"mt-3 text-sm text-muted-foreground\">{member.bio}</p>\r\n                ) : null}\r\n                {(member.email || member.linkedin) && (\r\n                  <div className=\"mt-4 flex gap-2\">\r\n                    {member.email ? (\r\n                      <a\r\n                        href={`mailto:${member.email}`}\r\n                        className=\"rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground\"\r\n                        aria-label={`Enviar e-mail para ${member.name}`}\r\n                      >\r\n                        <Mail className=\"h-4 w-4\" />\r\n                      </a>\r\n                    ) : null}\r\n                    {member.linkedin ? (\r\n                      <a\r\n                        href={member.linkedin}\r\n                        target=\"_blank\"\r\n                        rel=\"noreferrer\"\r\n                        className=\"rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground\"\r\n                        aria-label={`LinkedIn de ${member.name}`}\r\n                      >\r\n                        <Linkedin className=\"h-4 w-4\" />\r\n                      </a>\r\n                    ) : null}\r\n                  </div>\r\n                )}\r\n              </div>\r\n            </article>\r\n          ))}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

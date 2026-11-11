@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "interactive-steps",
+  "kind": "component",
+  "title": "InteractiveSteps",
+  "description": "Stepper navegável com progresso, conteúdo animado e conclusão opcional.",
+  "meta": {
+    "category": "feedback",
+    "role": "section.feedback",
+    "placement": "inside-main",
+    "stage": "diferenciais",
+    "topics": [
+      "differentials"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/feedback/InteractiveSteps",
+    "tags": [
+      "stepper",
+      "progresso",
+      "etapas",
+      "interativo"
+    ],
+    "variants": [
+      "navegação direta",
+      "anterior/próximo",
+      "conteúdo customizado"
+    ],
+    "props": [
+      {
+        "name": "steps",
+        "type": "InteractiveStep[]",
+        "description": "Etapas navegáveis.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título da seção.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição da seção.",
+        "required": false
+      },
+      {
+        "name": "nextLabel",
+        "type": "string",
+        "description": "Rótulo de avanço.",
+        "required": false,
+        "default": "'Continuar'"
+      },
+      {
+        "name": "previousLabel",
+        "type": "string",
+        "description": "Rótulo de retorno.",
+        "required": false,
+        "default": "'Voltar'"
+      },
+      {
+        "name": "onComplete",
+        "type": "() => void",
+        "description": "Executado na conclusão.",
+        "required": false
+      }
+    ],
+    "example": "<InteractiveSteps title=\"Como funciona\" steps={[{ title: 'Descoberta', description: 'Lorem ipsum.' }, { title: 'Entrega', description: 'Dolor sit amet.' }]} />"
+  },
+  "dependencies": [
+    "@radix-ui/react-slot@^1.0.2",
+    "class-variance-authority@^0.7.0",
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/feedback/InteractiveSteps.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/InteractiveSteps.tsx",
+      "content": "'use client'\r\n\r\nimport { useState, type ReactNode } from 'react'\r\nimport { AnimatePresence, motion, useReducedMotion } from 'framer-motion'\r\nimport { ArrowLeft, ArrowRight, Check } from 'lucide-react'\r\nimport { Button } from '@/components/ui/button'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type InteractiveStep = {\r\n  title: string\r\n  description: string\r\n  content?: ReactNode\r\n  icon?: ReactNode\r\n}\r\n\r\nexport type InteractiveStepsProps = {\r\n  title?: string\r\n  description?: string\r\n  steps: InteractiveStep[]\r\n  nextLabel?: string\r\n  previousLabel?: string\r\n  restartLabel?: string\r\n  className?: string\r\n  onComplete?: () => void\r\n}\r\n\r\nexport function InteractiveSteps({\r\n  title,\r\n  description,\r\n  steps,\r\n  nextLabel = 'Continuar',\r\n  previousLabel = 'Voltar',\r\n  restartLabel = 'Recomeçar',\r\n  className,\r\n  onComplete,\r\n}: InteractiveStepsProps) {\r\n  const [current, setCurrent] = useState(0)\r\n  const reduceMotion = useReducedMotion()\r\n  const active = steps[current]\r\n  const complete = current === steps.length - 1\r\n\r\n  if (!active) return null\r\n\r\n  function advance() {\r\n    if (complete) {\r\n      onComplete?.()\r\n      setCurrent(0)\r\n      return\r\n    }\r\n    setCurrent((value) => Math.min(value + 1, steps.length - 1))\r\n  }\r\n\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)}>\r\n      <div className=\"container\">\r\n        <div className=\"mx-auto max-w-5xl overflow-hidden rounded-3xl border bg-card shadow-xl shadow-black/5\">\r\n          <div className=\"border-b p-6 md:p-8\">\r\n            {title ? (\r\n              <h2 className=\"text-2xl font-bold tracking-tight md:text-3xl\">{title}</h2>\r\n            ) : null}\r\n            {description ? <p className=\"mt-2 text-muted-foreground\">{description}</p> : null}\r\n            <div className=\"mt-7 flex items-center gap-2\" aria-label=\"Progresso\">\r\n              {steps.map((step, index) => (\r\n                <button\r\n                  type=\"button\"\r\n                  key={step.title}\r\n                  onClick={() => setCurrent(index)}\r\n                  aria-label={`Ir para etapa ${index + 1}: ${step.title}`}\r\n                  aria-current={index === current ? 'step' : undefined}\r\n                  className=\"group flex min-w-0 flex-1 items-center gap-2 focus-visible:outline-none\"\r\n                >\r\n                  <span\r\n                    className={cn(\r\n                      'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-xs font-bold transition',\r\n                      index < current && 'border-primary bg-primary text-primary-foreground',\r\n                      index === current && 'border-foreground bg-foreground text-background',\r\n                      index > current && 'bg-background text-muted-foreground',\r\n                    )}\r\n                  >\r\n                    {index < current ? <Check className=\"h-4 w-4\" /> : index + 1}\r\n                  </span>\r\n                  <span\r\n                    className={cn(\r\n                      'hidden truncate text-left text-xs font-medium md:block',\r\n                      index === current ? 'text-foreground' : 'text-muted-foreground',\r\n                    )}\r\n                  >\r\n                    {step.title}\r\n                  </span>\r\n                  {index < steps.length - 1 ? (\r\n                    <span className=\"h-px min-w-3 flex-1 bg-border\" aria-hidden=\"true\" />\r\n                  ) : null}\r\n                </button>\r\n              ))}\r\n            </div>\r\n          </div>\r\n\r\n          <div className=\"grid min-h-72 md:grid-cols-[0.7fr_1.3fr]\">\r\n            <div className=\"flex items-center justify-center bg-muted/50 p-8\">\r\n              <div className=\"flex h-28 w-28 items-center justify-center rounded-[2rem] border bg-background text-primary shadow-lg\">\r\n                {active.icon ?? (\r\n                  <span className=\"text-4xl font-bold\">{String(current + 1).padStart(2, '0')}</span>\r\n                )}\r\n              </div>\r\n            </div>\r\n            <div className=\"flex min-w-0 flex-col justify-between p-6 md:p-8\">\r\n              <AnimatePresence mode=\"wait\" initial={false}>\r\n                <motion.div\r\n                  key={current}\r\n                  initial={reduceMotion ? false : { opacity: 0, x: 18 }}\r\n                  animate={{ opacity: 1, x: 0 }}\r\n                  exit={reduceMotion ? undefined : { opacity: 0, x: -18 }}\r\n                  transition={{ duration: reduceMotion ? 0 : 0.25 }}\r\n                >\r\n                  <p className=\"text-xs font-bold uppercase tracking-[0.18em] text-primary\">\r\n                    Etapa {current + 1} de {steps.length}\r\n                  </p>\r\n                  <h3 className=\"mt-3 text-2xl font-bold tracking-tight\">{active.title}</h3>\r\n                  <p className=\"mt-4 leading-7 text-muted-foreground\">{active.description}</p>\r\n                  {active.content ? <div className=\"mt-5\">{active.content}</div> : null}\r\n                </motion.div>\r\n              </AnimatePresence>\r\n\r\n              <div className=\"mt-8 flex items-center justify-between gap-3\">\r\n                <Button\r\n                  type=\"button\"\r\n                  variant=\"ghost\"\r\n                  onClick={() => setCurrent((value) => Math.max(0, value - 1))}\r\n                  disabled={current === 0}\r\n                >\r\n                  <ArrowLeft className=\"mr-2 h-4 w-4\" />\r\n                  {previousLabel}\r\n                </Button>\r\n                <Button type=\"button\" onClick={advance}>\r\n                  {complete ? restartLabel : nextLabel}\r\n                  {complete ? null : <ArrowRight className=\"ml-2 h-4 w-4\" />}\r\n                </Button>\r\n              </div>\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "type": "ui",
+      "target": "src/components/ui/button.tsx",
+      "content": "import * as React from 'react'\r\nimport { Slot } from '@radix-ui/react-slot'\r\nimport { cva, type VariantProps } from 'class-variance-authority'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nconst buttonVariants = cva(\r\n  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',\r\n  {\r\n    variants: {\r\n      variant: {\r\n        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',\r\n        destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',\r\n        outline:\r\n          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',\r\n        secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',\r\n        ghost: 'hover:bg-accent hover:text-accent-foreground',\r\n        link: 'text-primary underline-offset-4 hover:underline',\r\n      },\r\n      size: {\r\n        default: 'h-9 px-4 py-2',\r\n        sm: 'h-8 rounded-md px-3 text-xs',\r\n        lg: 'h-10 rounded-md px-8',\r\n        icon: 'h-9 w-9',\r\n      },\r\n    },\r\n    defaultVariants: {\r\n      variant: 'default',\r\n      size: 'default',\r\n    },\r\n  },\r\n)\r\n\r\nexport interface ButtonProps\r\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {\r\n  asChild?: boolean\r\n}\r\n\r\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\r\n  ({ className, variant, size, asChild = false, ...props }, ref) => {\r\n    const Comp = asChild ? Slot : 'button'\r\n    return (\r\n      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />\r\n    )\r\n  },\r\n)\r\nButton.displayName = 'Button'\r\n\r\nexport { Button, buttonVariants }\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

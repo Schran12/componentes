@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "banner-video",
+  "kind": "component",
+  "title": "BannerVideo",
+  "description": "Banner cinematográfico com vídeo em loop, poster e ação.",
+  "meta": {
+    "category": "marketing",
+    "role": "page.hero",
+    "placement": "start-of-main",
+    "stage": "hero",
+    "topics": [
+      "banner"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/marketing/BannerVideo",
+    "tags": [
+      "banner",
+      "vídeo",
+      "landing-page"
+    ],
+    "variants": [
+      "com poster",
+      "com ação"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "videoSrc",
+        "type": "string",
+        "description": "URL do vídeo.",
+        "required": true
+      },
+      {
+        "name": "poster",
+        "type": "string",
+        "description": "Imagem de poster.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "action",
+        "type": "{ label: string; href: string }",
+        "description": "Ação.",
+        "required": false
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "description": "Rótulo superior.",
+        "required": false
+      }
+    ],
+    "example": "<BannerVideo title=\"Movimento que inspira\" videoSrc=\"/banner.mp4\" poster=\"/poster.jpg\" />"
+  },
+  "dependencies": [
+    "@radix-ui/react-slot@^1.0.2",
+    "class-variance-authority@^0.7.0",
+    "clsx@^2.0.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/marketing/BannerVideo.tsx",
+      "type": "component",
+      "target": "src/components/library/marketing/BannerVideo.tsx",
+      "content": "export { HeroVideo as BannerVideo } from './HeroVideo'\r\nexport type { HeroVideoProps as BannerVideoProps } from './HeroVideo'\r\n"
+    },
+    {
+      "path": "src/components/library/marketing/HeroVideo.tsx",
+      "type": "component",
+      "target": "src/components/library/marketing/HeroVideo.tsx",
+      "content": "import Link from 'next/link'\r\nimport { Button } from '@/components/ui/button'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type HeroVideoProps = {\r\n  title: string\r\n  description?: string\r\n  videoSrc: string\r\n  poster?: string\r\n  action?: { label: string; href: string }\r\n  eyebrow?: string\r\n  className?: string\r\n}\r\n\r\nexport function HeroVideo({\r\n  title,\r\n  description,\r\n  videoSrc,\r\n  poster,\r\n  action,\r\n  eyebrow,\r\n  className,\r\n}: HeroVideoProps) {\r\n  return (\r\n    <section\r\n      className={cn(\r\n        'relative isolate min-h-[600px] overflow-hidden bg-slate-950 text-white',\r\n        className,\r\n      )}\r\n      aria-labelledby=\"hero-video-title\"\r\n    >\r\n      <video\r\n        className=\"absolute inset-0 h-full w-full object-cover\"\r\n        src={videoSrc}\r\n        poster={poster}\r\n        autoPlay\r\n        muted\r\n        loop\r\n        playsInline\r\n        aria-hidden=\"true\"\r\n      />\r\n      <div className=\"absolute inset-0 bg-black/60\" />\r\n      <div className=\"container relative z-10 flex min-h-[600px] flex-col justify-center py-20\">\r\n        {eyebrow ? (\r\n          <p className=\"mb-4 text-sm font-semibold uppercase tracking-[0.2em]\">{eyebrow}</p>\r\n        ) : null}\r\n        <h1\r\n          id=\"hero-video-title\"\r\n          className=\"max-w-4xl text-4xl font-bold tracking-tight sm:text-6xl\"\r\n        >\r\n          {title}\r\n        </h1>\r\n        {description ? <p className=\"mt-6 max-w-2xl text-lg text-white/80\">{description}</p> : null}\r\n        {action ? (\r\n          <Button asChild size=\"lg\" className=\"mt-8 w-fit\">\r\n            <Link href={action.href}>{action.label}</Link>\r\n          </Button>\r\n        ) : null}\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "type": "ui",
+      "target": "src/components/ui/button.tsx",
+      "content": "import * as React from 'react'\r\nimport { Slot } from '@radix-ui/react-slot'\r\nimport { cva, type VariantProps } from 'class-variance-authority'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nconst buttonVariants = cva(\r\n  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',\r\n  {\r\n    variants: {\r\n      variant: {\r\n        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',\r\n        destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',\r\n        outline:\r\n          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',\r\n        secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',\r\n        ghost: 'hover:bg-accent hover:text-accent-foreground',\r\n        link: 'text-primary underline-offset-4 hover:underline',\r\n      },\r\n      size: {\r\n        default: 'h-9 px-4 py-2',\r\n        sm: 'h-8 rounded-md px-3 text-xs',\r\n        lg: 'h-10 rounded-md px-8',\r\n        icon: 'h-9 w-9',\r\n      },\r\n    },\r\n    defaultVariants: {\r\n      variant: 'default',\r\n      size: 'default',\r\n    },\r\n  },\r\n)\r\n\r\nexport interface ButtonProps\r\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {\r\n  asChild?: boolean\r\n}\r\n\r\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\r\n  ({ className, variant, size, asChild = false, ...props }, ref) => {\r\n    const Comp = asChild ? Slot : 'button'\r\n    return (\r\n      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />\r\n    )\r\n  },\r\n)\r\nButton.displayName = 'Button'\r\n\r\nexport { Button, buttonVariants }\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

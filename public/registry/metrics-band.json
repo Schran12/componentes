@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "metrics-band",
+  "kind": "component",
+  "title": "MetricsBand",
+  "description": "Faixa de métricas para destacar indicadores em três tratamentos visuais.",
+  "meta": {
+    "category": "content",
+    "role": "section.content",
+    "placement": "inside-main",
+    "stage": "sobre",
+    "topics": [
+      "about"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/content/MetricsBand",
+    "tags": [
+      "métricas",
+      "kpi",
+      "números",
+      "faixa"
+    ],
+    "variants": [
+      "default",
+      "primary",
+      "dark",
+      "left",
+      "center"
+    ],
+    "props": [
+      {
+        "name": "metrics",
+        "type": "readonly MetricItem[]",
+        "description": "Métricas apresentadas.",
+        "required": true
+      },
+      {
+        "name": "variant",
+        "type": "'default' | 'primary' | 'dark'",
+        "description": "Tratamento visual.",
+        "required": false,
+        "default": "'default'"
+      },
+      {
+        "name": "align",
+        "type": "'left' | 'center'",
+        "description": "Alinhamento do conteúdo.",
+        "required": false,
+        "default": "'center'"
+      },
+      {
+        "name": "emptyMessage",
+        "type": "string",
+        "description": "Mensagem sem métricas.",
+        "required": false
+      }
+    ],
+    "example": "<MetricsBand variant=\"primary\" metrics={[{ value: '98%', label: 'Satisfação' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/MetricsBand.tsx",
+      "type": "component",
+      "target": "src/components/library/content/MetricsBand.tsx",
+      "content": "import type { HTMLAttributes, ReactNode } from 'react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type MetricItem = {\r\n  value: string\r\n  label: string\r\n  detail?: string\r\n  icon?: ReactNode\r\n}\r\n\r\nexport interface MetricsBandProps extends Omit<HTMLAttributes<HTMLElement>, 'children'> {\r\n  metrics: readonly MetricItem[]\r\n  variant?: 'default' | 'primary' | 'dark'\r\n  align?: 'left' | 'center'\r\n  emptyMessage?: string\r\n}\r\n\r\nexport function MetricsBand({\r\n  metrics,\r\n  variant = 'default',\r\n  align = 'center',\r\n  emptyMessage = 'Nenhuma métrica disponível.',\r\n  className,\r\n  ...props\r\n}: MetricsBandProps) {\r\n  return (\r\n    <section\r\n      className={cn(\r\n        'border-y py-8 md:py-10',\r\n        variant === 'default' && 'bg-background',\r\n        variant === 'primary' && 'border-primary bg-primary text-primary-foreground',\r\n        variant === 'dark' && 'border-foreground bg-foreground text-background',\r\n        className,\r\n      )}\r\n      aria-label=\"Principais métricas\"\r\n      {...props}\r\n    >\r\n      <div className=\"container\">\r\n        {metrics.length ? (\r\n          <dl\r\n            className={cn(\r\n              'grid gap-8',\r\n              metrics.length > 1 && 'sm:grid-cols-2',\r\n              metrics.length > 2 && 'lg:grid-cols-4',\r\n            )}\r\n          >\r\n            {metrics.map((metric) => (\r\n              <div\r\n                key={`${metric.value}-${metric.label}`}\r\n                className={cn(\r\n                  'group min-w-0',\r\n                  align === 'center' && 'text-center',\r\n                  variant === 'default' && 'lg:border-r lg:last:border-r-0',\r\n                )}\r\n              >\r\n                {metric.icon ? (\r\n                  <div className=\"mb-2 inline-flex transition-transform group-hover:-translate-y-1\">\r\n                    {metric.icon}\r\n                  </div>\r\n                ) : null}\r\n                <dd className=\"text-3xl font-bold tracking-tight md:text-4xl\">{metric.value}</dd>\r\n                <dt\r\n                  className={cn(\r\n                    'mt-1 font-medium',\r\n                    variant === 'default' ? 'text-muted-foreground' : 'opacity-80',\r\n                  )}\r\n                >\r\n                  {metric.label}\r\n                </dt>\r\n                {metric.detail ? <p className=\"mt-1 text-sm opacity-70\">{metric.detail}</p> : null}\r\n              </div>\r\n            ))}\r\n          </dl>\r\n        ) : (\r\n          <p className=\"text-center opacity-70\">{emptyMessage}</p>\r\n        )}\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

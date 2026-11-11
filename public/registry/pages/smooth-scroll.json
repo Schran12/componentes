@@ -1,0 +1,1 @@
+{"schemaVersion":1,"name":"smooth-scroll","title":"SmoothScroll","jsx":"<div className=\"rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground\">\r\n  Renderize <code>&lt;SmoothScroll /&gt;</code> uma única vez no layout raiz para ativar a\r\n  rolagem suave global (Lenis + GSAP).\r\n</div>","declarations":[],"imports":[],"dependencies":[],"files":[]}

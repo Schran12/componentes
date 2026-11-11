@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "audience-spotlight-section",
+  "kind": "component",
+  "title": "AudienceSpotlightSection",
+  "description": "Apresentação interativa de soluções por público, com benefícios, prova social e visual.",
+  "meta": {
+    "category": "content",
+    "role": "section.content",
+    "placement": "inside-main",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/content/AudienceSpotlightSection",
+    "tags": [
+      "fintech",
+      "segmentos",
+      "tabs",
+      "cases",
+      "depoimento"
+    ],
+    "variants": [
+      "com depoimento",
+      "com métricas",
+      "visual customizado"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "items",
+        "type": "readonly AudienceSpotlightItem[]",
+        "description": "Perfis de público.",
+        "required": true
+      },
+      {
+        "name": "initialItemId",
+        "type": "string",
+        "description": "Perfil inicialmente selecionado.",
+        "required": false
+      }
+    ],
+    "example": "<AudienceSpotlightSection title=\"Soluções por perfil\" items={[{ id: 'startups', label: 'Startups', title: 'Pronta para crescer', description: 'Lorem ipsum.', benefits: [] }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/AudienceSpotlightSection.tsx",
+      "type": "component",
+      "target": "src/components/library/content/AudienceSpotlightSection.tsx",
+      "content": "'use client'\r\n\r\nimport type { ReactNode } from 'react'\r\nimport { useState } from 'react'\r\nimport Link from 'next/link'\r\nimport { ArrowRight, Quote } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type AudienceSpotlightItem = {\r\n  id: string\r\n  label: string\r\n  eyebrow?: string\r\n  title: string\r\n  description: string\r\n  benefits: readonly { title: string; description: string }[]\r\n  action?: { label: string; href: string }\r\n  quote?: { text: string; author: string; role?: string }\r\n  visual?: ReactNode\r\n}\r\n\r\nexport type AudienceSpotlightSectionProps = {\r\n  title: string\r\n  description?: string\r\n  items: readonly AudienceSpotlightItem[]\r\n  initialItemId?: string\r\n  className?: string\r\n}\r\n\r\nexport function AudienceSpotlightSection({\r\n  title,\r\n  description,\r\n  items,\r\n  initialItemId,\r\n  className,\r\n}: AudienceSpotlightSectionProps) {\r\n  const [activeId, setActiveId] = useState(\r\n    initialItemId && items.some((item) => item.id === initialItemId) ? initialItemId : items[0]?.id,\r\n  )\r\n  const activeItem = items.find((item) => item.id === activeId) ?? items[0]\r\n\r\n  if (!activeItem) return null\r\n\r\n  return (\r\n    <section className={cn('bg-white py-20 text-[#0a2540] md:py-28', className)}>\r\n      <div className=\"container\">\r\n        <div className=\"max-w-3xl\">\r\n          <h2 className=\"text-4xl font-bold tracking-[-0.035em] md:text-6xl\">{title}</h2>\r\n          {description ? (\r\n            <p className=\"mt-6 max-w-2xl text-lg leading-8 text-[#425466]\">{description}</p>\r\n          ) : null}\r\n        </div>\r\n\r\n        <div className=\"mt-12 flex flex-wrap gap-2\" role=\"tablist\" aria-label={title}>\r\n          {items.map((item) => {\r\n            const selected = item.id === activeItem.id\r\n            return (\r\n              <button\r\n                key={item.id}\r\n                type=\"button\"\r\n                role=\"tab\"\r\n                aria-selected={selected}\r\n                onClick={() => setActiveId(item.id)}\r\n                className={cn(\r\n                  'rounded-full border px-5 py-2.5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#635bff] focus-visible:ring-offset-2',\r\n                  selected\r\n                    ? 'border-[#0a2540] bg-[#0a2540] text-white'\r\n                    : 'border-[#dfe7ef] bg-white text-[#425466] hover:border-[#aab7c4] hover:text-[#0a2540]',\r\n                )}\r\n              >\r\n                {item.label}\r\n              </button>\r\n            )\r\n          })}\r\n        </div>\r\n\r\n        <article role=\"tabpanel\" className=\"mt-8 overflow-hidden rounded-[2rem] bg-[#f6f9fc]\">\r\n          <div className=\"grid lg:grid-cols-[1.02fr_.98fr]\">\r\n            <div className=\"p-7 sm:p-10 lg:p-14\">\r\n              {activeItem.eyebrow ? (\r\n                <p className=\"text-sm font-semibold text-[#635bff]\">{activeItem.eyebrow}</p>\r\n              ) : null}\r\n              <h3 className=\"mt-4 text-3xl font-bold tracking-tight md:text-5xl\">\r\n                {activeItem.title}\r\n              </h3>\r\n              <p className=\"mt-5 max-w-xl leading-7 text-[#425466]\">{activeItem.description}</p>\r\n\r\n              <div className=\"mt-9 grid gap-7 sm:grid-cols-2\">\r\n                {activeItem.benefits.slice(0, 4).map((benefit, index) => (\r\n                  <div\r\n                    key={`${benefit.title}-${index}`}\r\n                    className=\"border-l-2 border-[#635bff] pl-4\"\r\n                  >\r\n                    <h4 className=\"font-semibold\">{benefit.title}</h4>\r\n                    <p className=\"mt-2 text-sm leading-6 text-[#697386]\">{benefit.description}</p>\r\n                  </div>\r\n                ))}\r\n              </div>\r\n\r\n              {activeItem.action ? (\r\n                <Link\r\n                  href={activeItem.action.href}\r\n                  className=\"mt-9 inline-flex items-center gap-2 text-sm font-semibold text-[#635bff] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#635bff]\"\r\n                >\r\n                  {activeItem.action.label}\r\n                  <ArrowRight className=\"h-4 w-4\" aria-hidden />\r\n                </Link>\r\n              ) : null}\r\n            </div>\r\n\r\n            <div className=\"relative min-h-[460px] overflow-hidden bg-gradient-to-br from-[#635bff] via-[#7a73ff] to-[#80e9ff] p-7 text-white sm:p-10 lg:p-14\">\r\n              {activeItem.visual ?? (\r\n                <>\r\n                  <span\r\n                    aria-hidden\r\n                    className=\"absolute -right-20 -top-20 h-72 w-72 rounded-full border-[42px] border-white/10\"\r\n                  />\r\n                  <span\r\n                    aria-hidden\r\n                    className=\"absolute -bottom-28 -left-20 h-80 w-80 rotate-12 rounded-[5rem] bg-[#0a2540]/20\"\r\n                  />\r\n                  {activeItem.quote ? (\r\n                    <blockquote className=\"relative flex h-full min-h-[340px] flex-col justify-end\">\r\n                      <Quote className=\"h-10 w-10 text-white/55\" aria-hidden />\r\n                      <p className=\"mt-6 text-2xl font-semibold leading-9\">\r\n                        “{activeItem.quote.text}”\r\n                      </p>\r\n                      <footer className=\"mt-7\">\r\n                        <cite className=\"font-semibold not-italic\">{activeItem.quote.author}</cite>\r\n                        {activeItem.quote.role ? (\r\n                          <p className=\"mt-1 text-sm text-white/70\">{activeItem.quote.role}</p>\r\n                        ) : null}\r\n                      </footer>\r\n                    </blockquote>\r\n                  ) : (\r\n                    <div className=\"relative grid h-full min-h-[340px] grid-cols-2 content-end gap-4\">\r\n                      {[\r\n                        ['48%', 'crescimento'],\r\n                        ['12x', 'escala'],\r\n                        ['99,9%', 'disponibilidade'],\r\n                        ['24/7', 'operação'],\r\n                      ].map(([value, label]) => (\r\n                        <div key={value} className=\"rounded-2xl bg-white/15 p-5 backdrop-blur\">\r\n                          <p className=\"text-3xl font-bold\">{value}</p>\r\n                          <p className=\"mt-1 text-xs text-white/70\">{label}</p>\r\n                        </div>\r\n                      ))}\r\n                    </div>\r\n                  )}\r\n                </>\r\n              )}\r\n            </div>\r\n          </div>\r\n        </article>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "testimonials-avatar-switcher",
+  "kind": "component",
+  "title": "TestimonialsAvatarSwitcher",
+  "description": "Depoimento em card escuro com estrelas e aspas, autor abaixo e coluna de avatares para alternar entre clientes.",
+  "meta": {
+    "category": "feedback",
+    "role": "section.social-proof",
+    "placement": "inside-main",
+    "stage": "depoimentos",
+    "topics": [
+      "testimonials"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/feedback/TestimonialsAvatarSwitcher",
+    "tags": [
+      "depoimentos",
+      "avaliações",
+      "google",
+      "clientes",
+      "prova social"
+    ],
+    "variants": [
+      "avatares laterais",
+      "estrelas",
+      "autor em destaque"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título da seção.",
+        "required": true
+      },
+      {
+        "name": "items",
+        "type": "readonly TestimonialsAvatarSwitcherItem[]",
+        "description": "Depoimentos com quote, name, role, avatar e rating.",
+        "required": true
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "description": "Texto curto acima do título.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Texto de apoio.",
+        "required": false
+      }
+    ],
+    "example": "<TestimonialsAvatarSwitcher eyebrow=\"Avaliações Google\" title=\"O que dizem nossos clientes\" items={items} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/feedback/TestimonialsAvatarSwitcher.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/TestimonialsAvatarSwitcher.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport { Quote, Star } from 'lucide-react'\r\nimport { useState } from 'react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type TestimonialsAvatarSwitcherItem = {\r\n  quote: string\r\n  name: string\r\n  role?: string\r\n  avatar: { src: string; alt: string }\r\n  rating?: number\r\n}\r\n\r\nexport type TestimonialsAvatarSwitcherProps = {\r\n  title: string\r\n  items: readonly TestimonialsAvatarSwitcherItem[]\r\n  eyebrow?: string\r\n  description?: string\r\n  className?: string\r\n}\r\n\r\n/** Depoimento em destaque com estrelas, autor abaixo e avatares para alternar entre clientes. */\r\nexport function TestimonialsAvatarSwitcher({\r\n  title,\r\n  items,\r\n  eyebrow,\r\n  description,\r\n  className,\r\n}: TestimonialsAvatarSwitcherProps) {\r\n  const [active, setActive] = useState(0)\r\n  const current = items[active]\r\n  if (!current) return null\r\n  const rating = Math.max(0, Math.min(5, Math.round(current.rating ?? 5)))\r\n\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)}>\r\n      <div className=\"container grid items-center gap-10 lg:grid-cols-[0.8fr_1.6fr] lg:gap-14\">\r\n        <div>\r\n          {eyebrow ? (\r\n            <p className=\"text-xs font-semibold uppercase tracking-[0.2em] text-primary\">\r\n              {eyebrow}\r\n            </p>\r\n          ) : null}\r\n          <h2 className=\"mt-2 text-3xl font-bold tracking-tight md:text-4xl\">{title}</h2>\r\n          {description ? (\r\n            <p className=\"mt-4 leading-7 text-muted-foreground\">{description}</p>\r\n          ) : null}\r\n        </div>\r\n\r\n        <div className=\"flex flex-col gap-6 sm:flex-row sm:items-start\">\r\n          <figure key={active} className=\"min-w-0 flex-1 duration-500 animate-in fade-in\">\r\n            <div className=\"relative rounded-2xl bg-foreground p-7 text-background shadow-2xl md:p-9\">\r\n              <div className=\"flex gap-1 text-amber-400\" aria-label={`${rating} de 5 estrelas`}>\r\n                {Array.from({ length: 5 }, (_, index) => (\r\n                  <Star\r\n                    key={index}\r\n                    className={cn('h-4 w-4', index < rating ? 'fill-current' : 'opacity-30')}\r\n                    aria-hidden=\"true\"\r\n                  />\r\n                ))}\r\n              </div>\r\n              <blockquote className=\"mt-5 text-lg italic leading-8 opacity-90\">\r\n                “{current.quote}”\r\n              </blockquote>\r\n              <Quote\r\n                className=\"absolute bottom-6 right-6 h-10 w-10 fill-current opacity-15\"\r\n                aria-hidden=\"true\"\r\n              />\r\n            </div>\r\n            <figcaption className=\"mt-6 flex items-center gap-4\">\r\n              <span className=\"relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-border\">\r\n                <Image\r\n                  src={current.avatar.src}\r\n                  alt={current.avatar.alt}\r\n                  fill\r\n                  sizes=\"64px\"\r\n                  className=\"object-cover\"\r\n                />\r\n              </span>\r\n              <span>\r\n                <span className=\"block font-bold\">{current.name}</span>\r\n                {current.role ? (\r\n                  <span className=\"block text-sm text-muted-foreground\">{current.role}</span>\r\n                ) : null}\r\n              </span>\r\n            </figcaption>\r\n          </figure>\r\n\r\n          {items.length > 1 ? (\r\n            <div\r\n              className=\"flex gap-3 sm:flex-col\"\r\n              role=\"tablist\"\r\n              aria-label=\"Escolher depoimento\"\r\n              aria-orientation=\"vertical\"\r\n            >\r\n              {items.map((item, index) => (\r\n                <button\r\n                  key={item.name}\r\n                  type=\"button\"\r\n                  role=\"tab\"\r\n                  aria-selected={index === active}\r\n                  aria-label={`Depoimento de ${item.name}`}\r\n                  onClick={() => setActive(index)}\r\n                  className={cn(\r\n                    'relative h-14 w-14 shrink-0 overflow-hidden rounded-full border-4 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:h-16 md:w-16',\r\n                    index === active\r\n                      ? 'border-foreground/70'\r\n                      : 'border-border opacity-60 grayscale hover:opacity-100 hover:grayscale-0',\r\n                  )}\r\n                >\r\n                  <Image src={item.avatar.src} alt=\"\" fill sizes=\"64px\" className=\"object-cover\" />\r\n                </button>\r\n              ))}\r\n            </div>\r\n          ) : null}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

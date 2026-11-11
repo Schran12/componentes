@@ -1,0 +1,1545 @@
+{
+  "schemaVersion": 1,
+  "name": "componentes-bloomin",
+  "title": "Componentes Bloomin",
+  "homepage": "https://componentes-indol.vercel.app/componentes",
+  "resources": {
+    "aiContext": "https://componentes-indol.vercel.app/registry/ai-context.json",
+    "recipes": "https://componentes-indol.vercel.app/registry/recipes.json",
+    "feed": "https://componentes-indol.vercel.app/registry/feed.json",
+    "llms": "https://componentes-indol.vercel.app/llms.txt",
+    "fullDocumentation": "https://componentes-indol.vercel.app/llms-full.txt"
+  },
+  "items": [
+    {
+      "name": "componentes-bloomin",
+      "kind": "collection",
+      "title": "Componentes Bloomin — biblioteca completa",
+      "description": "Todos os componentes reutilizáveis e suas dependências locais."
+    },
+    {
+      "name": "action-group",
+      "kind": "component",
+      "title": "ActionGroup",
+      "description": "Agrupa links de ação com alinhamento e empilhamento responsivo."
+    },
+    {
+      "name": "media-frame",
+      "kind": "component",
+      "title": "MediaFrame",
+      "description": "Moldura semântica para mídia com proporção, raio, elevação e legenda."
+    },
+    {
+      "name": "section-heading",
+      "kind": "component",
+      "title": "SectionHeading",
+      "description": "Cabeçalho de seção tipado com eyebrow, descrição e alinhamento."
+    },
+    {
+      "name": "section-shell",
+      "kind": "component",
+      "title": "SectionShell",
+      "description": "Contêiner de seção com largura, espaçamento e tom configuráveis."
+    },
+    {
+      "name": "hover-button",
+      "kind": "component",
+      "title": "HoverButton",
+      "description": "Botão de ação com seis efeitos de hover, link opcional e ícone configurável."
+    },
+    {
+      "name": "accent-button",
+      "kind": "component",
+      "title": "AccentButton",
+      "description": "Botão/link temático: pílula com borda em gradiente (glow) ou botão com ícone deslizante (industrial)."
+    },
+    {
+      "name": "eyebrow-heading",
+      "kind": "component",
+      "title": "EyebrowHeading",
+      "description": "Cabeçalho de seção com eyebrow e linha de destaque, título temático, descrição e ação opcional."
+    },
+    {
+      "name": "pill-button",
+      "kind": "component",
+      "title": "PillButton",
+      "description": "Botão pílula com variantes sólida, contorno e vidro (glass)."
+    },
+    {
+      "name": "badge-section-header",
+      "kind": "component",
+      "title": "BadgeSectionHeader",
+      "description": "Cabeçalho de seção com selo (badge), título e subtítulo em tema claro ou escuro."
+    },
+    {
+      "name": "announcement-bar",
+      "kind": "component",
+      "title": "AnnouncementBar",
+      "description": "Faixa de anúncio com ação, variações de contraste e fechamento opcional."
+    },
+    {
+      "name": "top-bar",
+      "kind": "component",
+      "title": "TopBar",
+      "description": "Faixa superior escura para telefone, e-mail e horário, com ícones em destaque e alinhamento esquerda/direita."
+    },
+    {
+      "name": "breadcrumbs-chevron",
+      "kind": "component",
+      "title": "BreadcrumbsChevron",
+      "description": "Breadcrumb padrão com chevron, ícone de início e colapso dos níveis do meio."
+    },
+    {
+      "name": "breadcrumbs-slash",
+      "kind": "component",
+      "title": "BreadcrumbsSlash",
+      "description": "Breadcrumb textual com separador em barra (/)."
+    },
+    {
+      "name": "breadcrumbs-contained",
+      "kind": "component",
+      "title": "BreadcrumbsContained",
+      "description": "Breadcrumb em cápsula com borda e separador em ponto."
+    },
+    {
+      "name": "breadcrumbs-pills",
+      "kind": "component",
+      "title": "BreadcrumbsPills",
+      "description": "Cada nível em pílula; o atual destaca na cor da marca."
+    },
+    {
+      "name": "breadcrumbs-steps",
+      "kind": "component",
+      "title": "BreadcrumbsSteps",
+      "description": "Breadcrumb em degraus (estilo wizard / chevron ribbon)."
+    },
+    {
+      "name": "breadcrumbs-underline",
+      "kind": "component",
+      "title": "BreadcrumbsUnderline",
+      "description": "Breadcrumb com o item atual sublinhado na cor da marca."
+    },
+    {
+      "name": "breadcrumbs-mobile-back",
+      "kind": "component",
+      "title": "BreadcrumbsMobileBack",
+      "description": "No celular mostra só “← página anterior”; no desktop mantém a trilha completa."
+    },
+    {
+      "name": "breadcrumbs-mobile-scroll",
+      "kind": "component",
+      "title": "BreadcrumbsMobileScroll",
+      "description": "Trilha em pílulas com rolagem horizontal no mobile."
+    },
+    {
+      "name": "breadcrumbs-inverted",
+      "kind": "component",
+      "title": "BreadcrumbsInverted",
+      "description": "Breadcrumb em tom claro para fundos escuros ou na cor da marca."
+    },
+    {
+      "name": "mobile-drawer",
+      "kind": "component",
+      "title": "MobileDrawer",
+      "description": "Menu móvel acessível em dialog lateral com itens aninhados e ações."
+    },
+    {
+      "name": "navbar-simple",
+      "kind": "component",
+      "title": "NavbarSimple",
+      "description": "Barra de navegação direta com ações e drawer responsivo."
+    },
+    {
+      "name": "navbar-centered",
+      "kind": "component",
+      "title": "NavbarCentered",
+      "description": "Navbar com marca central e links distribuídos nos dois lados."
+    },
+    {
+      "name": "navbar-mega",
+      "kind": "component",
+      "title": "NavbarMega",
+      "description": "Navegação ampla com mega menu animado (hover com atraso, fecha ao clicar fora/Esc/navegar) e fallback móvel."
+    },
+    {
+      "name": "footer-columns",
+      "kind": "component",
+      "title": "FooterColumns",
+      "description": "Rodapé institucional completo com colunas, redes e links legais."
+    },
+    {
+      "name": "footer-compact",
+      "kind": "component",
+      "title": "FooterCompact",
+      "description": "Rodapé compacto com marca, links e redes sociais."
+    },
+    {
+      "name": "navbar-floating",
+      "kind": "component",
+      "title": "NavbarFloating",
+      "description": "Navegação flutuante em vidro com links agrupados, ações e drawer móvel."
+    },
+    {
+      "name": "navigation-dropdown",
+      "kind": "component",
+      "title": "NavigationDropdown",
+      "description": "Dropdown Radix para links ou ações, com ícones, descrições e atalhos."
+    },
+    {
+      "name": "navbar-pill",
+      "kind": "component",
+      "title": "NavbarPill",
+      "description": "Navbar flutuante em cápsula com temas, ação e alternador opcional."
+    },
+    {
+      "name": "navbar-minimal",
+      "kind": "component",
+      "title": "NavbarMinimal",
+      "description": "Navbar de alto contraste com links centralizados, marca lateral e ação arredondada."
+    },
+    {
+      "name": "contact-info-bar",
+      "kind": "component",
+      "title": "ContactInfoBar",
+      "description": "Barra superior compacta para endereço, e-mail, horário e outros contatos."
+    },
+    {
+      "name": "navbar-accent",
+      "kind": "component",
+      "title": "NavbarAccent",
+      "description": "Cabeçalho com dropdowns, sublinhado ativo, CTA, topbar de contatos opcional e drawer mobile."
+    },
+    {
+      "name": "footer-accent",
+      "kind": "component",
+      "title": "FooterAccent",
+      "description": "Rodapé com marca, redes sociais, colunas de links com divisórias e barra legal."
+    },
+    {
+      "name": "scroll-to-top-button",
+      "kind": "component",
+      "title": "ScrollToTopButton",
+      "description": "Botão flutuante de voltar ao topo com anel de progresso da rolagem."
+    },
+    {
+      "name": "floating-whatsapp-button",
+      "kind": "component",
+      "title": "FloatingWhatsAppButton",
+      "description": "Botão flutuante de WhatsApp com mensagem pronta, empilhável acima do ScrollToTopButton."
+    },
+    {
+      "name": "floating-instagram-button",
+      "kind": "component",
+      "title": "FloatingInstagramButton",
+      "description": "Botão flutuante do Instagram no canto inferior direito."
+    },
+    {
+      "name": "floating-facebook-button",
+      "kind": "component",
+      "title": "FloatingFacebookButton",
+      "description": "Botão flutuante do Facebook no canto inferior direito."
+    },
+    {
+      "name": "floating-linkedin-button",
+      "kind": "component",
+      "title": "FloatingLinkedInButton",
+      "description": "Botão flutuante do LinkedIn no canto inferior direito."
+    },
+    {
+      "name": "floating-youtube-button",
+      "kind": "component",
+      "title": "FloatingYouTubeButton",
+      "description": "Botão flutuante do YouTube no canto inferior direito."
+    },
+    {
+      "name": "floating-tiktok-button",
+      "kind": "component",
+      "title": "FloatingTikTokButton",
+      "description": "Botão flutuante do TikTok no canto inferior direito."
+    },
+    {
+      "name": "floating-x-button",
+      "kind": "component",
+      "title": "FloatingXButton",
+      "description": "Botão flutuante do X (Twitter) no canto inferior direito."
+    },
+    {
+      "name": "floating-social-stack",
+      "kind": "component",
+      "title": "FloatingSocialStack",
+      "description": "Pilha vertical de botões flutuantes de redes sociais (Instagram, Facebook, LinkedIn etc.)."
+    },
+    {
+      "name": "navbar-split-logo",
+      "kind": "component",
+      "title": "NavbarSplitLogo",
+      "description": "Navbar com menu hambúrguer e links à esquerda, logo centralizado, redes sociais com divisórias e CTA à direita; drawer lateral."
+    },
+    {
+      "name": "footer-contact-columns",
+      "kind": "component",
+      "title": "FooterContactColumns",
+      "description": "Rodapé escuro com logo e descrição, colunas de links com título sublinhado, contatos com ícones em círculo e barra de copyright com crédito."
+    },
+    {
+      "name": "pill-nav",
+      "kind": "component",
+      "title": "PillNav",
+      "description": "Navegação em pílula com destaque deslizante que acompanha o item ativo e o hover."
+    },
+    {
+      "name": "hueline-navbar",
+      "kind": "component",
+      "title": "HuelineNavbar",
+      "description": "Navbar fashion HUE/line: wordmark Archivo + Bodoni, links mono Wardrobe·Lookbook·Colour·Shop e ações Search/Saved/Bag com contadores."
+    },
+    {
+      "name": "hueline-footer",
+      "kind": "component",
+      "title": "HuelineFooter",
+      "description": "Rodapé Hueline com wordmark condensado, colunas de links, newsletter e copyright mono."
+    },
+    {
+      "name": "kresna-footer",
+      "kind": "component",
+      "title": "KresnaFooter",
+      "description": "Rodapé Kresna em dois cards: vídeo + logo/social à esquerda; nav, badge Feeling lucky? e subscribe à direita, com watermark."
+    },
+    {
+      "name": "veloria-navbar",
+      "kind": "component",
+      "title": "VeloriaNavbar",
+      "description": "Navbar frosted glass VELORIA serif, links Onboard·The voyage·Destinations·Reserve e pill Book a charter dourado."
+    },
+    {
+      "name": "nimbus-navbar",
+      "kind": "component",
+      "title": "NimbusNavbar",
+      "description": "Navbar transparente Nimbus que ganha blur ao rolar; links Docs·Pricing·Blog e CTA Get API key; menu mobile."
+    },
+    {
+      "name": "nimbus-footer",
+      "kind": "component",
+      "title": "NimbusFooter",
+      "description": "Rodapé mínimo dark Nimbus com marca, links Docs·Pricing·Status·Privacy·Terms e copyright."
+    },
+    {
+      "name": "banner-image",
+      "kind": "component",
+      "title": "BannerImage",
+      "description": "Banner imersivo com imagem de fundo, overlay e duas ações."
+    },
+    {
+      "name": "banner-split",
+      "kind": "component",
+      "title": "BannerSplit",
+      "description": "Banner em duas colunas com mídia alternável e chamada principal."
+    },
+    {
+      "name": "banner-video",
+      "kind": "component",
+      "title": "BannerVideo",
+      "description": "Banner cinematográfico com vídeo em loop, poster e ação."
+    },
+    {
+      "name": "banner-carousel",
+      "kind": "component",
+      "title": "BannerCarousel",
+      "description": "Carrossel de destaques acessível com autoplay configurável."
+    },
+    {
+      "name": "page-header",
+      "kind": "component",
+      "title": "PageHeader",
+      "description": "Cabeçalho interno com breadcrumb, eyebrow e alinhamento."
+    },
+    {
+      "name": "banner-immersive",
+      "kind": "component",
+      "title": "BannerImmersive",
+      "description": "Banner fotográfico de alto impacto com overlay, título e ações — sem navbar embutida (use um componente de Navbars)."
+    },
+    {
+      "name": "banner-editorial",
+      "kind": "component",
+      "title": "BannerEditorial",
+      "description": "Banner assimétrico com tipografia expressiva e composições de mídia sobrepostas."
+    },
+    {
+      "name": "agency-hero-section",
+      "kind": "component",
+      "title": "AgencyHeroSection",
+      "description": "Hero editorial para agências com destaque cromático, mídia e argumentos rápidos."
+    },
+    {
+      "name": "fintech-hero-section",
+      "kind": "component",
+      "title": "FintechHeroSection",
+      "description": "Hero de alta densidade para produtos digitais, com gradiente, métricas e painel de dados."
+    },
+    {
+      "name": "investment-hero-carousel",
+      "kind": "component",
+      "title": "InvestmentHeroCarousel",
+      "description": "Hero editorial de tela ampla com imagens, transição em fade e navegação acessível."
+    },
+    {
+      "name": "social-workspace-hero",
+      "kind": "component",
+      "title": "SocialWorkspaceHero",
+      "description": "Hero de SaaS social com captura de e-mail, canais compatíveis e visual de calendário."
+    },
+    {
+      "name": "command-launcher-hero",
+      "kind": "component",
+      "title": "CommandLauncherHero",
+      "description": "Hero escuro com launcher pesquisável, comandos, atalhos e ações de conversão."
+    },
+    {
+      "name": "progress-banner-carousel",
+      "kind": "component",
+      "title": "ProgressBannerCarousel",
+      "description": "Banner full-width com fade, bullets que mostram o progresso do autoplay, setas e redes sociais laterais."
+    },
+    {
+      "name": "floating-illustration-hero",
+      "kind": "component",
+      "title": "FloatingIllustrationHero",
+      "description": "Hero com título em gradiente animado e ilustração flutuante (framer-motion)."
+    },
+    {
+      "name": "image-overlay-hero",
+      "kind": "component",
+      "title": "ImageOverlayHero",
+      "description": "Cabeçalho de página com imagem de fundo, overlay em gradiente, breadcrumbs e ações."
+    },
+    {
+      "name": "pillars-hero",
+      "kind": "component",
+      "title": "PillarsHero",
+      "description": "Hero em duas colunas com eyebrow técnico, chips, card de estatística flutuante e faixa de pilares com reveal."
+    },
+    {
+      "name": "promo-coupon-carousel",
+      "kind": "component",
+      "title": "PromoCouponCarousel",
+      "description": "Carrossel de promoções com autoplay, barra de progresso, contador 01/04 e cupom copiável."
+    },
+    {
+      "name": "hueline-hero",
+      "kind": "component",
+      "title": "HuelineHero",
+      "description": "Hero 100svh com vídeo/poster, headline WEAR THE / colour / OUT LOUD, eyebrow SS27, CTA Shop e scroll cue."
+    },
+    {
+      "name": "hueline-page-demo",
+      "kind": "component",
+      "title": "HuelinePageDemo",
+      "description": "Iframe em altura total apontando para o site estático /hueline/index.html — preview completo Saturation SS27."
+    },
+    {
+      "name": "veloria-hero",
+      "kind": "component",
+      "title": "VeloriaHero",
+      "description": "Hero cinematográfico com vídeo de iate, headline The open sea reserved, CTAs, card glass Aurelle com [PRICE] e scroll cue."
+    },
+    {
+      "name": "veloria-page-demo",
+      "kind": "component",
+      "title": "VeloriaPageDemo",
+      "description": "Iframe em altura total apontando para /veloria/index.html — landing cinematográfica completa."
+    },
+    {
+      "name": "nimbus-hero",
+      "kind": "component",
+      "title": "NimbusHero",
+      "description": "Hero dark cinematográfico com aurora blobs, spotlight no cursor, pill public beta, headline com gradiente violeta→cyan e CTAs Get API key / View docs."
+    },
+    {
+      "name": "nimbus-page-demo",
+      "kind": "component",
+      "title": "NimbusPageDemo",
+      "description": "Iframe em altura total apontando para /nimbus/index.html — landing dark completa da API Nimbus AI."
+    },
+    {
+      "name": "nimbus-cta",
+      "kind": "component",
+      "title": "NimbusCta",
+      "description": "Faixa CTA “Start building in 5 minutes” com fundo glow violeta/cyan e botão Get API key."
+    },
+    {
+      "name": "bento-grid",
+      "kind": "component",
+      "title": "BentoGrid",
+      "description": "Grade editorial bento com tamanhos, mídia, ícones e ações por item."
+    },
+    {
+      "name": "comparison-table",
+      "kind": "component",
+      "title": "ComparisonTable",
+      "description": "Tabela comparativa responsiva com coluna destacada e valores semânticos."
+    },
+    {
+      "name": "gallery-grid",
+      "kind": "component",
+      "title": "GalleryGrid",
+      "description": "Galeria responsiva em grade ou masonry, com legendas e links opcionais."
+    },
+    {
+      "name": "media-split",
+      "kind": "component",
+      "title": "MediaSplit",
+      "description": "Seção editorial em duas colunas com imagem, conteúdo livre e ação."
+    },
+    {
+      "name": "metrics-band",
+      "kind": "component",
+      "title": "MetricsBand",
+      "description": "Faixa de métricas para destacar indicadores em três tratamentos visuais."
+    },
+    {
+      "name": "process-steps",
+      "kind": "component",
+      "title": "ProcessSteps",
+      "description": "Processo numerado em cards com estado final destacado."
+    },
+    {
+      "name": "stats-grid",
+      "kind": "component",
+      "title": "StatsGrid",
+      "description": "Grade de indicadores com rótulo, valor e detalhe opcional."
+    },
+    {
+      "name": "timeline",
+      "kind": "component",
+      "title": "Timeline",
+      "description": "Linha do tempo vertical semântica para marcos e histórico."
+    },
+    {
+      "name": "interactive-feature-showcase",
+      "kind": "component",
+      "title": "InteractiveFeatureShowcase",
+      "description": "Showcase estruturado por abas com mídia, conteúdo e transições contextuais."
+    },
+    {
+      "name": "about-gallery",
+      "kind": "component",
+      "title": "AboutGallery",
+      "description": "Seção sobre com galeria, mosaico ou composição editorial e indicadores."
+    },
+    {
+      "name": "about-values-section",
+      "kind": "component",
+      "title": "AboutValuesSection",
+      "description": "Seção institucional editorial com narrativa, manifesto e cards de valores."
+    },
+    {
+      "name": "category-mosaic",
+      "kind": "component",
+      "title": "CategoryMosaic",
+      "description": "Mosaico responsivo de categorias com cartões altos, largos e rótulos sobre mídia."
+    },
+    {
+      "name": "differentials-section",
+      "kind": "component",
+      "title": "DifferentialsSection",
+      "description": "Seção de diferenciais com quatro composições, ícones, listas e ação opcional."
+    },
+    {
+      "name": "about-metrics-section",
+      "kind": "component",
+      "title": "AboutMetricsSection",
+      "description": "Seção institucional com narrativa longa, mídia e métricas de trajetória."
+    },
+    {
+      "name": "global-metrics-section",
+      "kind": "component",
+      "title": "GlobalMetricsSection",
+      "description": "Faixa editorial de métricas para comunicar escala, cobertura e confiabilidade."
+    },
+    {
+      "name": "audience-spotlight-section",
+      "kind": "component",
+      "title": "AudienceSpotlightSection",
+      "description": "Apresentação interativa de soluções por público, com benefícios, prova social e visual."
+    },
+    {
+      "name": "integration-stack-section",
+      "kind": "component",
+      "title": "IntegrationStackSection",
+      "description": "Seção técnica em alto contraste com snippet, métricas e caminhos de integração."
+    },
+    {
+      "name": "investment-platform-section",
+      "kind": "component",
+      "title": "InvestmentPlatformSection",
+      "description": "Narrativa institucional com métricas amplas para ativos, estratégias e portfólio."
+    },
+    {
+      "name": "responsibility-feature-section",
+      "kind": "component",
+      "title": "ResponsibilityFeatureSection",
+      "description": "Seção imersiva para responsabilidade, impacto e compromissos institucionais."
+    },
+    {
+      "name": "office-network-section",
+      "kind": "component",
+      "title": "OfficeNetworkSection",
+      "description": "Rede responsiva de escritórios com endereço, telefone, e-mail e localização."
+    },
+    {
+      "name": "workspace-feature-showcase",
+      "kind": "component",
+      "title": "WorkspaceFeatureShowcase",
+      "description": "Showcase em abas para recursos de criação, publicação, comunidade e análises."
+    },
+    {
+      "name": "conversational-workflow-section",
+      "kind": "component",
+      "title": "ConversationalWorkflowSection",
+      "description": "Fluxo de trabalho com IA apresentado como conversa, etapas e ideias acionáveis."
+    },
+    {
+      "name": "transparency-metrics-section",
+      "kind": "component",
+      "title": "TransparencyMetricsSection",
+      "description": "Painel editorial colorido para métricas abertas de produto, equipe e receita."
+    },
+    {
+      "name": "keyboard-performance-section",
+      "kind": "component",
+      "title": "KeyboardPerformanceSection",
+      "description": "Composição visual keyboard-first com teclado e princípios de produto."
+    },
+    {
+      "name": "ai-agent-workspace-section",
+      "kind": "component",
+      "title": "AIAgentWorkspaceSection",
+      "description": "Workspace de agente de IA com ferramentas executadas, resultado e capacidades."
+    },
+    {
+      "name": "automation-toolkit-section",
+      "kind": "component",
+      "title": "AutomationToolkitSection",
+      "description": "Grade visual de automações pessoais, snippets, links e atalhos."
+    },
+    {
+      "name": "about-stats-split",
+      "kind": "component",
+      "title": "AboutStatsSplit",
+      "description": "Seção \"sobre\" com imagem, texto, contadores animados, pilares e ação."
+    },
+    {
+      "name": "numbered-card-grid",
+      "kind": "component",
+      "title": "NumberedCardGrid",
+      "description": "Grade numerada (01, 02...) em cartões ou faixa com divisórias, com preenchimento no hover."
+    },
+    {
+      "name": "icon-feature-cards",
+      "kind": "component",
+      "title": "IconFeatureCards",
+      "description": "Cartões com ícone, título, descrição e ação opcional por item."
+    },
+    {
+      "name": "lightbox-gallery",
+      "kind": "component",
+      "title": "LightboxGallery",
+      "description": "Galeria em mosaico (tamanhos default/wide/large) com lightbox em tela cheia e navegação por teclado."
+    },
+    {
+      "name": "floating-media-article",
+      "kind": "component",
+      "title": "FloatingMediaArticle",
+      "description": "Artigo com imagem flutuante (texto contorna) e trecho expansível \"ler mais\"."
+    },
+    {
+      "name": "logo-carousel-band",
+      "kind": "component",
+      "title": "LogoCarouselBand",
+      "description": "Faixa de logos de clientes em carrossel contínuo (swiper), com modo monocromático."
+    },
+    {
+      "name": "marquee-gallery",
+      "kind": "component",
+      "title": "MarqueeGallery",
+      "description": "Galeria em faixa(s) contínua(s) com uma ou duas linhas em direções opostas."
+    },
+    {
+      "name": "location-showcase",
+      "kind": "component",
+      "title": "LocationShowcase",
+      "description": "Lista de unidades/locais que troca a imagem em destaque no hover, foco ou clique, com crossfade e zoom."
+    },
+    {
+      "name": "service-area-cards",
+      "kind": "component",
+      "title": "ServiceAreaCards",
+      "description": "Cards de regiões atendidas com imagem, zoom no hover, overlay roxo e descrição revelada."
+    },
+    {
+      "name": "problem-solution-cards",
+      "kind": "component",
+      "title": "ProblemSolutionCards",
+      "description": "Sequência problema → impacto → solução em cards numerados, com destaque roxo no último."
+    },
+    {
+      "name": "credibility-section",
+      "kind": "component",
+      "title": "CredibilitySection",
+      "description": "Seção de credibilidade com contadores animados, imagem fixa com legenda e lista numerada de motivos."
+    },
+    {
+      "name": "coverage-callout",
+      "kind": "component",
+      "title": "CoverageCallout",
+      "description": "Chamada de área de atendimento com card de CTA e selo circular pulsante."
+    },
+    {
+      "name": "map-embed-section",
+      "kind": "component",
+      "title": "MapEmbedSection",
+      "description": "Mapa do Google incorporado com barra de endereço e link \"Como chegar\"; altura menor no celular."
+    },
+    {
+      "name": "article-layout",
+      "kind": "component",
+      "title": "ArticleLayout",
+      "description": "Corpo de artigo de blog em três layouts: clássico, com barra lateral (índice e CTA) e revista."
+    },
+    {
+      "name": "blog-post-page",
+      "kind": "component",
+      "title": "BlogPostPage",
+      "description": "Página completa de post do blog: cabeçalho/hero, corpo em 4 modelos (clássico, capa, barra lateral e revista) e \"Leia também\"."
+    },
+    {
+      "name": "feature-image-list",
+      "kind": "component",
+      "title": "FeatureImageList",
+      "description": "Três colunas: título em caixa alta com botão, imagem central e lista de diferenciais com ícones em blocos."
+    },
+    {
+      "name": "polaroid-line-carousel",
+      "kind": "component",
+      "title": "PolaroidLineCarousel",
+      "description": "Carrossel de polaroides num varal que cede no meio: arraste, setas, autoplay e balanço nos pregadores. Sem Tailwind; CSS embutido."
+    },
+    {
+      "name": "flick-cards",
+      "kind": "component",
+      "title": "FlickCards",
+      "description": "Deck 3D em leque (GSAP): arraste/flick das cartas, setas, autoplay 3,2s, glow ambient e prefers-reduced-motion."
+    },
+    {
+      "name": "liquid-glass-carousel",
+      "kind": "component",
+      "title": "LiquidGlassCarousel",
+      "description": "Carrossel infinito com faixa de fotos e bend WebGL (cilindro de vidro, aberração cromática, arraste e autoplay)."
+    },
+    {
+      "name": "radial-cards",
+      "kind": "component",
+      "title": "RadialCards",
+      "description": "Dez polaroids no arco de uma roda invisível (GSAP): arraste com snap, autoplay, contador e prefers-reduced-motion."
+    },
+    {
+      "name": "hueline-colour-story",
+      "kind": "component",
+      "title": "HuelineColourStory",
+      "description": "Quatro swatches de tinta Cobalt/Marigold/Orchid/Lagoon com refs HL-04, notas técnicas e fundo da seção seguindo o dye ativo."
+    },
+    {
+      "name": "hueline-atelier",
+      "kind": "component",
+      "title": "HuelineAtelier",
+      "description": "Foto do atelier + três estatísticas 19 / 48 / 6 sobre seda, tiragem e block print."
+    },
+    {
+      "name": "hueline-style-arches",
+      "kind": "component",
+      "title": "HuelineStyleArches",
+      "description": "Seis arcos altos (border-radius 200px) com look-01..06 e legendas por silhueta Tailoring–Denim."
+    },
+    {
+      "name": "hueline-lookbook",
+      "kind": "component",
+      "title": "HuelineLookbook",
+      "description": "Seis looks em painéis horizontais scrolláveis look-01..06 com título e copy editorial."
+    },
+    {
+      "name": "veloria-onboard",
+      "kind": "component",
+      "title": "VeloriaOnboard",
+      "description": "Quatro cards de imagem (swim platform, sun deck, silent hull, golden hour) flutuando sobre o casco + headline Made to glide."
+    },
+    {
+      "name": "veloria-voyage",
+      "kind": "component",
+      "title": "VeloriaVoyage",
+      "description": "Headline Charter the coastline nobody else can reach, copy do capitão e link See where we sail."
+    },
+    {
+      "name": "veloria-destinations",
+      "kind": "component",
+      "title": "VeloriaDestinations",
+      "description": "Quatro tiles glass Amalfi, Cyclades, Maldives e Andaman com temporada e descrição editorial."
+    },
+    {
+      "name": "nimbus-demo",
+      "kind": "component",
+      "title": "NimbusDemo",
+      "description": "Card glass com mock de chat: pergunta sobre PDF e resposta citada com span de fonte."
+    },
+    {
+      "name": "nimbus-capabilities",
+      "kind": "component",
+      "title": "NimbusCapabilities",
+      "description": "Grade 3×2 de capacidades (Summarise, Extract, Classify, Translate, Search, Cite) com ícones SVG e hover de borda."
+    },
+    {
+      "name": "nimbus-developer",
+      "kind": "component",
+      "title": "NimbusDeveloper",
+      "description": "Seção developer em duas colunas: copy à esquerda e painel de código com tabs cURL/Python/JS e botão copy."
+    },
+    {
+      "name": "nimbus-use-cases",
+      "kind": "component",
+      "title": "NimbusUseCases",
+      "description": "Três cards maiores de casos de uso: Support, Research e Legal com copy realista."
+    },
+    {
+      "name": "blog-grid",
+      "kind": "component",
+      "title": "BlogGrid",
+      "description": "Cards editoriais responsivos para artigos e notícias."
+    },
+    {
+      "name": "feature-grid",
+      "kind": "component",
+      "title": "FeatureGrid",
+      "description": "Grade de benefícios com ícones opcionais e cards elevados."
+    },
+    {
+      "name": "pricing-cards",
+      "kind": "component",
+      "title": "PricingCards",
+      "description": "Comparativo de planos com recursos, preço e destaque."
+    },
+    {
+      "name": "product-grid",
+      "kind": "component",
+      "title": "ProductGrid",
+      "description": "Grade responsiva de produtos com imagem, badge e link."
+    },
+    {
+      "name": "product-showcase",
+      "kind": "component",
+      "title": "ProductShowcase",
+      "description": "Destaque detalhado de produto com benefícios e ação."
+    },
+    {
+      "name": "team-grid",
+      "kind": "component",
+      "title": "TeamGrid",
+      "description": "Grade de equipe com foto, bio e contatos profissionais."
+    },
+    {
+      "name": "before-after-slider",
+      "kind": "component",
+      "title": "BeforeAfterSlider",
+      "description": "Comparador acessível de imagens antes e depois controlado por range."
+    },
+    {
+      "name": "filterable-card-grid",
+      "kind": "component",
+      "title": "FilterableCardGrid",
+      "description": "Grade filtrável com transições de layout, mídia e ações opcionais."
+    },
+    {
+      "name": "interactive-card",
+      "kind": "component",
+      "title": "InteractiveCard",
+      "description": "Card desacoplado com mídia, ícone e cinco tratamentos visuais interativos."
+    },
+    {
+      "name": "product-card",
+      "kind": "component",
+      "title": "ProductCard",
+      "description": "Card de produto com quatro layouts, preço, avaliação, favorito e compra."
+    },
+    {
+      "name": "product-carousel",
+      "kind": "component",
+      "title": "ProductCarousel",
+      "description": "Carrossel Swiper de produtos (ex.: Peças em destaque) com cards, autoplay e navegação acessível."
+    },
+    {
+      "name": "product-feature-tabs",
+      "kind": "component",
+      "title": "ProductFeatureTabs",
+      "description": "Apresentação interativa de produtos em abas com mídia, benefícios e ação."
+    },
+    {
+      "name": "services-carousel-section",
+      "kind": "component",
+      "title": "ServicesCarouselSection",
+      "description": "Carrossel editorial numerado para apresentar um catálogo amplo de serviços."
+    },
+    {
+      "name": "product-suite-section",
+      "kind": "component",
+      "title": "ProductSuiteSection",
+      "description": "Suíte de produtos em abas acessíveis com recursos, ação e visual configurável."
+    },
+    {
+      "name": "strategy-portfolio-section",
+      "kind": "component",
+      "title": "StrategyPortfolioSection",
+      "description": "Grade filtrável de estratégias de investimento por categoria e região."
+    },
+    {
+      "name": "extension-directory-section",
+      "kind": "component",
+      "title": "ExtensionDirectorySection",
+      "description": "Diretório pesquisável e filtrável de extensões, integrações ou aplicativos."
+    },
+    {
+      "name": "hover-reveal-services",
+      "kind": "component",
+      "title": "HoverRevealServices",
+      "description": "Painéis de serviços lado a lado que expandem e revelam imagem/descrição no hover."
+    },
+    {
+      "name": "product-spotlight-picker",
+      "kind": "component",
+      "title": "ProductSpotlightPicker",
+      "description": "Vitrine com produto em destaque e seletor lateral (cards ou painel)."
+    },
+    {
+      "name": "product-catalog-grid",
+      "kind": "component",
+      "title": "ProductCatalogGrid",
+      "description": "Grade de catálogo de produtos com categoria, características e link."
+    },
+    {
+      "name": "related-products",
+      "kind": "component",
+      "title": "RelatedProducts",
+      "description": "Lista de produtos relacionados em cartões ou lista compacta."
+    },
+    {
+      "name": "product-info-tabs",
+      "kind": "component",
+      "title": "ProductInfoTabs",
+      "description": "Abas acessíveis de descrição e detalhes técnicos do produto, com setas do teclado."
+    },
+    {
+      "name": "ticket-pricing-cards",
+      "kind": "component",
+      "title": "TicketPricingCards",
+      "description": "Cards de preço em formato de ingresso com recortes laterais, preços por período ou destaque percentual."
+    },
+    {
+      "name": "package-tabs-offer",
+      "kind": "component",
+      "title": "PackageTabsOffer",
+      "description": "Pacotes em abas com indicador animado, preço em destaque, descrição, imagem e CTAs."
+    },
+    {
+      "name": "paginated-project-gallery",
+      "kind": "component",
+      "title": "PaginatedProjectGallery",
+      "description": "Portfólio com filtro por categoria, paginação e overlay roxo com título no hover."
+    },
+    {
+      "name": "blog-sidebar-layout",
+      "kind": "component",
+      "title": "BlogSidebarLayout",
+      "description": "Listagem de blog com busca sem acento, filtro por categoria com contagem, posts recentes e CTA lateral fixo."
+    },
+    {
+      "name": "team-section",
+      "kind": "component",
+      "title": "TeamSection",
+      "description": "Seção de equipe com 4 modelos (overlay com revelação no hover, cards, avatares redondos e líder em destaque), redes sociais e CTA."
+    },
+    {
+      "name": "blog-featured-listing",
+      "kind": "component",
+      "title": "BlogFeaturedListing",
+      "description": "Listagem de blog com hero e breadcrumb, post em destaque, cards com \"Ler mais\", paginação e barra lateral com busca, posts recentes e categorias."
+    },
+    {
+      "name": "product-overlay-carousel",
+      "kind": "component",
+      "title": "ProductOverlayCarousel",
+      "description": "Carrossel de produtos com imagem cheia, título sobreposto e \"ver mais\", cabeçalho com destaque, setas e botão \"Ver todos\"."
+    },
+    {
+      "name": "holo-card",
+      "kind": "component",
+      "title": "HoloCard",
+      "description": "Card de perfil que inclina na direção do cursor com reflexo holográfico em padrão."
+    },
+    {
+      "name": "circular-carousel",
+      "kind": "component",
+      "title": "CircularCarousel",
+      "description": "Carrossel em anel 3D que gira sozinho, por arraste, setas ou teclado."
+    },
+    {
+      "name": "hueline-product-rails",
+      "kind": "component",
+      "title": "HuelineProductRails",
+      "description": "Um trilho horizontal por estilo com cards foto, nome, tecido, preço en-IN ₹ e dot de cor."
+    },
+    {
+      "name": "hueline-shop-grid",
+      "kind": "component",
+      "title": "HuelineShopGrid",
+      "description": "Grade shop com tabs All+estilos, sort, contagem Showing N of M e cards data-product HL-T-01 etc."
+    },
+    {
+      "name": "nimbus-pricing",
+      "kind": "component",
+      "title": "NimbusPricing",
+      "description": "Três tiers usage-based (Starter, Growth, Scale) com nota clara do que conta como request na API Nimbus."
+    },
+    {
+      "name": "contact-card",
+      "kind": "component",
+      "title": "ContactCard",
+      "description": "Card para canal de contato, opcionalmente clicável e com ícone."
+    },
+    {
+      "name": "contact-form",
+      "kind": "component",
+      "title": "ContactForm",
+      "description": "Formulário completo com envio assíncrono e estados acessíveis."
+    },
+    {
+      "name": "contact-split-section",
+      "kind": "component",
+      "title": "ContactSplitSection",
+      "description": "Seção de contato em duas colunas com canais, redes sociais e formulário livre."
+    },
+    {
+      "name": "newsletter-form",
+      "kind": "component",
+      "title": "NewsletterForm",
+      "description": "Formulário de newsletter com consentimento e estados de envio acessíveis."
+    },
+    {
+      "name": "search-field",
+      "kind": "component",
+      "title": "SearchField",
+      "description": "Campo de busca controlado ou não controlado, com limpeza e envio opcionais."
+    },
+    {
+      "name": "contact-channels-section",
+      "kind": "component",
+      "title": "ContactChannelsSection",
+      "description": "Seção de contato com formulário validado (react-hook-form + yup), canais, WhatsApp e estado de sucesso."
+    },
+    {
+      "name": "multi-step-quote-form",
+      "kind": "component",
+      "title": "MultiStepQuoteForm",
+      "description": "Formulário de orçamento em etapas com indicador de progresso, validação por etapa e estado de sucesso."
+    },
+    {
+      "name": "whatsapp-quote-form",
+      "kind": "component",
+      "title": "WhatsAppQuoteForm",
+      "description": "Seção escura com canais de contato e formulário que monta a mensagem e abre o WhatsApp."
+    },
+    {
+      "name": "veloria-reserve",
+      "kind": "component",
+      "title": "VeloriaReserve",
+      "description": "Painel sólido #0B121A com citação, formulário de cotação charter (destino, iate, datas, hóspedes, e-mail), footer e wordmark VELORIA."
+    },
+    {
+      "name": "cta-banner",
+      "kind": "component",
+      "title": "CTABanner",
+      "description": "Chamada ampla de alto contraste com imagem e duas ações."
+    },
+    {
+      "name": "cookie-banner",
+      "kind": "component",
+      "title": "CookieBanner",
+      "description": "Banner de consentimento com posições, rejeição e personalização opcionais."
+    },
+    {
+      "name": "cta-inline",
+      "kind": "component",
+      "title": "CTAInline",
+      "description": "Chamada compacta para inserir entre blocos de conteúdo."
+    },
+    {
+      "name": "dialog-showcase",
+      "kind": "component",
+      "title": "DialogShowcase",
+      "description": "Dialog acessível com gatilho, conteúdo livre e confirmação opcional."
+    },
+    {
+      "name": "dropdown-actions",
+      "kind": "component",
+      "title": "DropdownActions",
+      "description": "Menu contextual de ações com ícones, estados e opção destrutiva."
+    },
+    {
+      "name": "empty-state",
+      "kind": "component",
+      "title": "EmptyState",
+      "description": "Estado vazio com ícone, orientação e até duas ações."
+    },
+    {
+      "name": "faq-accordion",
+      "kind": "component",
+      "title": "FAQAccordion",
+      "description": "Perguntas frequentes em accordion acessível, simples ou múltiplo."
+    },
+    {
+      "name": "faq-cards",
+      "kind": "component",
+      "title": "FAQCards",
+      "description": "FAQ em cards responsivos, ideal para respostas curtas e escaneáveis."
+    },
+    {
+      "name": "faq-centered",
+      "kind": "component",
+      "title": "FAQCentered",
+      "description": "Accordion centralizado em cards, com cabeçalho editorial e destaque visual."
+    },
+    {
+      "name": "faq-search",
+      "kind": "component",
+      "title": "FAQSearch",
+      "description": "Base de perguntas pesquisável com categorias, estado vazio e accordion."
+    },
+    {
+      "name": "loading-skeleton",
+      "kind": "component",
+      "title": "LoadingSkeleton",
+      "description": "Skeleton acessível para textos, cards, listas e avatares."
+    },
+    {
+      "name": "progress-steps",
+      "kind": "component",
+      "title": "ProgressSteps",
+      "description": "Indicador semântico de progresso horizontal ou vertical."
+    },
+    {
+      "name": "sheet-panel",
+      "kind": "component",
+      "title": "SheetPanel",
+      "description": "Painel lateral controlado com foco, Escape e backdrop."
+    },
+    {
+      "name": "tabs-showcase",
+      "kind": "component",
+      "title": "TabsShowcase",
+      "description": "Abas acessíveis com navegação completa por teclado."
+    },
+    {
+      "name": "testimonials-carousel",
+      "kind": "component",
+      "title": "TestimonialsCarousel",
+      "description": "Carrossel acessível de depoimentos com teclado e paginação."
+    },
+    {
+      "name": "testimonials-grid",
+      "kind": "component",
+      "title": "TestimonialsGrid",
+      "description": "Grade de depoimentos em cards com autoria e avatar opcionais."
+    },
+    {
+      "name": "testimonials-spotlight",
+      "kind": "component",
+      "title": "TestimonialsSpotlight",
+      "description": "Depoimento principal em destaque acompanhado por relatos complementares."
+    },
+    {
+      "name": "toast-provider",
+      "kind": "component",
+      "title": "ToastProvider",
+      "description": "Provider e hook para notificações temporárias com três estados."
+    },
+    {
+      "name": "interactive-steps",
+      "kind": "component",
+      "title": "InteractiveSteps",
+      "description": "Stepper navegável com progresso, conteúdo animado e conclusão opcional."
+    },
+    {
+      "name": "expandable-cards",
+      "kind": "component",
+      "title": "ExpandableCards",
+      "description": "Cards de mídia que expandem para revelar narrativa e ação."
+    },
+    {
+      "name": "expandable-text-box",
+      "kind": "component",
+      "title": "ExpandableTextBox",
+      "description": "Bloco de texto com expansão \"ler mais / mostrar menos\" acessível."
+    },
+    {
+      "name": "numbered-accordion",
+      "kind": "component",
+      "title": "NumberedAccordion",
+      "description": "Acordeão numerado (01, 02...) para características ou etapas."
+    },
+    {
+      "name": "faq-bordered",
+      "kind": "component",
+      "title": "FAQBordered",
+      "description": "FAQ com bordas, cabeçalho opcional e modo embutido para páginas de produto."
+    },
+    {
+      "name": "testimonials-marquee",
+      "kind": "component",
+      "title": "TestimonialsMarquee",
+      "description": "Depoimentos em faixa horizontal contínua com pausa no hover."
+    },
+    {
+      "name": "testimonials-quote-slider",
+      "kind": "component",
+      "title": "TestimonialsQuoteSlider",
+      "description": "Slider de depoimentos com aspas, estrelas, paginação em linhas e setas."
+    },
+    {
+      "name": "testimonials-columns",
+      "kind": "component",
+      "title": "TestimonialsColumns",
+      "description": "Depoimentos em colunas verticais infinitas com velocidades diferentes e pausa no hover."
+    },
+    {
+      "name": "cta-centered-card",
+      "kind": "component",
+      "title": "CTACenteredCard",
+      "description": "Chamada para ação centralizada em cartão com sombra de brilho em gradiente."
+    },
+    {
+      "name": "cta-split-panel",
+      "kind": "component",
+      "title": "CTASplitPanel",
+      "description": "Painel CTA com texto à esquerda e ações à direita."
+    },
+    {
+      "name": "success-state-card",
+      "kind": "component",
+      "title": "SuccessStateCard",
+      "description": "Estado de confirmação (página \"obrigado\") com próximos passos numerados e ações."
+    },
+    {
+      "name": "faq-split-cta",
+      "kind": "component",
+      "title": "FAQSplitCTA",
+      "description": "FAQ em duas colunas com chamada fixa ao lado e perguntas numeradas em cards."
+    },
+    {
+      "name": "not-found-section",
+      "kind": "component",
+      "title": "NotFoundSection",
+      "description": "Página 404 com código em degradê, ações e cards de sugestões de navegação."
+    },
+    {
+      "name": "faq-help-card",
+      "kind": "component",
+      "title": "FAQHelpCard",
+      "description": "FAQ em duas colunas: título e card \"ainda ficou com dúvida?\" com botão à esquerda, acordeão com ícones +/× à direita."
+    },
+    {
+      "name": "testimonials-avatar-switcher",
+      "kind": "component",
+      "title": "TestimonialsAvatarSwitcher",
+      "description": "Depoimento em card escuro com estrelas e aspas, autor abaixo e coluna de avatares para alternar entre clientes."
+    },
+    {
+      "name": "counter",
+      "kind": "component",
+      "title": "Counter",
+      "description": "Contador numérico animado e localizado com redução de movimento."
+    },
+    {
+      "name": "magnetic-hover",
+      "kind": "component",
+      "title": "MagneticHover",
+      "description": "Interação magnética sutil para ponteiros precisos."
+    },
+    {
+      "name": "marquee",
+      "kind": "component",
+      "title": "Marquee",
+      "description": "Faixa contínua responsiva com direção, velocidade e pausa."
+    },
+    {
+      "name": "parallax-media",
+      "kind": "component",
+      "title": "ParallaxMedia",
+      "description": "Parallax de mídia vinculado ao scroll e sensível a preferências."
+    },
+    {
+      "name": "reveal",
+      "kind": "component",
+      "title": "Reveal",
+      "description": "Entrada animada por montagem ou scroll em cinco direções."
+    },
+    {
+      "name": "stagger",
+      "kind": "component",
+      "title": "Stagger",
+      "description": "Anima os filhos em sequência por montagem ou scroll."
+    },
+    {
+      "name": "animated-list",
+      "kind": "component",
+      "title": "AnimatedList",
+      "description": "Lista editável com transições automáticas ao adicionar e remover itens."
+    },
+    {
+      "name": "hover-tilt-card",
+      "kind": "component",
+      "title": "HoverTiltCard",
+      "description": "Card 3D orientado pelo ponteiro com spring e reflexo luminoso."
+    },
+    {
+      "name": "morphing-tabs",
+      "kind": "component",
+      "title": "MorphingTabs",
+      "description": "Abas acessíveis com indicador compartilhado e transição de conteúdo."
+    },
+    {
+      "name": "motion-reveal",
+      "kind": "component",
+      "title": "MotionReveal",
+      "description": "Revelação declarativa pela viewport com direção e timing configuráveis."
+    },
+    {
+      "name": "number-ticker",
+      "kind": "component",
+      "title": "NumberTicker",
+      "description": "Contador numérico declarativo acionado pela viewport."
+    },
+    {
+      "name": "scroll-progress",
+      "kind": "component",
+      "title": "ScrollProgress",
+      "description": "Indicador fixo e suave do progresso de leitura da página."
+    },
+    {
+      "name": "spotlight-card",
+      "kind": "component",
+      "title": "SpotlightCard",
+      "description": "Iluminação radial que acompanha o ponteiro sobre o card."
+    },
+    {
+      "name": "text-loop",
+      "kind": "component",
+      "title": "TextLoop",
+      "description": "Alternância animada de palavras com presença e blur."
+    },
+    {
+      "name": "parallax-story-section",
+      "kind": "component",
+      "title": "ParallaxStorySection",
+      "description": "Narrativa editorial com imagens em profundidades opostas controladas pelo scroll."
+    },
+    {
+      "name": "gsap-story-section",
+      "kind": "component",
+      "title": "GSAPStorySection",
+      "description": "Storytelling vertical com cards revelados por GSAP ScrollTrigger e scrub."
+    },
+    {
+      "name": "swiper-showcase-section",
+      "kind": "component",
+      "title": "SwiperShowcaseSection",
+      "description": "Showcase editorial com navegação lateral e transição creative do Swiper."
+    },
+    {
+      "name": "auto-animate-gallery-section",
+      "kind": "component",
+      "title": "AutoAnimateGallerySection",
+      "description": "Galeria filtrável com reorganização automática e acessível via AutoAnimate."
+    },
+    {
+      "name": "social-channel-marquee",
+      "kind": "component",
+      "title": "SocialChannelMarquee",
+      "description": "Faixa contínua de canais e integrações com pausa e reduced-motion."
+    },
+    {
+      "name": "page-reveal",
+      "kind": "component",
+      "title": "PageReveal",
+      "description": "Wrapper que anima por scroll os descendentes marcados com data-reveal / data-reveal-stagger (GSAP)."
+    },
+    {
+      "name": "smooth-scroll",
+      "kind": "component",
+      "title": "SmoothScroll",
+      "description": "Rolagem suave global com Lenis sincronizada ao GSAP ScrollTrigger; respeita reduced motion."
+    },
+    {
+      "name": "flux-lines",
+      "kind": "component",
+      "title": "FluxLines",
+      "description": "Fundo de linhas luminosas em fluxo contínuo que o cursor atrai e enrola como um ímã."
+    },
+    {
+      "name": "depth-text",
+      "kind": "component",
+      "title": "DepthText",
+      "description": "Tipografia extrudada em camadas com paralaxe que se desloca contra o ponteiro."
+    },
+    {
+      "name": "specular-button",
+      "kind": "component",
+      "title": "SpecularButton",
+      "description": "Botão de vidro cuja borda reflete a luz, com um brilho que desliza até o cursor."
+    },
+    {
+      "name": "liquid-buttons",
+      "kind": "component",
+      "title": "LiquidButtons",
+      "description": "Botões de vidro 3D (Three.js) com refração, ripple na base e barrel roll 360° no clique. Demo interativa embutida."
+    },
+    {
+      "name": "iridescent-ring-pill",
+      "kind": "component",
+      "title": "IridescentRingPill",
+      "description": "Pill de nav com anel iridescente no disco: conic-gradient mascarado; órbita e hue separados; no hover a órbita pausa e a cor continua."
+    },
+    {
+      "name": "recipe-institutional",
+      "kind": "recipe",
+      "title": "Institucional",
+      "description": "Site equilibrado para empresas e serviços profissionais."
+    },
+    {
+      "name": "recipe-institutional-corporate",
+      "kind": "recipe",
+      "title": "Institucional corporativo",
+      "description": "Narrativa completa com credibilidade, equipe, processo e contato."
+    },
+    {
+      "name": "recipe-consulting",
+      "kind": "recipe",
+      "title": "Consultoria",
+      "description": "Autoridade, método, casos e conversão para serviços B2B."
+    },
+    {
+      "name": "recipe-industrial",
+      "kind": "recipe",
+      "title": "Industrial",
+      "description": "Presença B2B para indústria, manufatura e operação técnica."
+    },
+    {
+      "name": "recipe-industrial-services",
+      "kind": "recipe",
+      "title": "Tratamento de superfície",
+      "description": "Home B2B no modelo Axis Industrial: hero com pilares, tratamentos, problema→solução, processo, credibilidade, cobertura e orçamento via WhatsApp."
+    },
+    {
+      "name": "recipe-saas",
+      "kind": "recipe",
+      "title": "Produto SaaS",
+      "description": "Página orientada a produto, benefícios, prova e conversão."
+    },
+    {
+      "name": "recipe-fintech",
+      "kind": "recipe",
+      "title": "Fintech",
+      "description": "Hero forte, confiança, produto e planos para serviços financeiros."
+    },
+    {
+      "name": "recipe-ecommerce",
+      "kind": "recipe",
+      "title": "E-commerce",
+      "description": "Vitrine com categorias, produtos, confiança e conversão."
+    },
+    {
+      "name": "recipe-hueline-saturation-ss27",
+      "kind": "recipe",
+      "title": "Hueline Saturation SS27",
+      "description": "Lookbook e shop fashion feminino — loader, hero film, wardrobe, lookbook, colour story e shop com Flip."
+    },
+    {
+      "name": "recipe-veloria-yacht-charter",
+      "kind": "recipe",
+      "title": "Veloria Yacht Charter",
+      "description": "Landing cinematográfica com vídeo de iate em tela cheia, seções transparentes sobre o casco e reserva no painel sólido."
+    },
+    {
+      "name": "recipe-nimbus-ai",
+      "kind": "recipe",
+      "title": "Nimbus AI",
+      "description": "Landing cinematográfica dark para API de documentos: aurora hero, demo chat, capabilities, code tabs, pricing usage-based."
+    },
+    {
+      "name": "recipe-aviamentos-atacado",
+      "kind": "recipe",
+      "title": "Aviamentos atacado",
+      "description": "Home estilo Mix Metais: navbar com logo central, hero, coleções, carrossel de peças, diferenciais e cotação comercial."
+    },
+    {
+      "name": "recipe-real-estate",
+      "kind": "recipe",
+      "title": "Imobiliária",
+      "description": "Vitrine de imóveis, credibilidade local e captura de leads."
+    },
+    {
+      "name": "recipe-agency",
+      "kind": "recipe",
+      "title": "Agência ou portfólio",
+      "description": "Narrativa visual para serviços, projetos e contato."
+    },
+    {
+      "name": "recipe-landing-page",
+      "kind": "recipe",
+      "title": "Landing page",
+      "description": "Fluxo curto focado em uma oferta e uma ação principal."
+    },
+    {
+      "name": "recipe-event",
+      "kind": "recipe",
+      "title": "Evento",
+      "description": "Divulgação de evento com agenda, prova social e inscrição."
+    },
+    {
+      "name": "recipe-clinic",
+      "kind": "recipe",
+      "title": "Clínica ou saúde",
+      "description": "Confiança, especialidades, equipe e agendamento."
+    },
+    {
+      "name": "recipe-restaurant",
+      "kind": "recipe",
+      "title": "Restaurante",
+      "description": "Atmosfera, cardápio visual, localização e reserva."
+    },
+    {
+      "name": "recipe-education",
+      "kind": "recipe",
+      "title": "Educação / curso",
+      "description": "Oferta educacional com módulos, prova social e matrícula."
+    },
+    {
+      "name": "recipe-blog",
+      "kind": "recipe",
+      "title": "Blog / conteúdo",
+      "description": "Home editorial com destaques, listagem e newsletter."
+    },
+    {
+      "name": "recipe-nonprofit",
+      "kind": "recipe",
+      "title": "ONG / causa",
+      "description": "Impacto, histórias, transparência e chamado à doação."
+    }
+  ]
+}

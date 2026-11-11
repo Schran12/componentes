@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "testimonials-quote-slider",
+  "kind": "component",
+  "title": "TestimonialsQuoteSlider",
+  "description": "Slider de depoimentos com aspas, estrelas, paginação em linhas e setas.",
+  "meta": {
+    "category": "feedback",
+    "role": "section.social-proof",
+    "placement": "inside-main",
+    "stage": "depoimentos",
+    "topics": [
+      "testimonials"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/feedback/TestimonialsQuoteSlider",
+    "tags": [
+      "depoimentos",
+      "testimonials",
+      "slider",
+      "swiper",
+      "avaliação",
+      "template-next"
+    ],
+    "variants": [
+      "glow",
+      "industrial",
+      "industrial-dark",
+      "estrelas"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "testimonials",
+        "type": "readonly { name; content; role?; avatar?; rating? }[]",
+        "description": "Depoimentos.",
+        "required": true
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "description": "Eyebrow.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "autoplayDelay",
+        "type": "number",
+        "description": "Intervalo em ms.",
+        "required": false,
+        "default": "5500"
+      },
+      {
+        "name": "tone",
+        "type": "'glow' | 'industrial' | 'industrial-dark'",
+        "description": "Tema visual: glow (escuro rosa/roxo), industrial (claro âmbar) ou industrial-dark.",
+        "required": false,
+        "default": "'industrial'"
+      }
+    ],
+    "example": "<TestimonialsQuoteSlider title=\"Clientes\" testimonials={[{ name: 'Ana Souza', role: 'CEO', content: 'Lorem ipsum.', rating: 5 }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "swiper@^11.0.5",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/feedback/TestimonialAvatar.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/TestimonialAvatar.tsx",
+      "content": "import Image from 'next/image'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type AccentTestimonial = {\r\n  name: string\r\n  content: string\r\n  role?: string\r\n  avatar?: string\r\n  rating?: number\r\n}\r\n\r\nexport function TestimonialAvatar({\r\n  name,\r\n  src,\r\n  className,\r\n}: {\r\n  name: string\r\n  src?: string\r\n  className?: string\r\n}) {\r\n  const initials = name\r\n    .split(' ')\r\n    .filter(Boolean)\r\n    .slice(0, 2)\r\n    .map((part) => part[0]?.toUpperCase())\r\n    .join('')\r\n\r\n  return (\r\n    <span\r\n      className={cn(\r\n        'relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden text-sm font-semibold',\r\n        className,\r\n      )}\r\n    >\r\n      {src ? (\r\n        <Image src={src} alt={name} fill sizes=\"48px\" className=\"object-cover\" />\r\n      ) : (\r\n        <span aria-hidden>{initials}</span>\r\n      )}\r\n    </span>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/feedback/TestimonialsQuoteSlider.tsx",
+      "type": "component",
+      "target": "src/components/library/feedback/TestimonialsQuoteSlider.tsx",
+      "content": "'use client'\r\n\r\nimport { useState } from 'react'\r\nimport { ChevronLeft, ChevronRight, Quote, Star } from 'lucide-react'\r\nimport type { Swiper as SwiperInstance } from 'swiper'\r\nimport { A11y, Autoplay, Keyboard } from 'swiper/modules'\r\nimport { Swiper, SwiperSlide } from 'swiper/react'\r\n\r\nimport { EyebrowHeading } from '@/components/library/primitives/EyebrowHeading'\r\nimport { getAccentTone, type AccentTone } from '@/components/library/primitives/accentTones'\r\nimport { useReducedMotion } from '@/components/library/motion/useReducedMotion'\r\nimport { cn } from '@/lib/utils'\r\n\r\nimport { TestimonialAvatar, type AccentTestimonial } from './TestimonialAvatar'\r\n\r\nimport 'swiper/css'\r\n\r\nexport type TestimonialsQuoteSliderProps = {\r\n  title: string\r\n  testimonials: readonly AccentTestimonial[]\r\n  eyebrow?: string\r\n  description?: string\r\n  autoplayDelay?: number\r\n  tone?: AccentTone\r\n  className?: string\r\n}\r\n\r\n/** Slider de depoimentos com aspas, avaliação em estrelas, paginação e setas. */\r\nexport function TestimonialsQuoteSlider({\r\n  title,\r\n  testimonials,\r\n  eyebrow,\r\n  description,\r\n  autoplayDelay = 5500,\r\n  tone = 'industrial',\r\n  className,\r\n}: TestimonialsQuoteSliderProps) {\r\n  const t = getAccentTone(tone)\r\n  const isGlow = tone === 'glow'\r\n  const reduced = useReducedMotion()\r\n  const [swiper, setSwiper] = useState<SwiperInstance | null>(null)\r\n  const [activeIndex, setActiveIndex] = useState(0)\r\n  const star = isGlow ? 'fill-[#ffb0eb] text-[#ffb0eb]' : 'fill-amber-500 text-amber-500'\r\n\r\n  return (\r\n    <section className={cn('relative overflow-hidden', t.section, className)}>\r\n      <div className=\"container py-14 lg:py-16\">\r\n        <EyebrowHeading\r\n          tone={tone}\r\n          eyebrow={eyebrow}\r\n          title={title}\r\n          description={description}\r\n          layout=\"split\"\r\n          className=\"mb-10 lg:mb-12\"\r\n        />\r\n\r\n        <Swiper\r\n          modules={[A11y, Autoplay, Keyboard]}\r\n          spaceBetween={0}\r\n          slidesPerView={1}\r\n          loop={testimonials.length > 3}\r\n          keyboard={{ enabled: true }}\r\n          autoplay={reduced ? false : { delay: autoplayDelay, disableOnInteraction: false }}\r\n          breakpoints={{ 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }}\r\n          onSwiper={setSwiper}\r\n          onSlideChange={(instance) => setActiveIndex(instance.realIndex)}\r\n          className={cn('border', t.border, isGlow && 'rounded-2xl')}\r\n        >\r\n          {testimonials.map((testimonial) => (\r\n            <SwiperSlide key={testimonial.name + testimonial.content} className=\"!h-auto\">\r\n              <article\r\n                className={cn(\r\n                  'flex h-full min-h-[22rem] flex-col justify-between border-l p-7 sm:p-8',\r\n                  t.panel,\r\n                  t.border,\r\n                )}\r\n              >\r\n                <div>\r\n                  <div className=\"mb-6 flex items-start justify-between gap-4\">\r\n                    <Quote className={cn('h-8 w-8', t.accent)} strokeWidth={1.5} aria-hidden />\r\n                    {testimonial.rating ? (\r\n                      <div\r\n                        className=\"flex items-center gap-0.5\"\r\n                        role=\"img\"\r\n                        aria-label={`${testimonial.rating} de 5 estrelas`}\r\n                      >\r\n                        {Array.from({ length: testimonial.rating }, (_, index) => (\r\n                          <Star key={index} className={cn('h-3.5 w-3.5', star)} aria-hidden />\r\n                        ))}\r\n                      </div>\r\n                    ) : null}\r\n                  </div>\r\n                  <blockquote className={cn('text-base leading-relaxed', t.body)}>\r\n                    &ldquo;{testimonial.content}&rdquo;\r\n                  </blockquote>\r\n                </div>\r\n                <div className={cn('mt-8 flex items-center gap-4 border-t pt-6', t.border)}>\r\n                  <TestimonialAvatar\r\n                    name={testimonial.name}\r\n                    src={testimonial.avatar}\r\n                    className={cn('border', t.border, t.accent, isGlow && 'rounded-full')}\r\n                  />\r\n                  <div>\r\n                    <p\r\n                      className={cn(\r\n                        'text-sm font-semibold tracking-wide',\r\n                        !isGlow && 'uppercase',\r\n                        t.strong,\r\n                      )}\r\n                    >\r\n                      {testimonial.name}\r\n                    </p>\r\n                    {testimonial.role ? (\r\n                      <p className={cn('mt-0.5 text-xs uppercase tracking-[0.16em]', t.muted)}>\r\n                        {testimonial.role}\r\n                      </p>\r\n                    ) : null}\r\n                  </div>\r\n                </div>\r\n              </article>\r\n            </SwiperSlide>\r\n          ))}\r\n        </Swiper>\r\n\r\n        <div className=\"mt-8 flex items-center justify-between gap-4\">\r\n          <div className=\"flex items-center gap-1.5\">\r\n            {testimonials.map((testimonial, index) => (\r\n              <button\r\n                key={testimonial.name + index}\r\n                type=\"button\"\r\n                onClick={() => swiper?.slideToLoop(index)}\r\n                className={cn('py-2', t.focus)}\r\n                aria-label={`Ir para o depoimento ${index + 1}`}\r\n                aria-current={index === activeIndex ? 'true' : undefined}\r\n              >\r\n                <span\r\n                  className={cn(\r\n                    'block h-0.5 transition-all duration-300',\r\n                    index === activeIndex\r\n                      ? cn('w-10', t.line)\r\n                      : cn(\r\n                          'w-7',\r\n                          isGlow\r\n                            ? 'bg-[#493849]'\r\n                            : tone === 'industrial'\r\n                              ? 'bg-slate-300'\r\n                              : 'bg-white/15',\r\n                        ),\r\n                  )}\r\n                />\r\n              </button>\r\n            ))}\r\n          </div>\r\n          <div className=\"flex items-center gap-2\">\r\n            <button\r\n              type=\"button\"\r\n              onClick={() => swiper?.slidePrev()}\r\n              className={cn(\r\n                'flex h-10 w-10 items-center justify-center transition-colors',\r\n                t.iconButton,\r\n                t.focus,\r\n              )}\r\n              aria-label=\"Depoimento anterior\"\r\n            >\r\n              <ChevronLeft className=\"h-5 w-5\" />\r\n            </button>\r\n            <button\r\n              type=\"button\"\r\n              onClick={() => swiper?.slideNext()}\r\n              className={cn(\r\n                'flex h-10 w-10 items-center justify-center transition-colors',\r\n                t.iconButton,\r\n                t.focus,\r\n              )}\r\n              aria-label=\"Próximo depoimento\"\r\n            >\r\n              <ChevronRight className=\"h-5 w-5\" />\r\n            </button>\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/motion/useReducedMotion.ts",
+      "type": "component",
+      "target": "src/components/library/motion/useReducedMotion.ts",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\nconst QUERY = '(prefers-reduced-motion: reduce)'\r\n\r\nexport function prefersReducedMotion(): boolean {\r\n  return typeof window !== 'undefined' && window.matchMedia(QUERY).matches\r\n}\r\n\r\nexport function useReducedMotion(): boolean {\r\n  const [reduced, setReduced] = useState(false)\r\n\r\n  useEffect(() => {\r\n    const media = window.matchMedia(QUERY)\r\n    const update = (): void => setReduced(media.matches)\r\n\r\n    update()\r\n    media.addEventListener('change', update)\r\n    return () => media.removeEventListener('change', update)\r\n  }, [])\r\n\r\n  return reduced\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/accentTones.ts",
+      "type": "component",
+      "target": "src/components/library/primitives/accentTones.ts",
+      "content": "/**\r\n * Temas visuais compartilhados pelos componentes de origem dos templates Next.\r\n * - glow: fundo escuro com gradiente rosa/roxo.\r\n * - industrial: fundo claro com destaque âmbar.\r\n * - industrial-dark: fundo slate escuro com destaque âmbar.\r\n */\r\nexport type AccentTone = 'glow' | 'industrial' | 'industrial-dark'\r\n\r\nexport type AccentToneTokens = {\r\n  section: string\r\n  alt: string\r\n  panel: string\r\n  panelHover: string\r\n  border: string\r\n  divide: string\r\n  heading: string\r\n  strong: string\r\n  body: string\r\n  muted: string\r\n  accent: string\r\n  line: string\r\n  fill: string\r\n  onFill: string\r\n  iconButton: string\r\n  radius: string\r\n  overlayFrom: string\r\n  chip: string\r\n  focus: string\r\n  hoverLift: string\r\n  input: string\r\n  error: string\r\n}\r\n\r\nexport const accentTones: Record<AccentTone, AccentToneTokens> = {\r\n  glow: {\r\n    section: 'bg-[#121212] text-[#c1c1c1]',\r\n    alt: 'bg-[#0e0e0e] text-[#c1c1c1]',\r\n    panel: 'bg-[#221d2f]',\r\n    panelHover: 'hover:bg-[#2a2339]',\r\n    border: 'border-[#493849]',\r\n    divide: 'divide-[#493849]',\r\n    heading:\r\n      'w-fit bg-gradient-to-r from-[#c642a5] to-[#7c39cf] bg-clip-text font-normal text-transparent',\r\n    strong: 'text-white',\r\n    body: 'text-[#c1c1c1]',\r\n    muted: 'text-[#c1c1c1]/75',\r\n    accent: 'text-[#ffb0eb]',\r\n    line: 'bg-gradient-to-r from-[#c642a5] to-[#7c39cf]',\r\n    fill: 'bg-gradient-to-br from-[#c642a5] to-[#7c39cf]',\r\n    onFill: 'text-white',\r\n    iconButton:\r\n      'rounded-full border border-[#493849] text-white hover:border-[#c642a5] hover:bg-[#c642a5]',\r\n    radius: 'rounded-2xl',\r\n    overlayFrom: 'from-[#121212]',\r\n    chip: 'border-[#493849] bg-[#121212]/70',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c642a5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#121212]',\r\n    hoverLift:\r\n      'hover:-translate-y-1 hover:border-[#c642a5]/50 hover:shadow-[0_12px_40px_rgba(198,66,165,0.18)]',\r\n    input:\r\n      'rounded-md border-[#493849] bg-[#221d2f] text-white placeholder:text-[#c1c1c1]/70 focus-visible:ring-[#c642a5]',\r\n    error: 'text-red-400',\r\n  },\r\n  industrial: {\r\n    section: 'bg-slate-50 text-slate-600',\r\n    alt: 'bg-white text-slate-600',\r\n    panel: 'bg-white',\r\n    panelHover: 'hover:bg-slate-50',\r\n    border: 'border-slate-200',\r\n    divide: 'divide-slate-200',\r\n    heading: 'font-semibold uppercase tracking-wide text-slate-900',\r\n    strong: 'text-slate-900',\r\n    body: 'text-slate-600',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-600',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-slate-300 text-slate-700 hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/15 bg-slate-950/50',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-amber-500',\r\n    error: 'text-red-600',\r\n  },\r\n  'industrial-dark': {\r\n    section: 'bg-slate-950 text-slate-400',\r\n    alt: 'bg-slate-900 text-slate-400',\r\n    panel: 'bg-slate-900',\r\n    panelHover: 'hover:bg-white/5',\r\n    border: 'border-white/10',\r\n    divide: 'divide-white/10',\r\n    heading: 'font-semibold uppercase tracking-wide text-white',\r\n    strong: 'text-white',\r\n    body: 'text-slate-400',\r\n    muted: 'text-slate-500',\r\n    accent: 'text-amber-500',\r\n    line: 'bg-amber-500',\r\n    fill: 'bg-amber-500',\r\n    onFill: 'text-slate-950',\r\n    iconButton:\r\n      'border border-white/20 text-white hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950',\r\n    radius: 'rounded-none',\r\n    overlayFrom: 'from-slate-950',\r\n    chip: 'border-white/10 bg-slate-950/40',\r\n    focus:\r\n      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',\r\n    hoverLift: 'hover:border-amber-500/60',\r\n    input:\r\n      'rounded-sm border-white/10 bg-slate-900 text-white placeholder:text-slate-500 focus-visible:ring-amber-500',\r\n    error: 'text-red-400',\r\n  },\r\n}\r\n\r\nexport function getAccentTone(tone: AccentTone = 'glow'): AccentToneTokens {\r\n  return accentTones[tone]\r\n}\r\n\r\nexport function padIndex(index: number): string {\r\n  return String(index + 1).padStart(2, '0')\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/primitives/EyebrowHeading.tsx",
+      "type": "component",
+      "target": "src/components/library/primitives/EyebrowHeading.tsx",
+      "content": "import type { ReactNode } from 'react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nimport { getAccentTone, type AccentTone } from './accentTones'\r\n\r\nexport type EyebrowHeadingProps = {\r\n  title: ReactNode\r\n  eyebrow?: ReactNode\r\n  description?: ReactNode\r\n  tone?: AccentTone\r\n  align?: 'left' | 'center'\r\n  layout?: 'stacked' | 'split'\r\n  size?: 'md' | 'lg'\r\n  titleAs?: 'h1' | 'h2' | 'h3'\r\n  action?: ReactNode\r\n  className?: string\r\n}\r\n\r\nconst titleSizes = {\r\n  md: 'text-3xl leading-[1.15] sm:text-4xl lg:text-[2.5rem]',\r\n  lg: 'text-3xl leading-[1.12] sm:text-4xl md:text-5xl lg:text-[3.25rem]',\r\n}\r\n\r\n/** Cabeçalho de seção com linha de destaque, título temático e descrição opcional ao lado. */\r\nexport function EyebrowHeading({\r\n  title,\r\n  eyebrow,\r\n  description,\r\n  tone = 'glow',\r\n  align = 'left',\r\n  layout = 'stacked',\r\n  size = 'md',\r\n  titleAs: Title = 'h2',\r\n  action,\r\n  className,\r\n}: EyebrowHeadingProps) {\r\n  const t = getAccentTone(tone)\r\n  const centered = align === 'center'\r\n  const split = layout === 'split' && !centered\r\n\r\n  const line = <span className={cn('h-px w-8 shrink-0', t.line)} aria-hidden />\r\n\r\n  return (\r\n    <div\r\n      className={cn(\r\n        split && 'flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between',\r\n        centered && 'mx-auto max-w-3xl text-center',\r\n        className,\r\n      )}\r\n    >\r\n      <div className={cn(split ? 'max-w-2xl' : centered ? '' : 'max-w-3xl')}>\r\n        {eyebrow ? (\r\n          <div className={cn('mb-4 flex items-center gap-3', centered && 'justify-center')}>\r\n            {line}\r\n            <span\r\n              className={cn('text-[0.65rem] font-medium uppercase tracking-[0.28em]', t.accent)}\r\n            >\r\n              {eyebrow}\r\n            </span>\r\n            {centered ? line : null}\r\n          </div>\r\n        ) : null}\r\n        <Title className={cn(t.heading, titleSizes[size], centered && 'mx-auto')}>{title}</Title>\r\n        {!split && description ? (\r\n          <p\r\n            className={cn(\r\n              'mt-5 max-w-2xl text-base leading-relaxed md:text-lg',\r\n              t.body,\r\n              centered && 'mx-auto',\r\n            )}\r\n          >\r\n            {description}\r\n          </p>\r\n        ) : null}\r\n        {!split && action ? (\r\n          <div className={cn('mt-8 flex flex-wrap gap-3', centered && 'justify-center')}>\r\n            {action}\r\n          </div>\r\n        ) : null}\r\n      </div>\r\n      {split && (description || action) ? (\r\n        <div className=\"max-w-md space-y-5\">\r\n          {description ? (\r\n            <p className={cn('text-sm leading-relaxed lg:text-base', t.body)}>{description}</p>\r\n          ) : null}\r\n          {action}\r\n        </div>\r\n      ) : null}\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

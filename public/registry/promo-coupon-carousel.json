@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "promo-coupon-carousel",
+  "kind": "component",
+  "title": "PromoCouponCarousel",
+  "description": "Carrossel de promoções com autoplay, barra de progresso, contador 01/04 e cupom copiável.",
+  "meta": {
+    "category": "marketing",
+    "role": "section.marketing",
+    "placement": "inside-main",
+    "stage": "hero",
+    "topics": [
+      "banner"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/marketing/PromoCouponCarousel",
+    "tags": [
+      "banner",
+      "carrossel",
+      "promoção",
+      "cupom",
+      "oferta"
+    ],
+    "variants": [
+      "autoplay",
+      "com cupom",
+      "pausa no hover"
+    ],
+    "props": [
+      {
+        "name": "slides",
+        "type": "PromoSlide[]",
+        "description": "Slides com título, imagem, CTA e cupom opcional.",
+        "required": true
+      },
+      {
+        "name": "interval",
+        "type": "number",
+        "description": "Tempo de cada slide em ms.",
+        "required": false,
+        "default": "6000"
+      },
+      {
+        "name": "couponLabel",
+        "type": "string",
+        "description": "Rótulo do botão de cupom.",
+        "required": false,
+        "default": "'Cupom'"
+      }
+    ],
+    "example": "<PromoCouponCarousel slides={[{ id: '1', title: 'Leve 2, pague 1', coupon: 'DOBRO10', image: { src: '/promo.jpg', alt: '' } }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/marketing/PromoCouponCarousel.tsx",
+      "type": "component",
+      "target": "src/components/library/marketing/PromoCouponCarousel.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport { useCallback, useEffect, useState } from 'react'\r\nimport { AnimatePresence, motion, useReducedMotion } from 'framer-motion'\r\nimport { Check, ChevronLeft, ChevronRight, Copy } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type PromoSlide = {\r\n  id: string\r\n  title: string\r\n  description?: string\r\n  badge?: string\r\n  coupon?: string\r\n  action?: { label: string; href: string }\r\n  image: { src: string; alt: string }\r\n}\r\n\r\nexport type PromoCouponCarouselProps = {\r\n  slides: PromoSlide[]\r\n  interval?: number\r\n  couponLabel?: string\r\n  className?: string\r\n}\r\n\r\nexport function PromoCouponCarousel({\r\n  slides,\r\n  interval = 6000,\r\n  couponLabel = 'Cupom',\r\n  className,\r\n}: PromoCouponCarouselProps) {\r\n  const [index, setIndex] = useState(0)\r\n  const [paused, setPaused] = useState(false)\r\n  const [copied, setCopied] = useState<string | null>(null)\r\n  const reduceMotion = useReducedMotion()\r\n  const total = slides.length\r\n  const slide = slides[index]\r\n\r\n  const go = useCallback(\r\n    (step: number) => setIndex((current) => (current + step + total) % total),\r\n    [total],\r\n  )\r\n\r\n  useEffect(() => {\r\n    if (paused || reduceMotion || total < 2) return\r\n    const timer = window.setTimeout(() => go(1), interval)\r\n    return () => window.clearTimeout(timer)\r\n  }, [go, index, interval, paused, reduceMotion, total])\r\n\r\n  async function copyCoupon(code: string) {\r\n    await navigator.clipboard?.writeText(code)\r\n    setCopied(code)\r\n    window.setTimeout(() => setCopied(null), 2000)\r\n  }\r\n\r\n  if (!slide) return null\r\n  const pad = (value: number) => String(value).padStart(2, '0')\r\n\r\n  return (\r\n    <section\r\n      className={cn('relative isolate overflow-hidden bg-foreground text-background', className)}\r\n      aria-roledescription=\"carrossel\"\r\n      onMouseEnter={() => setPaused(true)}\r\n      onMouseLeave={() => setPaused(false)}\r\n    >\r\n      <AnimatePresence mode=\"wait\">\r\n        <motion.div\r\n          key={slide.id}\r\n          initial={reduceMotion ? false : { opacity: 0, scale: 1.06 }}\r\n          animate={{ opacity: 1, scale: 1 }}\r\n          exit={reduceMotion ? undefined : { opacity: 0 }}\r\n          transition={{ duration: 0.7 }}\r\n          className=\"absolute inset-0 -z-10\"\r\n        >\r\n          <Image\r\n            src={slide.image.src}\r\n            alt={slide.image.alt}\r\n            fill\r\n            className=\"object-cover\"\r\n            sizes=\"100vw\"\r\n          />\r\n          <div className=\"absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-transparent\" />\r\n        </motion.div>\r\n      </AnimatePresence>\r\n\r\n      <div className=\"container flex min-h-[32rem] flex-col justify-center py-16\">\r\n        <AnimatePresence mode=\"wait\">\r\n          <motion.div\r\n            key={slide.id}\r\n            initial={reduceMotion ? false : { opacity: 0, x: -24 }}\r\n            animate={{ opacity: 1, x: 0 }}\r\n            exit={reduceMotion ? undefined : { opacity: 0, x: 24 }}\r\n            transition={{ duration: 0.45 }}\r\n            className=\"max-w-xl text-white\"\r\n            aria-live=\"polite\"\r\n          >\r\n            {slide.badge ? (\r\n              <span className=\"inline-flex rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-foreground\">\r\n                {slide.badge}\r\n              </span>\r\n            ) : null}\r\n            <h2 className=\"mt-4 text-4xl font-bold leading-tight md:text-5xl\">{slide.title}</h2>\r\n            {slide.description ? (\r\n              <p className=\"mt-4 text-lg leading-8 text-white/80\">{slide.description}</p>\r\n            ) : null}\r\n            <div className=\"mt-8 flex flex-wrap items-center gap-3\">\r\n              {slide.action ? (\r\n                <a\r\n                  href={slide.action.href}\r\n                  className=\"inline-flex rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary-hover\"\r\n                >\r\n                  {slide.action.label}\r\n                </a>\r\n              ) : null}\r\n              {slide.coupon ? (\r\n                <button\r\n                  type=\"button\"\r\n                  onClick={() => copyCoupon(slide.coupon as string)}\r\n                  className=\"inline-flex items-center gap-3 rounded-full border border-dashed border-white/60 px-5 py-3 text-sm transition hover:border-white hover:bg-white/10\"\r\n                >\r\n                  <span className=\"text-white/70\">{couponLabel}</span>\r\n                  <strong className=\"font-mono tracking-wider\">{slide.coupon}</strong>\r\n                  {copied === slide.coupon ? (\r\n                    <Check className=\"h-4 w-4 text-green-400\" aria-label=\"Copiado\" />\r\n                  ) : (\r\n                    <Copy className=\"h-4 w-4\" aria-label=\"Copiar cupom\" />\r\n                  )}\r\n                </button>\r\n              ) : null}\r\n            </div>\r\n          </motion.div>\r\n        </AnimatePresence>\r\n\r\n        {total > 1 ? (\r\n          <div className=\"mt-12 flex items-center gap-4 text-white\">\r\n            <button\r\n              type=\"button\"\r\n              onClick={() => go(-1)}\r\n              className=\"flex h-10 w-10 items-center justify-center rounded-full border border-white/40 transition hover:bg-white hover:text-black\"\r\n              aria-label=\"Slide anterior\"\r\n            >\r\n              <ChevronLeft className=\"h-5 w-5\" />\r\n            </button>\r\n            <span className=\"font-mono text-sm tabular-nums\">\r\n              {pad(index + 1)}/{pad(total)}\r\n            </span>\r\n            <div className=\"h-0.5 w-32 overflow-hidden rounded bg-white/25\">\r\n              <motion.div\r\n                key={`${slide.id}-${paused}`}\r\n                className=\"h-full bg-primary\"\r\n                initial={{ width: '0%' }}\r\n                animate={{ width: paused || reduceMotion ? '0%' : '100%' }}\r\n                transition={{ duration: interval / 1000, ease: 'linear' }}\r\n              />\r\n            </div>\r\n            <button\r\n              type=\"button\"\r\n              onClick={() => go(1)}\r\n              className=\"flex h-10 w-10 items-center justify-center rounded-full border border-white/40 transition hover:bg-white hover:text-black\"\r\n              aria-label=\"Próximo slide\"\r\n            >\r\n              <ChevronRight className=\"h-5 w-5\" />\r\n            </button>\r\n          </div>\r\n        ) : null}\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

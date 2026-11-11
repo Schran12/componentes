@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "package-tabs-offer",
+  "kind": "component",
+  "title": "PackageTabsOffer",
+  "description": "Pacotes em abas com indicador animado, preço em destaque, descrição, imagem e CTAs.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": "servicos",
+    "topics": [
+      "products"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/data-display/PackageTabsOffer",
+    "tags": [
+      "pacotes",
+      "abas",
+      "festas",
+      "oferta",
+      "preço"
+    ],
+    "variants": [
+      "com imagem",
+      "sem imagem"
+    ],
+    "props": [
+      {
+        "name": "packages",
+        "type": "OfferPackage[]",
+        "description": "Pacotes com aba, preço, descrição e ações.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": false
+      }
+    ],
+    "example": "<PackageTabsOffer packages={[{ id: 'a', label: 'Básico', headline: 'A partir de', price: 'R$ 165', description: '...' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/PackageTabsOffer.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/PackageTabsOffer.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport { useId, useState } from 'react'\r\nimport { AnimatePresence, motion, useReducedMotion } from 'framer-motion'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type OfferPackage = {\r\n  id: string\r\n  label: string\r\n  headline: string\r\n  price: string\r\n  priceNote?: string\r\n  description: string\r\n  image?: { src: string; alt: string }\r\n  actions?: Array<{ label: string; href: string; variant?: 'primary' | 'outline' }>\r\n}\r\n\r\nexport type PackageTabsOfferProps = {\r\n  title?: string\r\n  packages: OfferPackage[]\r\n  className?: string\r\n}\r\n\r\nexport function PackageTabsOffer({ title, packages, className }: PackageTabsOfferProps) {\r\n  const [activeId, setActiveId] = useState(packages[0]?.id)\r\n  const reduceMotion = useReducedMotion()\r\n  const indicatorId = useId()\r\n  const active = packages.find((item) => item.id === activeId) ?? packages[0]\r\n\r\n  if (!active) return null\r\n\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)}>\r\n      <div className=\"container\">\r\n        {title ? (\r\n          <h2 className=\"mb-8 text-3xl font-bold tracking-tight md:text-4xl\">{title}</h2>\r\n        ) : null}\r\n        <div className=\"overflow-hidden rounded-3xl border bg-card shadow-xl\">\r\n          <div className=\"flex overflow-x-auto border-b\" role=\"tablist\">\r\n            {packages.map((item) => {\r\n              const selected = item.id === active.id\r\n              return (\r\n                <button\r\n                  key={item.id}\r\n                  type=\"button\"\r\n                  role=\"tab\"\r\n                  aria-selected={selected}\r\n                  onClick={() => setActiveId(item.id)}\r\n                  className={cn(\r\n                    'relative shrink-0 px-6 py-4 text-sm font-semibold transition',\r\n                    selected ? 'text-primary' : 'text-muted-foreground hover:text-foreground',\r\n                  )}\r\n                >\r\n                  {item.label}\r\n                  {selected ? (\r\n                    <motion.span\r\n                      layoutId={indicatorId}\r\n                      className=\"absolute inset-x-0 bottom-0 h-0.5 bg-primary\"\r\n                    />\r\n                  ) : null}\r\n                </button>\r\n              )\r\n            })}\r\n          </div>\r\n\r\n          <AnimatePresence mode=\"wait\">\r\n            <motion.div\r\n              key={active.id}\r\n              role=\"tabpanel\"\r\n              initial={reduceMotion ? false : { opacity: 0, y: 16 }}\r\n              animate={{ opacity: 1, y: 0 }}\r\n              exit={reduceMotion ? undefined : { opacity: 0, y: -16 }}\r\n              transition={{ duration: 0.3 }}\r\n              className={cn(\r\n                'grid gap-8 p-6 md:p-10',\r\n                active.image && 'lg:grid-cols-2 lg:items-center',\r\n              )}\r\n            >\r\n              <div>\r\n                <h3 className=\"text-lg font-semibold text-muted-foreground\">{active.headline}</h3>\r\n                <p className=\"mt-2 text-5xl font-bold tracking-tight text-primary md:text-6xl\">\r\n                  {active.price}\r\n                </p>\r\n                {active.priceNote ? (\r\n                  <p className=\"mt-1 text-sm text-muted-foreground\">{active.priceNote}</p>\r\n                ) : null}\r\n                <p className=\"mt-6 leading-7 text-muted-foreground\">{active.description}</p>\r\n                {active.actions?.length ? (\r\n                  <div className=\"mt-8 flex flex-wrap gap-3\">\r\n                    {active.actions.map((action) => (\r\n                      <a\r\n                        key={action.label}\r\n                        href={action.href}\r\n                        className={cn(\r\n                          'inline-flex rounded-full px-6 py-3 text-sm font-semibold transition',\r\n                          action.variant === 'outline'\r\n                            ? 'border hover:border-primary hover:text-primary'\r\n                            : 'bg-primary text-primary-foreground hover:bg-primary-hover',\r\n                        )}\r\n                      >\r\n                        {action.label}\r\n                      </a>\r\n                    ))}\r\n                  </div>\r\n                ) : null}\r\n              </div>\r\n              {active.image ? (\r\n                <div className=\"relative aspect-[4/3] overflow-hidden rounded-2xl bg-muted\">\r\n                  <Image\r\n                    src={active.image.src}\r\n                    alt={active.image.alt}\r\n                    fill\r\n                    className=\"object-cover\"\r\n                    sizes=\"(min-width: 1024px) 45vw, 100vw\"\r\n                  />\r\n                </div>\r\n              ) : null}\r\n            </motion.div>\r\n          </AnimatePresence>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

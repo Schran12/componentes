@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "feature-grid",
+  "kind": "component",
+  "title": "FeatureGrid",
+  "description": "Grade de benefícios com ícones opcionais e cards elevados.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": "diferenciais",
+    "topics": [
+      "differentials",
+      "cards"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/data-display/FeatureGrid",
+    "tags": [
+      "features",
+      "benefícios",
+      "cards",
+      "grid"
+    ],
+    "variants": [
+      "2 colunas",
+      "3 colunas",
+      "com ícones"
+    ],
+    "props": [
+      {
+        "name": "features",
+        "type": "Array<{ title: string; description: string; icon?: LucideIcon }>",
+        "description": "Benefícios.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      }
+    ],
+    "example": "<FeatureGrid title=\"Diferenciais\" features={[{ title: 'Precisão', description: 'Controle em cada etapa.' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/FeatureGrid.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/FeatureGrid.tsx",
+      "content": "import type { LucideIcon } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type FeatureGridProps = {\r\n  title?: string\r\n  description?: string\r\n  features: Array<{ title: string; description: string; icon?: LucideIcon }>\r\n  className?: string\r\n}\r\n\r\nexport function FeatureGrid({ title, description, features, className }: FeatureGridProps) {\r\n  return (\r\n    <section\r\n      className={cn('py-16 md:py-24', className)}\r\n      aria-labelledby={title ? 'features-title' : undefined}\r\n    >\r\n      <div className=\"container\">\r\n        {title ? (\r\n          <h2 id=\"features-title\" className=\"text-3xl font-bold tracking-tight md:text-4xl\">\r\n            {title}\r\n          </h2>\r\n        ) : null}\r\n        {description ? (\r\n          <p className=\"mt-4 max-w-2xl text-lg text-muted-foreground\">{description}</p>\r\n        ) : null}\r\n        <div\r\n          className={cn(\r\n            'mt-10 grid gap-5 md:grid-cols-2',\r\n            features.length % 4 === 0 ? 'lg:grid-cols-4' : 'lg:grid-cols-3',\r\n          )}\r\n        >\r\n          {features.map(({ title: featureTitle, description: featureDescription, icon: Icon }) => (\r\n            <article\r\n              key={featureTitle}\r\n              className=\"rounded-2xl border bg-card p-6 text-card-foreground shadow-sm transition hover:-translate-y-1 hover:shadow-md\"\r\n            >\r\n              {Icon ? (\r\n                <span className=\"mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary\">\r\n                  <Icon className=\"h-5 w-5\" aria-hidden=\"true\" />\r\n                </span>\r\n              ) : null}\r\n              <h3 className=\"text-lg font-semibold\">{featureTitle}</h3>\r\n              <p className=\"mt-2 text-sm leading-6 text-muted-foreground\">{featureDescription}</p>\r\n            </article>\r\n          ))}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

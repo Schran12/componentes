@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "about-values-section",
+  "kind": "component",
+  "title": "AboutValuesSection",
+  "description": "Seção institucional editorial com narrativa, manifesto e cards de valores.",
+  "meta": {
+    "category": "content",
+    "role": "section.about",
+    "placement": "inside-main",
+    "stage": "sobre",
+    "topics": [
+      "about"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/content/AboutValuesSection",
+    "tags": [
+      "sobre",
+      "valores",
+      "institucional",
+      "cards"
+    ],
+    "variants": [
+      "editorial",
+      "cards assimétricos",
+      "com manifesto"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Texto institucional.",
+        "required": true
+      },
+      {
+        "name": "values",
+        "type": "AboutValue[]",
+        "description": "Valores da organização.",
+        "required": true
+      },
+      {
+        "name": "statement",
+        "type": "string",
+        "description": "Manifesto em destaque.",
+        "required": false
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "description": "Rótulo superior.",
+        "required": false
+      }
+    ],
+    "example": "<AboutValuesSection title=\"Construímos com propósito\" description=\"Lorem ipsum.\" values={[{ title: 'Clareza', description: 'Decisões simples e transparentes.' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/AboutValuesSection.tsx",
+      "type": "component",
+      "target": "src/components/library/content/AboutValuesSection.tsx",
+      "content": "import type { LucideIcon } from 'lucide-react'\r\nimport { ArrowUpRight } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type AboutValue = {\r\n  title: string\r\n  description: string\r\n  icon?: LucideIcon\r\n}\r\n\r\nexport type AboutValuesSectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description: string\r\n  values: AboutValue[]\r\n  statement?: string\r\n  className?: string\r\n}\r\n\r\nexport function AboutValuesSection({\r\n  eyebrow = 'Sobre nós',\r\n  title,\r\n  description,\r\n  values,\r\n  statement,\r\n  className,\r\n}: AboutValuesSectionProps) {\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)}>\r\n      <div className=\"container\">\r\n        <div className=\"grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16\">\r\n          <header className=\"lg:sticky lg:top-24 lg:self-start\">\r\n            <p className=\"text-sm font-semibold uppercase tracking-[0.18em] text-primary\">\r\n              {eyebrow}\r\n            </p>\r\n            <h2 className=\"mt-4 text-balance text-3xl font-bold tracking-tight md:text-5xl\">\r\n              {title}\r\n            </h2>\r\n            <p className=\"mt-5 max-w-xl text-lg leading-8 text-muted-foreground\">{description}</p>\r\n            {statement ? (\r\n              <p className=\"mt-8 border-l-2 border-primary pl-5 text-lg font-medium leading-8\">\r\n                {statement}\r\n              </p>\r\n            ) : null}\r\n          </header>\r\n\r\n          <div className=\"grid gap-4 sm:grid-cols-2\">\r\n            {values.map((value, index) => {\r\n              const Icon = value.icon\r\n              return (\r\n                <article\r\n                  key={value.title}\r\n                  className={cn(\r\n                    'group min-h-56 rounded-3xl border bg-card p-6 transition duration-300 hover:border-primary/30 hover:shadow-lg',\r\n                    index === 0 && 'sm:col-span-2 sm:min-h-64',\r\n                  )}\r\n                >\r\n                  <div className=\"flex items-start justify-between\">\r\n                    <span className=\"flex size-11 items-center justify-center rounded-2xl bg-primary/10 text-primary\">\r\n                      {Icon ? <Icon className=\"size-5\" aria-hidden=\"true\" /> : `0${index + 1}`}\r\n                    </span>\r\n                    <ArrowUpRight\r\n                      className=\"size-5 text-muted-foreground transition group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-primary motion-reduce:transform-none\"\r\n                      aria-hidden=\"true\"\r\n                    />\r\n                  </div>\r\n                  <h3 className=\"mt-10 text-xl font-semibold\">{value.title}</h3>\r\n                  <p className=\"mt-3 leading-7 text-muted-foreground\">{value.description}</p>\r\n                </article>\r\n              )\r\n            })}\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

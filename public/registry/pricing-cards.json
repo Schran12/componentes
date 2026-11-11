@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "pricing-cards",
+  "kind": "component",
+  "title": "PricingCards",
+  "description": "Comparativo de planos com recursos, preço e destaque.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": "servicos",
+    "topics": [
+      "products",
+      "cards"
+    ],
+    "clientComponent": false,
+    "importPath": "@/components/library/data-display/PricingCards",
+    "tags": [
+      "preços",
+      "planos",
+      "comparação",
+      "cards"
+    ],
+    "variants": [
+      "padrão",
+      "highlighted"
+    ],
+    "props": [
+      {
+        "name": "plans",
+        "type": "PricingPlan[]",
+        "description": "Planos.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": false
+      }
+    ],
+    "example": "<PricingCards title=\"Planos\" plans={[{ name: 'Pro', price: 'R$ 199', features: ['Suporte'], action: { label: 'Escolher', href: '/contato' }, highlighted: true }]} />"
+  },
+  "dependencies": [
+    "@radix-ui/react-slot@^1.0.2",
+    "class-variance-authority@^0.7.0",
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/PricingCards.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/PricingCards.tsx",
+      "content": "import Link from 'next/link'\r\nimport { Check } from 'lucide-react'\r\nimport { Button } from '@/components/ui/button'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type PricingCardsProps = {\r\n  title?: string\r\n  plans: Array<{\r\n    name: string\r\n    price: string\r\n    period?: string\r\n    description?: string\r\n    features: string[]\r\n    action: { label: string; href: string }\r\n    highlighted?: boolean\r\n  }>\r\n  className?: string\r\n}\r\n\r\nexport function PricingCards({ title, plans, className }: PricingCardsProps) {\r\n  return (\r\n    <section\r\n      className={cn('py-16 md:py-24', className)}\r\n      aria-labelledby={title ? 'pricing-title' : undefined}\r\n    >\r\n      <div className=\"container\">\r\n        {title ? (\r\n          <h2\r\n            id=\"pricing-title\"\r\n            className=\"mb-12 text-center text-3xl font-bold tracking-tight md:text-4xl\"\r\n          >\r\n            {title}\r\n          </h2>\r\n        ) : null}\r\n        <div className=\"mx-auto grid max-w-6xl items-stretch gap-6 lg:grid-cols-3\">\r\n          {plans.map((plan) => (\r\n            <article\r\n              key={plan.name}\r\n              className={cn(\r\n                'flex flex-col rounded-2xl border bg-card p-7 shadow-sm',\r\n                plan.highlighted && 'border-primary ring-2 ring-primary/20',\r\n              )}\r\n            >\r\n              {plan.highlighted ? (\r\n                <span className=\"mb-4 w-fit rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground\">\r\n                  Mais escolhido\r\n                </span>\r\n              ) : null}\r\n              <h3 className=\"text-xl font-semibold\">{plan.name}</h3>\r\n              {plan.description ? (\r\n                <p className=\"mt-2 text-sm text-muted-foreground\">{plan.description}</p>\r\n              ) : null}\r\n              <p className=\"mt-6\">\r\n                <span className=\"text-4xl font-bold\">{plan.price}</span>\r\n                {plan.period ? <span className=\"text-muted-foreground\">/{plan.period}</span> : null}\r\n              </p>\r\n              <ul className=\"my-7 flex-1 space-y-3\">\r\n                {plan.features.map((feature) => (\r\n                  <li key={feature} className=\"flex gap-3 text-sm\">\r\n                    <Check className=\"h-5 w-5 shrink-0 text-primary\" aria-hidden=\"true\" />\r\n                    {feature}\r\n                  </li>\r\n                ))}\r\n              </ul>\r\n              <Button asChild variant={plan.highlighted ? 'default' : 'outline'}>\r\n                <Link href={plan.action.href}>{plan.action.label}</Link>\r\n              </Button>\r\n            </article>\r\n          ))}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "type": "ui",
+      "target": "src/components/ui/button.tsx",
+      "content": "import * as React from 'react'\r\nimport { Slot } from '@radix-ui/react-slot'\r\nimport { cva, type VariantProps } from 'class-variance-authority'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nconst buttonVariants = cva(\r\n  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',\r\n  {\r\n    variants: {\r\n      variant: {\r\n        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',\r\n        destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',\r\n        outline:\r\n          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',\r\n        secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',\r\n        ghost: 'hover:bg-accent hover:text-accent-foreground',\r\n        link: 'text-primary underline-offset-4 hover:underline',\r\n      },\r\n      size: {\r\n        default: 'h-9 px-4 py-2',\r\n        sm: 'h-8 rounded-md px-3 text-xs',\r\n        lg: 'h-10 rounded-md px-8',\r\n        icon: 'h-9 w-9',\r\n      },\r\n    },\r\n    defaultVariants: {\r\n      variant: 'default',\r\n      size: 'default',\r\n    },\r\n  },\r\n)\r\n\r\nexport interface ButtonProps\r\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {\r\n  asChild?: boolean\r\n}\r\n\r\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\r\n  ({ className, variant, size, asChild = false, ...props }, ref) => {\r\n    const Comp = asChild ? Slot : 'button'\r\n    return (\r\n      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />\r\n    )\r\n  },\r\n)\r\nButton.displayName = 'Button'\r\n\r\nexport { Button, buttonVariants }\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

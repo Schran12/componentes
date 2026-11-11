@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "scroll-to-top-button",
+  "kind": "component",
+  "title": "ScrollToTopButton",
+  "description": "Botão flutuante de voltar ao topo com anel de progresso da rolagem.",
+  "meta": {
+    "category": "navigation",
+    "role": "element.navigation",
+    "placement": "inside-main",
+    "stage": "flutuantes",
+    "topics": [
+      "floating"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/navigation/ScrollToTopButton",
+    "tags": [
+      "scroll",
+      "voltar ao topo",
+      "flutuante",
+      "progresso"
+    ],
+    "variants": [
+      "flutuante",
+      "progresso",
+      "static (preview)"
+    ],
+    "props": [
+      {
+        "name": "threshold",
+        "type": "number",
+        "description": "Rolagem (px) para aparecer.",
+        "required": false,
+        "default": "300"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Rótulo acessível.",
+        "required": false,
+        "default": "'Voltar ao topo'"
+      },
+      {
+        "name": "position",
+        "type": "'fixed' | 'static'",
+        "description": "Use static em previews/catálogo.",
+        "required": false,
+        "default": "'fixed'"
+      }
+    ],
+    "example": "<ScrollToTopButton />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/navigation/ScrollToTopButton.tsx",
+      "type": "component",
+      "target": "src/components/library/navigation/ScrollToTopButton.tsx",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\nimport { ChevronUp } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ScrollToTopButtonProps = {\r\n  /** Distância rolada (px) a partir da qual o botão aparece. */\r\n  threshold?: number\r\n  label?: string\r\n  /** Use `static` em previews/catálogo para não flutuar sobre a página. */\r\n  position?: 'fixed' | 'static'\r\n  /**\r\n   * Elemento que rola (ex.: preview do montador).\r\n   * Quando definido, o anel acompanha esse container em vez da janela.\r\n   */\r\n  scrollContainer?: HTMLElement | null\r\n  className?: string\r\n}\r\n\r\nconst radius = 20\r\nconst circumference = 2 * Math.PI * radius\r\n\r\nfunction readScrollProgress(container?: HTMLElement | null) {\r\n  if (container) {\r\n    const height = container.scrollHeight - container.clientHeight\r\n    const scrollTop = container.scrollTop\r\n    return {\r\n      scrollTop,\r\n      progress: height > 0 ? Math.min((scrollTop / height) * 100, 100) : 0,\r\n    }\r\n  }\r\n  const height = document.documentElement.scrollHeight - window.innerHeight\r\n  const scrollTop = window.scrollY\r\n  return {\r\n    scrollTop,\r\n    progress: height > 0 ? Math.min((scrollTop / height) * 100, 100) : 0,\r\n  }\r\n}\r\n\r\n/** Botão flutuante de voltar ao topo com anel de progresso da rolagem. */\r\nexport function ScrollToTopButton({\r\n  threshold = 300,\r\n  label = 'Voltar ao topo',\r\n  position = 'fixed',\r\n  scrollContainer = null,\r\n  className,\r\n}: ScrollToTopButtonProps) {\r\n  const tracksLiveScroll = Boolean(scrollContainer) || position === 'fixed'\r\n  const [visible, setVisible] = useState(!tracksLiveScroll)\r\n  const [progress, setProgress] = useState(tracksLiveScroll ? 0 : 35)\r\n\r\n  useEffect(() => {\r\n    if (!tracksLiveScroll) {\r\n      setVisible(true)\r\n      setProgress(35)\r\n      return\r\n    }\r\n\r\n    function update() {\r\n      const { scrollTop, progress: next } = readScrollProgress(scrollContainer)\r\n      setProgress(next)\r\n      setVisible(scrollTop > threshold)\r\n    }\r\n\r\n    update()\r\n\r\n    if (scrollContainer) {\r\n      scrollContainer.addEventListener('scroll', update, { passive: true })\r\n      const resizeObserver = new ResizeObserver(update)\r\n      resizeObserver.observe(scrollContainer)\r\n      return () => {\r\n        scrollContainer.removeEventListener('scroll', update)\r\n        resizeObserver.disconnect()\r\n      }\r\n    }\r\n\r\n    window.addEventListener('scroll', update, { passive: true })\r\n    window.addEventListener('resize', update)\r\n    return () => {\r\n      window.removeEventListener('scroll', update)\r\n      window.removeEventListener('resize', update)\r\n    }\r\n  }, [threshold, scrollContainer, tracksLiveScroll])\r\n\r\n  if (!visible) return null\r\n\r\n  return (\r\n    <button\r\n      type=\"button\"\r\n      onClick={() => {\r\n        if (scrollContainer) {\r\n          scrollContainer.scrollTo({ top: 0, behavior: 'smooth' })\r\n          return\r\n        }\r\n        window.scrollTo({ top: 0, behavior: 'smooth' })\r\n      }}\r\n      aria-label={label}\r\n      className={cn(\r\n        'relative z-40 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-background text-primary shadow-lg transition hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',\r\n        position === 'fixed' &&\r\n          !scrollContainer &&\r\n          'fixed bottom-6 right-6 animate-in fade-in-0 zoom-in-90',\r\n        className,\r\n      )}\r\n    >\r\n      <svg\r\n        className=\"pointer-events-none absolute inset-0 h-12 w-12 -rotate-90\"\r\n        viewBox=\"0 0 48 48\"\r\n        aria-hidden\r\n      >\r\n        <circle\r\n          cx=\"24\"\r\n          cy=\"24\"\r\n          r={radius}\r\n          stroke=\"currentColor\"\r\n          strokeWidth=\"2\"\r\n          fill=\"none\"\r\n          className=\"text-muted\"\r\n        />\r\n        <circle\r\n          cx=\"24\"\r\n          cy=\"24\"\r\n          r={radius}\r\n          stroke=\"currentColor\"\r\n          strokeWidth=\"2\"\r\n          fill=\"none\"\r\n          strokeDasharray={circumference}\r\n          strokeDashoffset={circumference - (progress / 100) * circumference}\r\n          strokeLinecap=\"round\"\r\n          className=\"transition-[stroke-dashoffset] duration-150\"\r\n        />\r\n      </svg>\r\n      <ChevronUp className=\"relative h-5 w-5\" aria-hidden />\r\n    </button>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

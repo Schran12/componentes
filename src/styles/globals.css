@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Google Sans Local';
+  src: url('/fonts/google-sans.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Comfortaa Local';
+  src: url('/fonts/comfortaa.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --background: 300 20% 98%;
+    --foreground: 60 7% 6%;
+    --card: 0 0% 100%;
+    --card-foreground: 60 7% 6%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 60 7% 6%;
+    --primary: 303 49% 31%;
+    --primary-hover: 303 78% 20%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 285 18% 92%;
+    --secondary-foreground: 303 49% 21%;
+    --muted: 285 24% 95%;
+    --muted-foreground: 278 6% 36%;
+    --accent: 304 49% 95%;
+    --accent-foreground: 303 49% 25%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 285 13% 90%;
+    --input: 285 13% 90%;
+    --ring: 303 49% 31%;
+    --radius: 1.125rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  /**
+   * Superfície clara para preview de componentes — o catálogo pode ser dark,
+   * mas o bloco em si mantém o visual original (fundo/cores).
+   */
+  .preview-light {
+    color-scheme: light;
+    --background: 0 0% 100%;
+    --foreground: 60 7% 6%;
+    --card: 0 0% 100%;
+    --card-foreground: 60 7% 6%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 60 7% 6%;
+    --primary: 303 49% 31%;
+    --primary-hover: 303 78% 20%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 285 18% 92%;
+    --secondary-foreground: 303 49% 21%;
+    --muted: 285 24% 95%;
+    --muted-foreground: 278 6% 36%;
+    --accent: 304 49% 95%;
+    --accent-foreground: 303 49% 25%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 285 13% 90%;
+    --input: 285 13% 90%;
+    --ring: 303 49% 31%;
+    color: hsl(var(--foreground));
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground antialiased;
+    font-family: 'Google Sans Local', 'Segoe UI', Arial, sans-serif;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Comfortaa Local', 'Google Sans Local', sans-serif;
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  .dark {
+    --background: 300 8% 7%;
+    --foreground: 300 20% 98%;
+    --card: 300 7% 10%;
+    --card-foreground: 300 20% 98%;
+    --popover: 300 7% 10%;
+    --popover-foreground: 300 20% 98%;
+    --primary: 304 49% 54%;
+    --primary-hover: 304 49% 62%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 303 20% 17%;
+    --secondary-foreground: 300 20% 98%;
+    --muted: 300 8% 14%;
+    --muted-foreground: 285 10% 68%;
+    --accent: 303 20% 17%;
+    --accent-foreground: 300 20% 98%;
+    --border: 300 8% 19%;
+    --input: 300 8% 19%;
+    --ring: 304 49% 54%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

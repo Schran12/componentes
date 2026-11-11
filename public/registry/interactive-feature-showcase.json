@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "interactive-feature-showcase",
+  "kind": "component",
+  "title": "InteractiveFeatureShowcase",
+  "description": "Showcase estruturado por abas com mídia, conteúdo e transições contextuais.",
+  "meta": {
+    "category": "content",
+    "role": "section.content",
+    "placement": "inside-main",
+    "stage": "diferenciais",
+    "topics": [
+      "differentials"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/content/InteractiveFeatureShowcase",
+    "tags": [
+      "showcase",
+      "abas",
+      "imagem",
+      "interativo"
+    ],
+    "variants": [
+      "abas verticais",
+      "mídia",
+      "ação",
+      "reduced-motion"
+    ],
+    "props": [
+      {
+        "name": "features",
+        "type": "InteractiveFeature[]",
+        "description": "Recursos exibidos.",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título da seção.",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição da seção.",
+        "required": false
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Recurso inicialmente ativo.",
+        "required": false
+      }
+    ],
+    "example": "<InteractiveFeatureShowcase title=\"Soluções\" features={[{ id: 'design', title: 'Design', description: 'Experiência clara.', image: { src: '/design.jpg', alt: 'Projeto' } }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "framer-motion@^11.18.2",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/content/InteractiveFeatureShowcase.tsx",
+      "type": "component",
+      "target": "src/components/library/content/InteractiveFeatureShowcase.tsx",
+      "content": "'use client'\r\n\r\nimport Image from 'next/image'\r\nimport { useId, useState, type ReactNode } from 'react'\r\nimport { AnimatePresence, motion, useReducedMotion } from 'framer-motion'\r\nimport { ArrowUpRight } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type InteractiveFeature = {\r\n  id: string\r\n  title: string\r\n  description: string\r\n  eyebrow?: string\r\n  icon?: ReactNode\r\n  image: { src: string; alt: string }\r\n  action?: { label: string; href: string }\r\n}\r\n\r\nexport type InteractiveFeatureShowcaseProps = {\r\n  title?: string\r\n  description?: string\r\n  features: InteractiveFeature[]\r\n  defaultValue?: string\r\n  className?: string\r\n}\r\n\r\nexport function InteractiveFeatureShowcase({\r\n  title,\r\n  description,\r\n  features,\r\n  defaultValue,\r\n  className,\r\n}: InteractiveFeatureShowcaseProps) {\r\n  const generatedId = useId()\r\n  const reduceMotion = useReducedMotion()\r\n  const [activeId, setActiveId] = useState(defaultValue ?? features[0]?.id)\r\n  const active = features.find((feature) => feature.id === activeId) ?? features[0]\r\n\r\n  if (!active) return null\r\n\r\n  return (\r\n    <section className={cn('py-16 md:py-24', className)}>\r\n      <div className=\"container\">\r\n        {(title || description) && (\r\n          <div className=\"mb-10 max-w-2xl\">\r\n            {title ? (\r\n              <h2 className=\"text-3xl font-bold tracking-tight md:text-4xl\">{title}</h2>\r\n            ) : null}\r\n            {description ? (\r\n              <p className=\"mt-4 text-lg leading-8 text-muted-foreground\">{description}</p>\r\n            ) : null}\r\n          </div>\r\n        )}\r\n        <div className=\"grid overflow-hidden rounded-3xl border bg-card shadow-xl shadow-black/5 lg:grid-cols-[0.8fr_1.2fr]\">\r\n          <div role=\"tablist\" aria-label={title ?? 'Recursos'} className=\"flex flex-col p-3 md:p-5\">\r\n            {features.map((feature, index) => {\r\n              const selected = feature.id === active.id\r\n              return (\r\n                <button\r\n                  type=\"button\"\r\n                  role=\"tab\"\r\n                  id={`${generatedId}-tab-${feature.id}`}\r\n                  aria-controls={`${generatedId}-panel-${feature.id}`}\r\n                  aria-selected={selected}\r\n                  onClick={() => setActiveId(feature.id)}\r\n                  className={cn(\r\n                    'group relative flex w-full gap-4 rounded-2xl p-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',\r\n                    selected ? 'bg-primary text-primary-foreground' : 'hover:bg-muted',\r\n                  )}\r\n                  key={feature.id}\r\n                >\r\n                  <span\r\n                    className={cn(\r\n                      'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border text-sm font-bold',\r\n                      selected\r\n                        ? 'border-white/15 bg-white/10'\r\n                        : 'bg-background text-muted-foreground',\r\n                    )}\r\n                  >\r\n                    {feature.icon ?? String(index + 1).padStart(2, '0')}\r\n                  </span>\r\n                  <span className=\"min-w-0\">\r\n                    {feature.eyebrow ? (\r\n                      <span\r\n                        className={cn(\r\n                          'block text-[10px] font-bold uppercase tracking-[0.16em]',\r\n                          selected ? 'text-primary-foreground/70' : 'text-primary',\r\n                        )}\r\n                      >\r\n                        {feature.eyebrow}\r\n                      </span>\r\n                    ) : null}\r\n                    <span className=\"mt-1 block font-semibold\">{feature.title}</span>\r\n                    <span\r\n                      className={cn(\r\n                        'mt-1 line-clamp-2 block text-sm',\r\n                        selected ? 'text-primary-foreground/80' : 'text-muted-foreground',\r\n                      )}\r\n                    >\r\n                      {feature.description}\r\n                    </span>\r\n                  </span>\r\n                  {selected ? (\r\n                    <motion.span\r\n                      layoutId={`${generatedId}-indicator`}\r\n                      className=\"absolute inset-y-4 left-0 w-1 rounded-r-full bg-primary-foreground\"\r\n                    />\r\n                  ) : null}\r\n                </button>\r\n              )\r\n            })}\r\n          </div>\r\n\r\n          <div\r\n            role=\"tabpanel\"\r\n            id={`${generatedId}-panel-${active.id}`}\r\n            aria-labelledby={`${generatedId}-tab-${active.id}`}\r\n            className=\"relative min-h-[420px] overflow-hidden bg-muted\"\r\n          >\r\n            <AnimatePresence mode=\"wait\" initial={false}>\r\n              <motion.div\r\n                key={active.id}\r\n                className=\"absolute inset-0\"\r\n                initial={reduceMotion ? false : { opacity: 0, scale: 1.03 }}\r\n                animate={{ opacity: 1, scale: 1 }}\r\n                exit={reduceMotion ? undefined : { opacity: 0, scale: 0.98 }}\r\n                transition={{ duration: reduceMotion ? 0 : 0.4 }}\r\n              >\r\n                <Image\r\n                  src={active.image.src}\r\n                  alt={active.image.alt}\r\n                  fill\r\n                  className=\"object-cover\"\r\n                  sizes=\"(min-width: 1024px) 60vw, 100vw\"\r\n                />\r\n                <div className=\"absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent\" />\r\n                <div className=\"absolute inset-x-0 bottom-0 p-6 text-white md:p-8\">\r\n                  <p className=\"max-w-xl text-lg leading-7 text-white/75\">{active.description}</p>\r\n                  {active.action ? (\r\n                    <a\r\n                      href={active.action.href}\r\n                      className=\"mt-5 inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white\"\r\n                    >\r\n                      {active.action.label}\r\n                      <ArrowUpRight className=\"h-4 w-4\" />\r\n                    </a>\r\n                  ) : null}\r\n                </div>\r\n              </motion.div>\r\n            </AnimatePresence>\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "announcement-bar",
+  "kind": "component",
+  "title": "AnnouncementBar",
+  "description": "Faixa de anúncio com ação, variações de contraste e fechamento opcional.",
+  "meta": {
+    "category": "navigation",
+    "role": "page.navigation",
+    "placement": "before-main",
+    "stage": "topbar",
+    "topics": [
+      "topbar"
+    ],
+    "clientComponent": true,
+    "importPath": "@/components/library/navigation/AnnouncementBar",
+    "tags": [
+      "aviso",
+      "anúncio",
+      "banner",
+      "topbar",
+      "top bar"
+    ],
+    "variants": [
+      "default",
+      "accent",
+      "dark",
+      "dismissible"
+    ],
+    "props": [
+      {
+        "name": "message",
+        "type": "ReactNode",
+        "description": "Mensagem principal do aviso.",
+        "required": true
+      },
+      {
+        "name": "action",
+        "type": "{ label: string; href: string; external?: boolean }",
+        "description": "Ação opcional.",
+        "required": false
+      },
+      {
+        "name": "variant",
+        "type": "'default' | 'accent' | 'dark'",
+        "description": "Tratamento visual.",
+        "required": false,
+        "default": "'default'"
+      },
+      {
+        "name": "dismissible",
+        "type": "boolean",
+        "description": "Permite fechar o aviso.",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "dismissLabel",
+        "type": "string",
+        "description": "Rótulo acessível do botão de fechar.",
+        "required": false,
+        "default": "'Fechar aviso'"
+      },
+      {
+        "name": "onDismiss",
+        "type": "() => void",
+        "description": "Callback executado ao fechar.",
+        "required": false
+      }
+    ],
+    "example": "<AnnouncementBar message=\"Novidade: biblioteca 2.0\" action={{ label: 'Conheça', href: '/componentes' }} variant=\"accent\" />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/navigation/AnnouncementBar.tsx",
+      "type": "component",
+      "target": "src/components/library/navigation/AnnouncementBar.tsx",
+      "content": "'use client'\r\n\r\nimport { useState, type HTMLAttributes, type ReactNode } from 'react'\r\nimport { X } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport interface AnnouncementBarProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {\r\n  message: ReactNode\r\n  action?: { label: string; href: string; external?: boolean }\r\n  variant?: 'default' | 'accent' | 'dark'\r\n  dismissible?: boolean\r\n  dismissLabel?: string\r\n  onDismiss?: () => void\r\n}\r\n\r\nexport function AnnouncementBar({\r\n  message,\r\n  action,\r\n  variant = 'default',\r\n  dismissible = false,\r\n  dismissLabel = 'Fechar aviso',\r\n  onDismiss,\r\n  className,\r\n  ...props\r\n}: AnnouncementBarProps) {\r\n  const [visible, setVisible] = useState(true)\r\n\r\n  if (!visible) return null\r\n\r\n  return (\r\n    <div\r\n      role=\"region\"\r\n      aria-label=\"Aviso\"\r\n      className={cn(\r\n        'relative px-10 py-2.5 text-center text-sm',\r\n        variant === 'default' && 'border-b bg-background text-foreground',\r\n        variant === 'accent' && 'bg-primary text-primary-foreground',\r\n        variant === 'dark' && 'bg-foreground text-background',\r\n        className,\r\n      )}\r\n      {...props}\r\n    >\r\n      <div className=\"mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1\">\r\n        <span>{message}</span>\r\n        {action ? (\r\n          <a\r\n            href={action.href}\r\n            target={action.external ? '_blank' : undefined}\r\n            rel={action.external ? 'noopener noreferrer' : undefined}\r\n            className=\"rounded-sm font-semibold underline underline-offset-4 transition-opacity hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current\"\r\n          >\r\n            {action.label}\r\n          </a>\r\n        ) : null}\r\n      </div>\r\n      {dismissible ? (\r\n        <button\r\n          type=\"button\"\r\n          aria-label={dismissLabel}\r\n          className=\"absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 transition-colors hover:bg-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current\"\r\n          onClick={() => {\r\n            setVisible(false)\r\n            onDismiss?.()\r\n          }}\r\n        >\r\n          <X className=\"h-4 w-4\" aria-hidden=\"true\" />\r\n        </button>\r\n      ) : null}\r\n    </div>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

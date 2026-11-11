@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hueline Product</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared.css" />
+  </head>
+  <body id="hl-page-product">
+    <header class="hl-nav is-solid" role="banner">
+      <a class="hl-wordmark" href="index.html" aria-label="Hueline home">
+        <span class="hue">HUE</span><span class="line">line</span>
+      </a>
+      <nav class="hl-nav-links" aria-label="Primary">
+        <a href="index.html#wardrobe">Wardrobe</a>
+        <a href="index.html#lookbook">Lookbook</a>
+        <a href="index.html#colour">Colour</a>
+        <a href="index.html#shop-grid">Shop</a>
+      </nav>
+      <div class="hl-nav-actions">
+        <button type="button" class="hl-nav-btn" data-action="search">Search</button>
+        <button type="button" class="hl-nav-btn" data-action="saved">
+          Saved <span class="badge" data-badge="saved" hidden></span>
+        </button>
+        <button type="button" class="hl-nav-btn" data-action="bag">
+          Bag <span class="badge" data-badge="bag" hidden></span>
+        </button>
+        <button type="button" class="hl-menu-toggle" data-action="menu" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <main class="hl-pdp">
+      <div class="hl-pdp-grid">
+        <div class="hl-pdp-gallery">
+          <div class="hl-pdp-thumbs" id="hl-pdp-thumbs"></div>
+          <div class="hl-pdp-main" id="hl-pdp-main" tabindex="0" aria-label="Product image, click to zoom"></div>
+        </div>
+        <div class="hl-pdp-buy">
+          <p class="t-mono" id="hl-pdp-style">Tailoring · Cobalt</p>
+          <h1 id="hl-pdp-title">Product</h1>
+          <p id="hl-pdp-fabric" style="color: var(--mute)">Fabric</p>
+          <p class="t-price" id="hl-pdp-price" style="font-size: 1rem; margin: 1rem 0">₹0</p>
+
+          <p class="t-mono" style="margin-top: 1.25rem">Colour accent</p>
+          <div class="hl-swatches-row" id="hl-swatches-row"></div>
+
+          <p class="t-mono" style="margin-top: 1.25rem">Size</p>
+          <div class="hl-pdp-actions" role="group" aria-label="Choose size">
+            <button type="button" class="hl-size-chip" data-size="XS">XS</button>
+            <button type="button" class="hl-size-chip" data-size="S">S</button>
+            <button type="button" class="hl-size-chip is-active" data-size="M">M</button>
+            <button type="button" class="hl-size-chip" data-size="L">L</button>
+            <button type="button" class="hl-size-chip" data-size="XL">XL</button>
+          </div>
+          <p class="hl-size-chart" id="hl-size-chart-text">Size M — bust / waist / hip (cm): 88 / 70 / 96</p>
+
+          <div class="hl-pdp-actions">
+            <button type="button" class="hl-btn-primary" id="hl-add-bag" data-magnetic>Add to bag</button>
+            <button type="button" class="hl-btn-ghost" id="hl-save">Save</button>
+          </div>
+
+          <div class="hl-pincode">
+            <p class="t-mono">Delivery</p>
+            <label for="hl-pincode-input">PIN code</label>
+            <input id="hl-pincode-input" type="text" inputmode="numeric" maxlength="6" placeholder="000000" aria-describedby="hl-pincode-result" />
+            <p class="hl-pincode-result" id="hl-pincode-result">Enter a 6-digit PIN to see arrival date.</p>
+          </div>
+
+          <div class="hl-pdp-details">
+            <p><strong>Fabric &amp; care</strong> — Dry clean or cold hand wash; dry flat away from direct sun. Dye may soften over first washes.</p>
+            <p><strong>Fit</strong> — True to size with ease built for layering. Model wears size M.</p>
+          </div>
+        </div>
+      </div>
+
+      <section class="hl-related" aria-labelledby="hl-related-heading">
+        <h2 class="t-cond" id="hl-related-heading" style="font-size: 1.5rem">You might also like</h2>
+        <div class="hl-related-grid" id="hl-related-grid"></div>
+      </section>
+    </main>
+
+    <div id="hl-footer-mount"></div>
+
+    <aside class="hl-drawer" id="hl-drawer" aria-hidden="true" aria-label="Bag and saved">
+      <div class="hl-drawer-head">
+        <div class="hl-drawer-tabs">
+          <button type="button" class="hl-drawer-tab is-active" data-tab="bag">Bag</button>
+          <button type="button" class="hl-drawer-tab" data-tab="saved">Saved</button>
+        </div>
+        <button type="button" class="t-mono" data-close="drawer">Close</button>
+      </div>
+      <div class="hl-drawer-body" data-drawer-panel="bag"></div>
+      <div class="hl-drawer-body" data-drawer-panel="saved" hidden></div>
+    </aside>
+
+    <div class="hl-search-panel" id="hl-search" aria-hidden="true">
+      <button type="button" class="t-mono" data-close="search" style="margin-bottom: 1rem">Close</button>
+      <label class="sr-only" for="hl-search-input">Search collection</label>
+      <input class="hl-search-input" id="hl-search-input" type="search" placeholder="Search pieces…" autocomplete="off" />
+      <div class="hl-search-results" id="hl-search-results"></div>
+    </div>
+
+    <nav class="hl-mobile-menu" id="hl-mobile-menu" aria-hidden="true">
+      <a href="index.html#wardrobe">Wardrobe</a>
+      <a href="index.html#lookbook">Lookbook</a>
+      <a href="index.html#colour">Colour</a>
+      <a href="index.html#shop-grid">Shop</a>
+    </nav>
+
+    <div class="hl-qv" id="hl-qv" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Quick view">
+      <button type="button" class="hl-qv-close t-mono" data-close="qv">Close</button>
+      <div id="hl-qv-body"></div>
+    </div>
+
+    <script src="catalog.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+    <script src="ui.js"></script>
+  </body>
+</html>

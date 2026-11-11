@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "search-field",
+  "kind": "component",
+  "title": "SearchField",
+  "description": "Campo de busca controlado ou não controlado, com limpeza e envio opcionais.",
+  "meta": {
+    "category": "forms",
+    "role": "element.form",
+    "placement": "inside-main",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/forms/SearchField",
+    "tags": [
+      "busca",
+      "campo",
+      "formulário",
+      "filtro"
+    ],
+    "variants": [
+      "sm",
+      "md",
+      "lg",
+      "com botão",
+      "loading"
+    ],
+    "props": [
+      {
+        "name": "onSubmit",
+        "type": "(value: string) => void",
+        "description": "Recebe a busca normalizada.",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Rótulo acessível.",
+        "required": false,
+        "default": "'Buscar'"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Valor controlado.",
+        "required": false
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Valor inicial não controlado.",
+        "required": false,
+        "default": "''"
+      },
+      {
+        "name": "size",
+        "type": "'sm' | 'md' | 'lg'",
+        "description": "Tamanho do campo.",
+        "required": false,
+        "default": "'md'"
+      },
+      {
+        "name": "showSubmitButton",
+        "type": "boolean",
+        "description": "Exibe botão de envio.",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "description": "Desabilita o campo e comunica carregamento.",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "description": "Callback de alteração.",
+        "required": false
+      },
+      {
+        "name": "onClear",
+        "type": "() => void",
+        "description": "Callback de limpeza.",
+        "required": false
+      }
+    ],
+    "example": "<SearchField size=\"lg\" showSubmitButton onSubmit={(value) => console.log(value)} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/forms/SearchField.tsx",
+      "type": "component",
+      "target": "src/components/library/forms/SearchField.tsx",
+      "content": "'use client'\r\n\r\nimport { useId, useState, type FormEvent, type HTMLAttributes } from 'react'\r\nimport { Search, X } from 'lucide-react'\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport interface SearchFieldProps extends Omit<HTMLAttributes<HTMLFormElement>, 'onSubmit'> {\r\n  label?: string\r\n  placeholder?: string\r\n  defaultValue?: string\r\n  value?: string\r\n  size?: 'sm' | 'md' | 'lg'\r\n  showSubmitButton?: boolean\r\n  submitLabel?: string\r\n  loading?: boolean\r\n  onValueChange?: (value: string) => void\r\n  onSubmit: (value: string) => void\r\n  onClear?: () => void\r\n}\r\n\r\nexport function SearchField({\r\n  label = 'Buscar',\r\n  placeholder = 'Digite para buscar…',\r\n  defaultValue = '',\r\n  value,\r\n  size = 'md',\r\n  showSubmitButton = false,\r\n  submitLabel = 'Buscar',\r\n  loading = false,\r\n  onValueChange,\r\n  onSubmit,\r\n  onClear,\r\n  className,\r\n  ...props\r\n}: SearchFieldProps) {\r\n  const id = useId()\r\n  const [internalValue, setInternalValue] = useState(defaultValue)\r\n  const currentValue = value ?? internalValue\r\n\r\n  function updateValue(nextValue: string) {\r\n    if (value === undefined) setInternalValue(nextValue)\r\n    onValueChange?.(nextValue)\r\n  }\r\n\r\n  function handleSubmit(event: FormEvent<HTMLFormElement>) {\r\n    event.preventDefault()\r\n    onSubmit(currentValue.trim())\r\n  }\r\n\r\n  return (\r\n    <form\r\n      role=\"search\"\r\n      className={cn('flex w-full items-stretch gap-2', className)}\r\n      onSubmit={handleSubmit}\r\n      {...props}\r\n    >\r\n      <label htmlFor={id} className=\"sr-only\">\r\n        {label}\r\n      </label>\r\n      <div className=\"relative min-w-0 flex-1\">\r\n        <Search\r\n          className=\"pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground\"\r\n          aria-hidden=\"true\"\r\n        />\r\n        <input\r\n          id={id}\r\n          type=\"search\"\r\n          value={currentValue}\r\n          placeholder={placeholder}\r\n          disabled={loading}\r\n          onChange={(event) => updateValue(event.target.value)}\r\n          className={cn(\r\n            'flex w-full rounded-md border border-input bg-background pl-9 pr-9 text-sm ring-offset-background transition-shadow placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50',\r\n            size === 'sm' && 'h-9',\r\n            size === 'md' && 'h-10',\r\n            size === 'lg' && 'h-12 text-base',\r\n          )}\r\n        />\r\n        {currentValue ? (\r\n          <button\r\n            type=\"button\"\r\n            aria-label=\"Limpar busca\"\r\n            className=\"absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\"\r\n            onClick={() => {\r\n              updateValue('')\r\n              onClear?.()\r\n            }}\r\n          >\r\n            <X className=\"h-4 w-4\" aria-hidden=\"true\" />\r\n          </button>\r\n        ) : null}\r\n      </div>\r\n      {showSubmitButton ? (\r\n        <button\r\n          type=\"submit\"\r\n          disabled={loading}\r\n          className=\"rounded-md bg-primary px-4 font-medium text-primary-foreground transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50\"\r\n        >\r\n          {loading ? 'Buscando…' : submitLabel}\r\n        </button>\r\n      ) : null}\r\n    </form>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

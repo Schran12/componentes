@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "gsap-story-section",
+  "kind": "component",
+  "title": "GSAPStorySection",
+  "description": "Storytelling vertical com cards revelados por GSAP ScrollTrigger e scrub.",
+  "meta": {
+    "category": "motion",
+    "role": "enhancement.motion",
+    "placement": "wrap-or-enhance-content",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/motion/GSAPStorySection",
+    "tags": [
+      "gsap",
+      "scrolltrigger",
+      "storytelling",
+      "scroll"
+    ],
+    "variants": [
+      "sticky heading",
+      "scrub",
+      "reveal",
+      "reduced-motion"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "items",
+        "type": "readonly GSAPStoryItem[]",
+        "description": "Capítulos visuais.",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Descrição.",
+        "required": false
+      },
+      {
+        "name": "pinHeading",
+        "type": "boolean",
+        "description": "Mantém o título fixo no desktop.",
+        "required": false,
+        "default": "true"
+      }
+    ],
+    "example": "<GSAPStorySection title=\"Nossa jornada\" items={[{ id: '1', title: 'Descoberta', description: 'Lorem ipsum.', image: { src: '/etapa.jpg', alt: 'Etapa' } }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "gsap@^3.12.2",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/motion/GSAPStorySection.tsx",
+      "type": "component",
+      "target": "src/components/library/motion/GSAPStorySection.tsx",
+      "content": "'use client'\r\n\r\nimport { useRef } from 'react'\r\nimport Image from 'next/image'\r\n\r\nimport { useGSAP } from '@/lib/hooks/useGSAP'\r\nimport { cn } from '@/lib/utils'\r\n\r\nimport { prefersReducedMotion, useReducedMotion } from './useReducedMotion'\r\n\r\nexport type GSAPStoryItem = {\r\n  id: string\r\n  number?: string\r\n  title: string\r\n  description: string\r\n  image: { src: string; alt: string }\r\n}\r\n\r\nexport type GSAPStorySectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description?: string\r\n  items: readonly GSAPStoryItem[]\r\n  pinHeading?: boolean\r\n  className?: string\r\n}\r\n\r\nexport function GSAPStorySection({\r\n  eyebrow,\r\n  title,\r\n  description,\r\n  items,\r\n  pinHeading = true,\r\n  className,\r\n}: GSAPStorySectionProps) {\r\n  const root = useRef<HTMLElement>(null)\r\n  const reducedMotion = useReducedMotion()\r\n\r\n  useGSAP(\r\n    ({ gsap, ScrollTrigger }) => {\r\n      const section = root.current\r\n      if (!section || reducedMotion || prefersReducedMotion()) return\r\n\r\n      const heading = section.querySelector('[data-gsap-heading]')\r\n      const cards = gsap.utils.toArray<HTMLElement>('[data-gsap-card]', section)\r\n\r\n      if (heading) {\r\n        gsap.fromTo(\r\n          heading,\r\n          { y: 60, opacity: 0 },\r\n          {\r\n            y: 0,\r\n            opacity: 1,\r\n            duration: 0.9,\r\n            ease: 'power3.out',\r\n            scrollTrigger: { trigger: section, start: 'top 72%' },\r\n          },\r\n        )\r\n      }\r\n\r\n      cards.forEach((card, index) => {\r\n        const media = card.querySelector('[data-gsap-media]')\r\n        gsap.fromTo(\r\n          card,\r\n          { y: 100, opacity: 0, rotate: index % 2 ? 1.5 : -1.5 },\r\n          {\r\n            y: 0,\r\n            opacity: 1,\r\n            rotate: 0,\r\n            ease: 'power3.out',\r\n            scrollTrigger: {\r\n              trigger: card,\r\n              start: 'top 82%',\r\n              end: 'top 42%',\r\n              scrub: 0.7,\r\n            },\r\n          },\r\n        )\r\n        if (media) {\r\n          gsap.fromTo(\r\n            media,\r\n            { scale: 1.15 },\r\n            {\r\n              scale: 1,\r\n              ease: 'none',\r\n              scrollTrigger: {\r\n                trigger: card,\r\n                start: 'top bottom',\r\n                end: 'bottom top',\r\n                scrub: true,\r\n              },\r\n            },\r\n          )\r\n        }\r\n      })\r\n\r\n      return () => ScrollTrigger.getAll().forEach((trigger) => trigger.refresh())\r\n    },\r\n    [items, reducedMotion],\r\n    root,\r\n  )\r\n\r\n  return (\r\n    <section ref={root} className={cn('bg-[#0b0c10] py-24 text-white md:py-32', className)}>\r\n      <div className=\"container grid gap-14 lg:grid-cols-[.7fr_1.3fr]\">\r\n        <header\r\n          data-gsap-heading\r\n          className={cn('h-fit max-w-lg', pinHeading && 'lg:sticky lg:top-28')}\r\n        >\r\n          {eyebrow ? (\r\n            <p className=\"text-xs font-bold uppercase tracking-[0.24em] text-primary\">{eyebrow}</p>\r\n          ) : null}\r\n          <h2 className=\"mt-5 text-4xl font-bold tracking-tight md:text-6xl\">{title}</h2>\r\n          {description ? (\r\n            <p className=\"mt-6 text-base leading-8 text-white/60\">{description}</p>\r\n          ) : null}\r\n        </header>\r\n\r\n        <div className=\"space-y-12 md:space-y-20\">\r\n          {items.map((item, index) => (\r\n            <article\r\n              data-gsap-card\r\n              key={item.id}\r\n              className=\"group overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04]\"\r\n            >\r\n              <div className=\"relative aspect-[16/10] overflow-hidden\">\r\n                <div data-gsap-media className=\"absolute inset-0\">\r\n                  <Image\r\n                    src={item.image.src}\r\n                    alt={item.image.alt}\r\n                    fill\r\n                    className=\"object-cover\"\r\n                    sizes=\"(min-width: 1024px) 55vw, 100vw\"\r\n                  />\r\n                </div>\r\n                <div className=\"absolute inset-0 bg-gradient-to-t from-black/70 via-transparent\" />\r\n                <span className=\"absolute left-6 top-6 rounded-full border border-white/20 bg-black/25 px-3 py-1 text-xs font-bold backdrop-blur\">\r\n                  {item.number ?? String(index + 1).padStart(2, '0')}\r\n                </span>\r\n              </div>\r\n              <div className=\"p-7 md:p-9\">\r\n                <h3 className=\"text-2xl font-semibold\">{item.title}</h3>\r\n                <p className=\"mt-3 max-w-2xl leading-7 text-white/60\">{item.description}</p>\r\n              </div>\r\n            </article>\r\n          ))}\r\n        </div>\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/components/library/motion/useReducedMotion.ts",
+      "type": "component",
+      "target": "src/components/library/motion/useReducedMotion.ts",
+      "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\nconst QUERY = '(prefers-reduced-motion: reduce)'\r\n\r\nexport function prefersReducedMotion(): boolean {\r\n  return typeof window !== 'undefined' && window.matchMedia(QUERY).matches\r\n}\r\n\r\nexport function useReducedMotion(): boolean {\r\n  const [reduced, setReduced] = useState(false)\r\n\r\n  useEffect(() => {\r\n    const media = window.matchMedia(QUERY)\r\n    const update = (): void => setReduced(media.matches)\r\n\r\n    update()\r\n    media.addEventListener('change', update)\r\n    return () => media.removeEventListener('change', update)\r\n  }, [])\r\n\r\n  return reduced\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/hooks/useGSAP.ts",
+      "type": "hook",
+      "target": "src/lib/hooks/useGSAP.ts",
+      "content": "'use client'\r\n\r\nimport gsap from 'gsap'\r\nimport { ScrollTrigger } from 'gsap/ScrollTrigger'\r\nimport { useEffect, type DependencyList, type RefObject } from 'react'\r\n\r\nlet registered = false\r\n\r\nfunction ensureGsapPlugins(): void {\r\n  if (typeof window === 'undefined' || registered) return\r\n  gsap.registerPlugin(ScrollTrigger)\r\n  registered = true\r\n}\r\n\r\nexport type GSAPTools = {\r\n  gsap: typeof gsap\r\n  ScrollTrigger: typeof ScrollTrigger\r\n}\r\n\r\nexport type GSAPCallback = (tools: GSAPTools) => void | (() => void)\r\n\r\nexport function useGSAP(\r\n  callback: GSAPCallback,\r\n  deps: DependencyList = [],\r\n  scope?: RefObject<Element | null>,\r\n): void {\r\n  useEffect(() => {\r\n    if (typeof window === 'undefined') return\r\n\r\n    ensureGsapPlugins()\r\n\r\n    let dispose: void | (() => void)\r\n    const context = gsap.context(() => {\r\n      dispose = callback({ gsap, ScrollTrigger })\r\n    }, scope?.current ?? undefined)\r\n\r\n    return () => {\r\n      dispose?.()\r\n      context.revert()\r\n    }\r\n\r\n    // Dependencies are deliberately controlled by each animation consumer.\r\n    // eslint-disable-next-line react-hooks/exhaustive-deps\r\n  }, deps)\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}

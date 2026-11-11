@@ -1,0 +1,44 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/v1/[[...path]].mjs": {
+      "includeFiles": "{public/registry/**,dist/registry/**}"
+    },
+    "api/v1/item/[name].mjs": {
+      "includeFiles": "{public/registry/**,dist/registry/**}"
+    },
+    "api/v1/registry/[name].mjs": {
+      "includeFiles": "{public/registry/**,dist/registry/**}"
+    }
+  },
+  "headers": [
+    {
+      "source": "/registry/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, OPTIONS" },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization, X-Api-Key, Cache-Control, Pragma"
+        },
+        { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization, X-Api-Key, X-Admin-Secret, If-None-Match, Cache-Control, Pragma"
+        },
+        { "key": "Access-Control-Expose-Headers", "value": "ETag, X-Key-Name, X-Library-Hash" }
+      ]
+    }
+  ],
+  "rewrites": [{ "source": "/((?!registry/|api/).*)", "destination": "/index.html" }]
+}

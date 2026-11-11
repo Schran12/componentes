@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "registry": "componentes-bloomin",
+  "name": "extension-directory-section",
+  "kind": "component",
+  "title": "ExtensionDirectorySection",
+  "description": "Diretório pesquisável e filtrável de extensões, integrações ou aplicativos.",
+  "meta": {
+    "category": "data-display",
+    "role": "section.data-display",
+    "placement": "inside-main",
+    "stage": null,
+    "topics": [],
+    "clientComponent": true,
+    "importPath": "@/components/library/data-display/ExtensionDirectorySection",
+    "tags": [
+      "produtividade",
+      "extensões",
+      "diretório",
+      "filtros",
+      "busca"
+    ],
+    "variants": [
+      "pesquisa",
+      "filtros",
+      "ícones",
+      "estados vazios"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Título.",
+        "required": true
+      },
+      {
+        "name": "items",
+        "type": "readonly ExtensionDirectoryItem[]",
+        "description": "Itens do diretório.",
+        "required": true
+      },
+      {
+        "name": "action",
+        "type": "{ label: string; href: string }",
+        "description": "Ação geral.",
+        "required": false
+      }
+    ],
+    "example": "<ExtensionDirectorySection title=\"Extensões\" items={[{ id: 'tasks', name: 'Tarefas', description: 'Lorem ipsum.', category: 'Produtividade', href: '#' }]} />"
+  },
+  "dependencies": [
+    "clsx@^2.0.0",
+    "lucide-react@^0.577.0",
+    "tailwind-merge@^2.0.0"
+  ],
+  "files": [
+    {
+      "path": "src/components/library/data-display/ExtensionDirectorySection.tsx",
+      "type": "component",
+      "target": "src/components/library/data-display/ExtensionDirectorySection.tsx",
+      "content": "'use client'\r\n\r\nimport type { ReactNode } from 'react'\r\nimport { useMemo, useState } from 'react'\r\nimport Link from 'next/link'\r\nimport { ArrowRight, Boxes, Search } from 'lucide-react'\r\n\r\nimport { cn } from '@/lib/utils'\r\n\r\nexport type ExtensionDirectoryItem = {\r\n  id: string\r\n  name: string\r\n  description: string\r\n  category: string\r\n  href: string\r\n  icon?: ReactNode\r\n  color?: string\r\n}\r\n\r\nexport type ExtensionDirectorySectionProps = {\r\n  eyebrow?: string\r\n  title: string\r\n  description?: string\r\n  items: readonly ExtensionDirectoryItem[]\r\n  action?: { label: string; href: string }\r\n  className?: string\r\n}\r\n\r\nexport function ExtensionDirectorySection({\r\n  eyebrow,\r\n  title,\r\n  description,\r\n  items,\r\n  action,\r\n  className,\r\n}: ExtensionDirectorySectionProps) {\r\n  const categories = useMemo(() => Array.from(new Set(items.map((item) => item.category))), [items])\r\n  const [category, setCategory] = useState('all')\r\n  const [query, setQuery] = useState('')\r\n  const visible = useMemo(() => {\r\n    const normalized = query.trim().toLocaleLowerCase('pt-BR')\r\n    return items.filter(\r\n      (item) =>\r\n        (category === 'all' || item.category === category) &&\r\n        (!normalized ||\r\n          `${item.name} ${item.description}`.toLocaleLowerCase('pt-BR').includes(normalized)),\r\n    )\r\n  }, [category, items, query])\r\n\r\n  return (\r\n    <section className={cn('bg-[#0d0d0f] py-20 text-white md:py-28', className)}>\r\n      <div className=\"container\">\r\n        <div className=\"grid gap-8 lg:grid-cols-[.9fr_1.1fr] lg:items-end\">\r\n          <div>\r\n            {eyebrow ? <p className=\"text-sm font-semibold text-[#ff6b63]\">{eyebrow}</p> : null}\r\n            <h2 className=\"mt-5 text-4xl font-bold tracking-[-0.04em] md:text-6xl\">{title}</h2>\r\n          </div>\r\n          {description ? (\r\n            <p className=\"max-w-2xl text-lg leading-8 text-white/50 lg:justify-self-end\">\r\n              {description}\r\n            </p>\r\n          ) : null}\r\n        </div>\r\n\r\n        <div className=\"mt-12 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between\">\r\n          <div className=\"flex gap-2 overflow-x-auto pb-1\">\r\n            {['all', ...categories].map((item) => (\r\n              <button\r\n                key={item}\r\n                type=\"button\"\r\n                aria-pressed={category === item}\r\n                onClick={() => setCategory(item)}\r\n                className={cn(\r\n                  'min-w-fit rounded-full border px-4 py-2 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b63]',\r\n                  category === item\r\n                    ? 'border-white bg-white text-black'\r\n                    : 'border-white/15 bg-white/5 text-white/55 hover:text-white',\r\n                )}\r\n              >\r\n                {item === 'all' ? 'Todas' : item}\r\n              </button>\r\n            ))}\r\n          </div>\r\n          <label className=\"flex min-w-[260px] items-center gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-3\">\r\n            <Search className=\"h-4 w-4 text-white/35\" aria-hidden />\r\n            <span className=\"sr-only\">Buscar extensões</span>\r\n            <input\r\n              type=\"search\"\r\n              value={query}\r\n              onChange={(event) => setQuery(event.target.value)}\r\n              placeholder=\"Buscar extensões...\"\r\n              className=\"min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-white/30\"\r\n            />\r\n          </label>\r\n        </div>\r\n\r\n        <div className=\"mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3\">\r\n          {visible.map((item) => (\r\n            <Link\r\n              key={item.id}\r\n              href={item.href}\r\n              className=\"group flex min-h-[190px] flex-col rounded-2xl border border-white/10 bg-[#17171a] p-5 transition hover:-translate-y-1 hover:border-white/25 hover:bg-[#1d1d21] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b63]\"\r\n            >\r\n              <div className=\"flex items-start justify-between gap-4\">\r\n                <span\r\n                  className=\"flex h-11 w-11 items-center justify-center rounded-xl text-white\"\r\n                  style={{ backgroundColor: item.color ?? '#e5484d' }}\r\n                >\r\n                  {item.icon ?? <Boxes className=\"h-5 w-5\" aria-hidden />}\r\n                </span>\r\n                <span className=\"text-[10px] font-semibold uppercase tracking-wider text-white/30\">\r\n                  {item.category}\r\n                </span>\r\n              </div>\r\n              <h3 className=\"mt-6 font-semibold\">{item.name}</h3>\r\n              <p className=\"mt-2 text-sm leading-6 text-white/45\">{item.description}</p>\r\n            </Link>\r\n          ))}\r\n        </div>\r\n\r\n        {!visible.length ? (\r\n          <p className=\"mt-8 rounded-2xl border border-dashed border-white/15 p-10 text-center text-sm text-white/40\">\r\n            Nenhuma extensão encontrada.\r\n          </p>\r\n        ) : null}\r\n\r\n        {action ? (\r\n          <div className=\"mt-10 text-center\">\r\n            <Link\r\n              href={action.href}\r\n              className=\"inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-black transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b63]\"\r\n            >\r\n              {action.label}\r\n              <ArrowRight className=\"h-4 w-4\" aria-hidden />\r\n            </Link>\r\n          </div>\r\n        ) : null}\r\n      </div>\r\n    </section>\r\n  )\r\n}\r\n"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "type": "lib",
+      "target": "src/lib/utils.ts",
+      "content": "import { type ClassValue, clsx } from 'clsx'\r\nimport { twMerge } from 'tailwind-merge'\r\n\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs))\r\n}\r\n"
+    }
+  ]
+}
