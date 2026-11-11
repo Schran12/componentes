@@ -6,6 +6,7 @@ import { resolve } from 'node:path'
 
 import { issueApiKey } from '../server/keys.mjs'
 
+
 const root = resolve(import.meta.dirname, '..')
 const signing = randomBytes(32).toString('hex')
 const admin = randomBytes(32).toString('hex')
